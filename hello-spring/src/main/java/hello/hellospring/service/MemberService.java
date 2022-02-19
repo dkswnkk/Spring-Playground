@@ -23,6 +23,9 @@ public class MemberService {
      * 회원가입
      */
     public Long join(Member member) {
+        long start = System.currentTimeMillis();
+
+
         // 같은 이름이 있는 중복 회원 X
         // Null값이 아니면 예외처리(이미 존재한다는 뜻)
         validateDuplicateMember(member);
