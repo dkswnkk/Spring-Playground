@@ -14,7 +14,7 @@ public class MemoryMemberRepositoryTest {
 
     @AfterEach
     public void afterEach() {
-        repository.clearStroe();
+        repository.clearStore();
     }
 
     @Test

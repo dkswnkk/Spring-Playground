@@ -8,12 +8,13 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.annotation.Commit;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
-class MemverServiceTest {
+class MemberServiceTest {
 
     MemberService memberService;
     MemoryMemberRepository memberRepository;
@@ -26,14 +27,15 @@ class MemverServiceTest {
 
     @AfterEach
     public void afterEach() {
-        memberRepository.clearStroe();
+        memberRepository.clearStore();
     }
 
     @Test
+    @Commit
     void 회원가입() {
         //given
         Member member = new Member();
-        member.setName("안주형");
+        member.setName("키키");
         //when
         Long saveId = memberService.join(member);
         //then
