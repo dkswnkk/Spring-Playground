@@ -42,7 +42,7 @@ public class MemoryMemberRepositoryTest {
         assertThat(result).isEqualTo(member1);
     }
 
-    @Test
+@Test
     public void findAll() {
         Member member1 = new Member();
         member1.setName("spring1");
