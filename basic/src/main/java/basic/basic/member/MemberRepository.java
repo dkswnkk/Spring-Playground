@@ -2,7 +2,7 @@ package basic.basic.member;
 
 public interface MemberRepository {
 
-    void save(Member ber);
+    void save(Member member);
     Member findById(Long memberId);
 
 }
