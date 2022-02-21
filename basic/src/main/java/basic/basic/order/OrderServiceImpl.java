@@ -1,15 +1,18 @@
 package basic.basic.order;
 
 import basic.basic.discount.DiscountPolicy;
-import basic.basic.discount.FixDiscountPolicy;
 import basic.basic.member.Member;
 import basic.basic.member.MemberRepository;
-import basic.basic.member.MemoryMemberRepository;
 
 public class OrderServiceImpl implements OrderService {
 
-    private final MemberRepository memberRepository = new MemoryMemberRepository();
-    private final DiscountPolicy discountPolicy = new FixDiscountPolicy();
+    public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
+        this.memberRepository = memberRepository;
+        this.discountPolicy = discountPolicy;
+    }
+
+    private final MemberRepository memberRepository;
+    private DiscountPolicy discountPolicy;
 
     @Override
     public Order createOrder(Long memberId, String itemName, int itemPrice) {

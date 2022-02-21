@@ -1,11 +1,13 @@
 package basic.basic.order;
 
+import basic.basic.AppConfig;
 import basic.basic.member.*;
 
 public class OrderApp {
     public static void main(String[] args) {
-        MemberService memberService = new MemberServiceImpl();
-        OrderService orderService = new OrderServiceImpl();
+        AppConfig appConfig = new AppConfig();
+        MemberService memberService= appConfig.memberService();
+        OrderService orderService= appConfig.orderService();
 
         Long memberId = 1L;
 
