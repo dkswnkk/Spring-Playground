@@ -1,9 +1,11 @@
 package basic.basic.order;
 
+import basic.basic.AppConfig;
 import basic.basic.AutoAppConfig;
 import basic.basic.member.Grade;
 import basic.basic.member.Member;
 import basic.basic.member.MemberService;
+import basic.basic.member.MemberServiceImpl;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,17 +18,17 @@ public class OrderServiceTest {
     MemberService memberService;
     OrderService orderService;
 
-//    @BeforeEach
+    //    @BeforeEach
 //    public void beforeEach() {
 //        AppConfig appConfig = new AppConfig();
 //        memberService = appConfig.memberService();
 //        orderService = appConfig.orderService();
 //    }
     @BeforeEach
-    public void beforeEach(){
+    public void beforeEach() {
         ApplicationContext applicationContext = new AnnotationConfigApplicationContext(AutoAppConfig.class);
-         memberService = applicationContext.getBean(MemberService.class);
-         orderService = applicationContext.getBean(OrderService.class);
+        memberService = applicationContext.getBean(MemberService.class);
+        orderService = applicationContext.getBean(OrderService.class);
     }
 
     @Test
