@@ -2,6 +2,7 @@ package basic.basic.scope;
 
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Scope;
@@ -33,19 +34,24 @@ public class SingletonWithPrototypeTest1 {
         int count1 = clientBean1.logic();
         int count2 = clientBean2.logic();
 
-        assertThat(count2).isEqualTo(count1+1);
+        assertThat(count2).isEqualTo(count1);
 
     }
 
     @Scope("singleton")
-    @RequiredArgsConstructor
+//    @RequiredArgsConstructor
     static class ClientBean {
-        private final PrototypeBean prototypeBean;  // 생성 시점에 주입
+//        private final PrototypeBean prototypeBean;  // 생성 시점에 주입
 //        @Autowired
 //        ClientBean(PrototypeBean prototypeBean) {
 //            this.prototypeBean = prototypeBean;
 //        }
+
+        @Autowired
+        private ObjectProvider<PrototypeBean> prototypeBeanProvider;
+
         public int logic(){
+            PrototypeBean prototypeBean = prototypeBeanProvider.getObject();
             prototypeBean.addCount();
             return prototypeBean.getCount();
         }
