@@ -9,6 +9,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.List;
 
 @SpringBootTest
 @Transactional
@@ -32,9 +33,18 @@ public class TestJpa {
     }
 
     @Test
-    public void 조회() {
+    public void 멤버에서조회() {
         Member findMember = em.find(Member.class, 2L);
         System.out.println(findMember.getTeam().getName());
+    }
+
+    @Test
+    public void 팀에서조회() {
+        Team findTeam = em.find(Team.class, 1L);
+        List<Member> findTeamMembers = findTeam.getMembers();
+        for (Member findTeamMember : findTeamMembers) {
+            System.out.println(findTeamMember.getName());
+        }
     }
 
     @Test
