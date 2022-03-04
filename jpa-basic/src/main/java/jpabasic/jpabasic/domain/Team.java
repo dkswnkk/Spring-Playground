@@ -8,14 +8,11 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-public class Item {
+public class Team {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "ITEM_ID")
+    @Column(name = "TEAM_ID")
     private Long id;
-
     private String name;
-    private int price;
-    private int stockQuantity;
 }
