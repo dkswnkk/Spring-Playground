@@ -12,7 +12,8 @@ public class JpaMain {
     public void save() {
         Member member = new Member();
         member.setId(1L);
-        member.setName("안주형");
+        member.setUsername("안주형");
+        member.setRoleType(RoleType.ADMIN);
         em.persist(member);
     }
 }
