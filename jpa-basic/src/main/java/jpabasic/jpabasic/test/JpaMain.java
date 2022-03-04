@@ -10,10 +10,10 @@ public class JpaMain {
     private final EntityManager em;
 
     public void save() {
-        Member member = new Member();
-        member.setId(1L);
-        member.setUsername("안주형");
-        member.setRoleType(RoleType.ADMIN);
-        em.persist(member);
+//        Member member = new Member();
+//        member.setId(1L);
+//        member.setUsername("안주형");
+//        member.setRoleType(RoleType.ADMIN);
+//        em.persist(member);
     }
 }

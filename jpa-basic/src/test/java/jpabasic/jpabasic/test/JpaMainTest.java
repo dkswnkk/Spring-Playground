@@ -19,17 +19,20 @@ class JpaMainTest {
     EntityManager em;
 
     @Test
+
     public void 초기_생성() {
-        JpaMain jpaMain = new JpaMain(em);
-        jpaMain.save();
+        Member member = new Member();
+        member.setUsername("안주형");
+        em.persist(member); //이 시점에서 insert 쿼리 날림
+        System.out.println(member.getId()); //따라서 Id 획득 가능
     }
 
     @Test
-    public void 새로운_아이디_생성(){
+    public void 새로운_아이디_생성() {
         Member member = new Member();
 //        member.setName("새로운 아이디");
-        member.setAge(22);
-        member.setId(3L);
+//        member.setAge(22);
+//        member.setId(3L);
         em.persist(member);
     }
 
@@ -60,23 +63,23 @@ class JpaMainTest {
     @Test
     public void 영속_상태_확인() {
         Member member = new Member();
-        member.setId(2L);
+//        member.setId(2L);
 //        member.setName("김동까악까악");
 
         em.persist(member);
     }
 
     @Test
-    public void 삭제(){
-        Member member = em.find(Member.class,2L);
+    public void 삭제() {
+        Member member = em.find(Member.class, 2L);
 //        em.detach(member);
         em.remove(member);
     }
 
     @Test
-    public void 질문_테스트(){
+    public void 질문_테스트() {
         Member member = new Member();
-        member.setId(2L);
+//        member.setId(2L);
 //        member.setName("테스트");
         em.persist(member);
 //        member.setName("이걸로 바뀌나?");
