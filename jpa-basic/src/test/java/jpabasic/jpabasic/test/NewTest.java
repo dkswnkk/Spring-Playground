@@ -1,8 +1,6 @@
 package jpabasic.jpabasic.test;
 
-import jpabasic.jpabasic.domain.Member;
-import jpabasic.jpabasic.domain.Order;
-import jpabasic.jpabasic.domain.OrderItem;
+import jpabasic.jpabasic.domain.Book;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,11 +19,12 @@ public class NewTest {
 
     @Test
     public void 생성(){
-        Order order = new Order();
-        OrderItem orderItem = new OrderItem();
-        em.persist(order);
-        orderItem.setOrder(order);
-        em.persist(orderItem);
+        Book book = new Book();
+        book.setName("책제목");
+        book.setAuthor("안주형작가");
+
+        em.persist(book);
+
     }
 
 }

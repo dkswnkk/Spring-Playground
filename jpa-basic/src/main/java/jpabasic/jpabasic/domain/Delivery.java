@@ -4,24 +4,24 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
 @Setter
-public class Member extends BaseEntity{
+public class Delivery extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "MEMBER_ID")
+    @Column(name = "DELIVERY_ID")
     private Long id;
-    private String name;
+
+    @OneToOne(mappedBy = "delivery")
+    private Order order;
+
     private String city;
     private String street;
     private String zipcode;
 
-    @OneToMany(mappedBy = "member")
-    private List<Order> orders = new ArrayList<>();
-
+    @Enumerated(EnumType.STRING)
+    private DeliveryStatus status;
 }
