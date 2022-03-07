@@ -1,7 +1,9 @@
 package jpabasic.jpabasic.test;
 
+import jpabasic.jpabasic.domain.Address;
 import jpabasic.jpabasic.domain.Book;
 import jpabasic.jpabasic.domain.Member;
+import jpabasic.jpabasic.domain.Period;
 import jpabasic.jpabasic.domain.cascade.Child;
 import jpabasic.jpabasic.domain.cascade.Parent;
 import org.junit.jupiter.api.Test;
@@ -79,6 +81,14 @@ public class NewTest {
 
         Parent findParent = em.find(Parent.class, parent.getId());
         findParent.getChildList().remove(0);
+    }
+
+    @Test
+    public void 임베디드타입_테스트() {
+        Member member = new Member();
+        member.setHomeAddress(new Address("부산", "사하", "123"));
+        member.setWordPeriod(new Period());
+        em.persist(member);
     }
 
 }
