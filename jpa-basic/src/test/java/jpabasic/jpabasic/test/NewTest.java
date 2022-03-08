@@ -1,9 +1,9 @@
 package jpabasic.jpabasic.test;
 
 import jpabasic.jpabasic.domain.Address;
+import jpabasic.jpabasic.domain.AddressEntity;
 import jpabasic.jpabasic.domain.Book;
 import jpabasic.jpabasic.domain.Member;
-import jpabasic.jpabasic.domain.Period;
 import jpabasic.jpabasic.domain.cascade.Child;
 import jpabasic.jpabasic.domain.cascade.Parent;
 import org.junit.jupiter.api.Test;
@@ -14,8 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.PersistenceUnitUtil;
 
 @SpringBootTest
 @Transactional
@@ -73,30 +71,41 @@ public class NewTest {
 
         em.persist(parent);
 
+        System.out.println("===================");
         parent.addChild(child1);
+        System.out.println("===================");
         parent.addChild(child2);
-
+        System.out.println("===================");
         em.flush();
+        System.out.println("===================");
         em.clear();
 
-        Parent findParent = em.find(Parent.class, parent.getId());
-        findParent.getChildList().remove(0);
+//        Parent findParent = em.find(Parent.class, parent.getId());
+//        findParent.getChildList().remove(0);
     }
 
     @Test
     public void 임베디드타입_테스트() {
         Member member = new Member();
+        member.setName("안주형");
+
         Address address = new Address("부산", "사하", "123");
-        Address address1 = new Address("부산", "사하", "123");
+//        Address address1 = new Address("부산", "사하", "123");
 //        member.setHomeAddress(address);
 //        member.setWordPeriod(new Period());
 //
 //        Address newAddress = new Address("서울", address.getStreet(), address.getZipcode());
-//        member.setHomeAddress(newAddress);
-//
+        member.setHomeAddress(address);
+        member.getAddressHistory().add(new AddressEntity("new1", "new111", "123"));
+        member.getAddressHistory().add(new AddressEntity("new2", "new222", "123"));
+
         em.persist(member);
 
-        System.out.println(address.equals(address1));
+
+    }
+
+    @Test
+    public void 값_타입_테스트() {
 
     }
 
