@@ -86,9 +86,16 @@ public class NewTest {
     @Test
     public void 임베디드타입_테스트() {
         Member member = new Member();
-        member.setHomeAddress(new Address("부산", "사하", "123"));
+        Address address = new Address("부산", "사하", "123");
+        member.setHomeAddress(address);
         member.setWordPeriod(new Period());
+
+        Address newAddress = new Address("서울", address.getStreet(), address.getZipcode());
+        member.setHomeAddress(newAddress);
+        
         em.persist(member);
+
+
     }
 
 }
