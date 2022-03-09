@@ -2,12 +2,13 @@ package jpabasic.jpabasic.domain;
 
 import lombok.Getter;
 import lombok.Setter;
+
 import javax.persistence.*;
 
 @Entity
 @Getter
 @Setter
-public class Delivery extends BaseEntity{
+public class Delivery extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -17,9 +18,8 @@ public class Delivery extends BaseEntity{
     @OneToOne(mappedBy = "delivery")
     private Order order;
 
-    private String city;
-    private String street;
-    private String zipcode;
+    @Embedded
+    Address address;
 
     @Enumerated(EnumType.STRING)
     private DeliveryStatus status;
