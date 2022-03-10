@@ -7,7 +7,6 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
 import java.util.List;
 
 @SpringBootTest
@@ -41,4 +40,21 @@ public class JpqlTest {
 
         System.out.println(singleResult.getUsername());
     }
+
+    @Test
+    public void 오브젝트() {
+        List<Object[]> resultList = em.createQuery("select m.id, m.username FROM Member m").getResultList();
+        Object[] result = resultList.get(0);
+        System.out.println(result[0]);
+        System.out.println(result[1]);
+    }
+
+//    @Test
+//    public void DTO_조회() {
+//        List<MemberDTO> resultList = em.createQuery("select new jpql.MemberDTO(m.id, m.username) FROM Member m", MemberDTO.class).getResultList();
+//        MemberDTO memberDTO = resultList.get(0);
+//
+//        System.out.println(memberDTO.getUsername());
+//        System.out.println(memberDTO.getId());
+//    }
 }
