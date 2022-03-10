@@ -49,6 +49,25 @@ public class JpqlTest {
         System.out.println(result[1]);
     }
 
+    @Test
+    public void 페이징_쿼리() {
+        for (int i = 0; i < 100; i++) {
+            Member member = new Member();
+            em.persist(member);
+        }
+        em.flush();
+        em.clear();
+
+        List<Member> resultList = em.createQuery("SELECT m FROM Member m order by m.id desc ", Member.class)
+                .setFirstResult(10)
+                .setMaxResults(50)
+                .getResultList();
+
+        for (Member member : resultList) {
+            System.out.println(member.getId());
+        }
+    }
+
 //    @Test
 //    public void DTO_조회() {
 //        List<MemberDTO> resultList = em.createQuery("select new jpql.MemberDTO(m.id, m.username) FROM Member m", MemberDTO.class).getResultList();
