@@ -100,7 +100,7 @@ public class JpqlTest {
 
         List<Object[]> result = em.createQuery("SELECT m.id, '?', TRUE From Member m" +
                         " where m.memberType = :userType")
-                .setParameter("userType",MemberType.ADMIN)
+                .setParameter("userType", MemberType.ADMIN)
                 .getResultList();
 
         System.out.println(result.size());
@@ -110,6 +110,47 @@ public class JpqlTest {
             System.out.println(objects[1]);
             System.out.println(objects[2]);
         }
+
+
+    }
+
+    @Test
+    public void 조건식_CASE() {
+        Member member = new Member();
+        member.setUsername("안주형");
+        member.setAge(12);
+
+        Member member2 = new Member();
+        member2.setUsername("동까");
+        member2.setAge(22);
+
+        Member member3 = new Member();
+        member3.setUsername(null);
+        member3.setAge(23);
+
+        em.persist(member);
+        em.persist(member2);
+        em.persist(member3);
+        em.flush();
+        em.clear();
+
+        List<String> resultList = em.createQuery("select case " +
+                        "when m.age>=20 then '성인입니다.'" +
+                        "when m.age<20 then '미성년자입니다'" +
+                        "else '누구세요?'" +
+                        "end " +
+                        "from Member m", String.class)
+                .getResultList();
+
+        for (String s : resultList) {
+            System.out.println(s);
+        }
+
+        List resultList1 = em.createQuery("select coalesce(m.username, 'username이 null인 값은 현재 이 문장이 나옴')from Member m").getResultList();
+        for (Object o : resultList1) {
+            System.out.println(o);
+        }
+
 
 
     }
