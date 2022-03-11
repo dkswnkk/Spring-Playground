@@ -68,6 +68,52 @@ public class JpqlTest {
         }
     }
 
+    @Test
+    public void 타입표현_기타식() {
+        Member member = new Member();
+        member.setUsername("안주");
+        Member member2 = new Member();
+        member2.setUsername("안주");
+        em.persist(member);
+        em.persist(member2);
+        Team team = new Team();
+        team.setName("팀1");
+
+        Team team2 = new Team();
+        team2.setName("팀2");
+        em.persist(team);
+        em.persist(team2);
+
+        member.setTeam(team);
+        member2.setTeam(team2);
+
+
+        member.setMemberType(MemberType.ADMIN);
+        member2.setMemberType(MemberType.USER);
+
+        em.flush();
+        em.clear();
+
+//        List<Object[]> result = em.createQuery("SELECT m.id, '?', TRUE From Member m" +
+//                " where m.memberType = JPQLBasic.JPQLBasic.MemberType.USER")
+//                .getResultList();
+
+        List<Object[]> result = em.createQuery("SELECT m.id, '?', TRUE From Member m" +
+                        " where m.memberType = :userType")
+                .setParameter("userType",MemberType.ADMIN)
+                .getResultList();
+
+        System.out.println(result.size());
+        System.out.println("========================");
+        for (Object[] objects : result) {
+            System.out.println(objects[0]);
+            System.out.println(objects[1]);
+            System.out.println(objects[2]);
+        }
+
+
+    }
+
 //    @Test
 //    public void DTO_조회() {
 //        List<MemberDTO> resultList = em.createQuery("select new jpql.MemberDTO(m.id, m.username) FROM Member m", MemberDTO.class).getResultList();
@@ -76,4 +122,6 @@ public class JpqlTest {
 //        System.out.println(memberDTO.getUsername());
 //        System.out.println(memberDTO.getId());
 //    }
+
+
 }
