@@ -150,8 +150,47 @@ public class JpqlTest {
         for (Object o : resultList1) {
             System.out.println(o);
         }
+    }
 
+    @Test
+    public void 페치_조인() {
+        Member member = new Member();
+        member.setUsername("안주형");
+        em.persist(member);
 
+        Member member2 = new Member();
+        member2.setUsername("김동까");
+        em.persist(member2);
+
+        Member member3 = new Member();
+        member3.setUsername("로제");
+        em.persist(member3);
+
+        Team team = new Team();
+        team.setName("팀A");
+        em.persist(team);
+
+        Team team2 = new Team();
+        team2.setName("팀B");
+        em.persist(team2);
+
+        Team team3 = new Team();
+        team3.setName("팀C");
+        em.persist(team3);
+
+        member.setTeam(team);
+        member2.setTeam(team2);
+        member3.setTeam(team3);
+
+        em.flush();
+        em.clear();
+
+        List<Team> result = em.createQuery("select t From Team t join fetch t.members", Team.class)
+                .getResultList();
+
+        for (Team teams : result) {
+            System.out.println(teams.getName());
+        }
 
     }
 
