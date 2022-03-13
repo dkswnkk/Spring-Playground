@@ -222,5 +222,40 @@ public class JpqlTest {
 //        System.out.println(memberDTO.getId());
 //    }
 
+    @Test
+    public void 벌크연산() {
+        Member member1 = new Member();
+        member1.setUsername("안주형");
+        member1.setAge(10);
+        em.persist(member1);
+
+        Member member2 = new Member();
+        member2.setUsername("제니");
+        member2.setAge(11);
+        em.persist(member2);
+
+        Member member3 = new Member();
+        member3.setUsername("로제");
+        member3.setAge(12);
+        em.persist(member3);
+
+//        em.clear();
+//        em.flush();
+        //flush 자동 호출 될때: commit 할때, query 나갈때, 강제로 flush 할 때
+        int resultCount = em.createQuery("update Member m set m.age = 20")
+                .executeUpdate();
+
+        em.flush();
+        em.clear();
+        em.createQuery("update Member m set m.age=99 where m.id = 1 ").executeUpdate();
+
+        em.clear();
+
+        Member findMember = em.find(Member.class, member1.getId());
+
+
+        System.out.println(findMember.getAge());   //10이 나옴
+        System.out.println(resultCount);
+    }
 
 }
