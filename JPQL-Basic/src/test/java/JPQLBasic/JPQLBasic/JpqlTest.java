@@ -58,9 +58,9 @@ public class JpqlTest {
         em.flush();
         em.clear();
 
-        List<Member> resultList = em.createQuery("SELECT m FROM Member m order by m.id desc ", Member.class)
-                .setFirstResult(10)
-                .setMaxResults(50)
+        List<Member> resultList = em.createQuery("SELECT m FROM Member m order by m.id ", Member.class)
+                .setFirstResult(10) //11부터 시작
+                .setMaxResults(50)  //60까지
                 .getResultList();
 
         for (Member member : resultList) {
@@ -191,8 +191,27 @@ public class JpqlTest {
         for (Team teams : result) {
             System.out.println(teams.getName());
         }
-
     }
+
+    @Test
+    public void 네임드_쿼리() {
+        Member member = new Member();
+        member.setUsername("안주형");
+        em.persist(member);
+
+        Member member2 = new Member();
+        member2.setUsername("제니");
+        em.persist(member2);
+
+        em.flush();
+        em.clear();
+
+        Member result = em.createNamedQuery("Member.findByUsername", Member.class)
+                .setParameter("username", "안주형")
+                .getSingleResult();
+        System.out.println(result.getId());
+    }
+
 
 //    @Test
 //    public void DTO_조회() {
