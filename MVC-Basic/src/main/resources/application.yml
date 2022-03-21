@@ -1,0 +1,4 @@
+# 패키지와 그 하위 로그 레벨 설정 (디폴트 값은 info)
+logging:
+  level:
+    springboot.MVCBasic: debug
