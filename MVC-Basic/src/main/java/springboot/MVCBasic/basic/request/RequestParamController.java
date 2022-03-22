@@ -2,10 +2,8 @@ package springboot.MVCBasic.basic.request;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import springboot.MVCBasic.basic.HelloData;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -62,5 +60,31 @@ public class RequestParamController {
     public String requestParaMap(@RequestParam Map<String, Object> paramMap) {
         log.info("username = {}, age = {}", paramMap.get("memberName"), paramMap.get("memberAge"));
         return "ok";
+    }
+
+    @ResponseBody
+    @RequestMapping("/model-attribute-v1")
+    public String modelAttributeV1(@RequestParam String username,
+                                   @RequestParam int age) {
+        HelloData helloData = new HelloData();
+        helloData.setUsername(username);
+        helloData.setAge(age);
+
+        log.info("name = {}, age = {}", helloData.getUsername(), helloData.getAge());
+        return "Ok";
+    }
+
+    @ResponseBody
+    @RequestMapping("/model-attribute-v2")
+    public String modelAttributeV2(@ModelAttribute HelloData helloData) {
+        log.info("name = {}, age = {}", helloData.getUsername(), helloData.getAge());
+        return "Ok";
+    }
+
+    @ResponseBody
+    @RequestMapping("/model-attribute-v3")
+    public String modelAttributeV3(HelloData helloData) {
+        log.info("name = {}, age = {}", helloData.getUsername(), helloData.getAge());
+        return "Ok";
     }
 }
