@@ -1,1 +1,4 @@
+logging:
+  leveL:
+    springboot.APIPratice: debug
 
