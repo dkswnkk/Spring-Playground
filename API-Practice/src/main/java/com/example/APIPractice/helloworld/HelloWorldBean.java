@@ -1,4 +1,4 @@
-package com.example.APIPractice;
+package com.example.APIPractice.helloworld;
 
 import lombok.Data;
 

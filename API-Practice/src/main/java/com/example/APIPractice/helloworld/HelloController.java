@@ -1,4 +1,4 @@
-package com.example.APIPractice;
+package com.example.APIPractice.helloworld;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
