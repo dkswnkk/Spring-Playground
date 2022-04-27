@@ -1,5 +1,7 @@
 package com.example.APIPractice.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -9,6 +11,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
+@Slf4j
 public class UserController {
 
     private UserDaoService service;
@@ -19,6 +22,10 @@ public class UserController {
 
     @GetMapping("/users")
     public List<User> retrieveAllUsers() {
+        List<User> users = service.findAll();
+        for (User user : users) {
+            log.info("user1 정보 {}", user.toString());
+        }
         return service.findAll();
     }
 
