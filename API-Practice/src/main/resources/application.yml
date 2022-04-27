@@ -2,3 +2,7 @@ logging:
   level:
     springboot.APIPratice: debug
 
+spring:
+  messages:
+    basename: messages
+

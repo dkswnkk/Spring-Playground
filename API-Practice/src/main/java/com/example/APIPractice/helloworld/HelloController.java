@@ -1,11 +1,18 @@
 package com.example.APIPractice.helloworld;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Locale;
 
 @RestController
 @Slf4j
 public class HelloController {
+
+    @Autowired
+    private MessageSource messageSource;
 
     //    @RequestMapping(method = RequestMethod.GET, path = "/hello-world")
     @GetMapping("/hello-world")
@@ -27,6 +34,12 @@ public class HelloController {
     public HelloWorldBean helloWorldBean2(@PathVariable String name) {
         log.info("info log = {}", name);
         return new HelloWorldBean(String.format("Hello World %s", name));
+    }
+
+    @GetMapping("/hello-world-internationalized")
+    public String helloWorldInternationalized(@RequestHeader(name = "Accept-Language", required = false) Locale locale) {
+        log.info("Accept-Language : {}", locale);
+        return messageSource.getMessage("greeting.message", null, locale);
     }
 
 }
