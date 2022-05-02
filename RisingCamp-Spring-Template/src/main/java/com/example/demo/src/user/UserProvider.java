@@ -86,7 +86,7 @@ public class UserProvider {
     // 해당 nickname을 갖는 User들의 정보 조회
     public List<GetUserRes> getUsersByNickname(String nickname) throws BaseException {
         try {
-            List<GetUserRes> getUsersRes = userDao.getUsersByNickname(nickname);
+            List<GetUserRes> getUsersRes = userDao.getUsersByName(nickname);
             return getUsersRes;
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
