@@ -1,0 +1,68 @@
+plugins { // 스프링부트 버전 플러그인
+    id 'org.springframework.boot' version '2.4.2'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+}
+//group 은 프로젝트 생성시의 groupId, version 은 애플리케이션의 버전
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+//자바 컴파일 메소드 버전
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+//인코딩 방식
+compileJava.options.encoding = 'UTF-8'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+//Gradle 을 통해 라이브러리를 가져오는 경로
+repositories {
+    mavenCentral()
+}
+
+//스프링 부트 디펜던시 추가 하는곳
+dependencies {
+    implementation 'org.jetbrains:annotations:19.0.0'
+
+
+    // Spring Boot Starter
+    testImplementation ('org.springframework.boot:spring-boot-starter-test')
+
+    // Lombok
+    implementation ('org.projectlombok:lombok')
+    compileOnly ('org.projectlombok:lombok:1.18.16')
+    annotationProcessor ('org.projectlombok:lombok:1.18.16')
+
+    // DB
+    runtimeOnly ('mysql:mysql-connector-java') //mysql8
+    //runtimeOnly 'mysql:mysql-connector-java:5.1.47' //mysql5
+    implementation ('org.springframework.boot:spring-boot-starter-jdbc')
+    compile('org.springframework.boot:spring-boot-starter-data-jpa') //mysql 5버전의 경우 삭제.
+
+
+
+    // Web
+    implementation ('org.springframework.boot:spring-boot-starter-web')
+
+    // Security, Authentication
+    implementation('org.springframework.boot:spring-boot-starter-security')
+    compile(group: 'io.jsonwebtoken', name: 'jjwt', version: '0.7.0')
+    compile('io.jsonwebtoken:jjwt:0.9.0')
+
+    implementation('org.springframework.boot:spring-boot-starter')
+    compile('org.springframework.boot:spring-boot-starter-web')
+
+
+
+
+
+}
+
+test {
+    useJUnitPlatform()
+}
