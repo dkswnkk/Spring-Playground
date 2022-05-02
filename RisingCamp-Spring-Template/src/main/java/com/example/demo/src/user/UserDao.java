@@ -68,11 +68,11 @@ public class UserDao {
 
     // 이메일 확인
     public int checkEmail(String email) {
-        String checkEmailQuery = "select exists(select email from User where email = ?)"; // User Table에 해당 email 값을 갖는 유저 정보가 존재하는가?
+        String checkEmailQuery = "select exists(select email from User where email = ? AND status = true)"; // User Table에 해당 email 값을 갖는 유저 정보가 존재하는가?
         String checkEmailParams = email; // 해당(확인할) 이메일 값
         return this.jdbcTemplate.queryForObject(checkEmailQuery,
                 int.class,
-                checkEmailParams); // checkEmailQuery, checkEmailParams를 통해 가져온 값(intgud)을 반환한다. -> 쿼리문의 결과(존재하지 않음(False,0),존재함(True, 1))를 int형(0,1)으로 반환됩니다.
+                checkEmailParams); // checkEmailQuery, checkEmailParams를 통해 가져온 값(int)을 반환한다. -> 쿼리문의 결과(존재하지 않음(False,0),존재함(True, 1))를 int형(0,1)으로 반환됩니다.
     }
 
 //    // 회원정보 변경
@@ -108,7 +108,7 @@ public class UserDao {
 
     // User 테이블에 존재하는 전체 유저들의 정보 조회
     public List<GetUserRes> getUsers() {
-        String getUsersQuery = "select * from User"; //User 테이블에 존재하는 모든 회원들의 정보를 조회하는 쿼리
+        String getUsersQuery = "select * from User where status = true"; //User 테이블에 존재하는 모든 회원들의 정보를 조회하는 쿼리
         return this.jdbcTemplate.query(getUsersQuery,
                 (rs, rowNum) -> new GetUserRes(
                         rs.getInt("userIdx"),
@@ -123,11 +123,11 @@ public class UserDao {
         ); // 복수개의 회원정보들을 얻기 위해 jdbcTemplate 함수(Query, 객체 매핑 정보)의 결과 반환(동적쿼리가 아니므로 Parmas부분이 없음)
     }
 
-    // 해당 name을 갖는 유저들의 정보 조회
-    public List<GetUserRes> getUsersByName(String name) {
-        String getUsersByNameQuery = "select * from User where name =?"; // 해당 이메일을 만족하는 유저를 조회하는 쿼리문
-        String getUsersByNameParams = name;
-        return this.jdbcTemplate.query(getUsersByNameQuery,
+    // 해당 email을 갖는 유저들의 정보 조회
+    public List<GetUserRes> getUsersByEmail(String email) {
+        String getUsersByEmailQuery = "select * from User where email = ? AND status = true"; // 해당 이메일을 가진 탈퇴하지 않은 유저
+        String getUsersByEmailParams = email;
+        return this.jdbcTemplate.query(getUsersByEmailQuery,
                 (rs, rowNum) -> new GetUserRes(
                         rs.getInt("userIdx"),
                         rs.getString("profileImage"),
@@ -138,12 +138,12 @@ public class UserDao {
                         MembershipLevel.of(rs.getString("membershipLevel")),
                         rs.getInt("coupay"),
                         rs.getInt("coupangCash")), // RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
-                getUsersByNameParams); // 해당 닉네임을 갖는 모든 User 정보를 얻기 위해 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
+                getUsersByEmailParams); // 해당 닉네임을 갖는 모든 User 정보를 얻기 위해 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
     }
 
     // 해당 userIdx를 갖는 유저조회
     public GetUserRes getUser(int userIdx) {
-        String getUserQuery = "select * from User where userIdx = ?"; // 해당 userIdx를 만족하는 유저를 조회하는 쿼리문
+        String getUserQuery = "select * from User where userIdx = ? AND status = true"; // 해당 userIdx를 만족하는 탈퇴하지 않은 유저를 조회하는 쿼리문
         int getUserParams = userIdx;
         return this.jdbcTemplate.queryForObject(getUserQuery,
                 (rs, rowNum) -> new GetUserRes(

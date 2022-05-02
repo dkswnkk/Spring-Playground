@@ -53,15 +53,12 @@ public class UserController {
     // ******************************************************************************
 
     /**
-     * 회원가입 API
-     * [POST] /users
+     * 회원가입
      */
     @ResponseBody
-    @PostMapping("/sign-up")    // POST 방식의 요청을 매핑하기 위한 어노테이션
+    @PostMapping("/sign-up")
     public BaseResponse<PostUserRes> createUser(@RequestBody PostUserReq postUserReq) {
-        //  @RequestBody란, 클라이언트가 전송하는 HTTP Request Body(우리는 JSON으로 통신하니, 이 경우 body는 JSON)를 자바 객체로 매핑시켜주는 어노테이션
-        // TODO: email 관련한 짧은 validation 예시입니다. 그 외 더 부가적으로 추가해주세요!
-        // email에 값이 존재하는지, 빈 값으로 요청하지는 않았는지 검사합니다. 빈값으로 요청했다면 에러 메시지를 보냅니다.
+
         if (postUserReq.getEmail() == null) {
             return new BaseResponse<>(POST_USERS_EMPTY_EMAIL);
         }
@@ -73,7 +70,6 @@ public class UserController {
         if (postUserReq.getPhoneNumber().length() != 11) {
             return new BaseResponse<>(POST_USERS_INVALID_PHONE_NUMBER);
         }
-
 
         //이메일 정규표현: 입력받은 이메일이 email@domain.xxx와 같은 형식인지 검사합니다. 형식이 올바르지 않다면 에러 메시지를 보냅니다.
         if (!isRegexEmail(postUserReq.getEmail())) {
@@ -105,26 +101,28 @@ public class UserController {
     }
 
 
-    //Query String
+    /**
+     * 모든 회원 조회
+     */
     @ResponseBody
     @GetMapping("")
-    public BaseResponse<List<GetUserRes>> getUsers(@RequestParam(required = false) String name) {
-        //  @RequestParam은, 1개의 HTTP Request 파라미터를 받을 수 있는 어노테이션(?뒤의 값). default로 RequestParam은 반드시 값이 존재해야 하도록 설정되어 있지만, (전송 안되면 400 Error 유발)
-        //  지금 예시와 같이 required 설정으로 필수 값에서 제외 시킬 수 있음
-        //  defaultValue를 통해, 기본값(파라미터가 없는 경우, 해당 파라미터의 기본값 설정)을 지정할 수 있음
+    public BaseResponse<List<GetUserRes>> getUsers(@RequestParam(required = false) String email) {
         try {
-            if (name == null) { // query string인 nickname이 없을 경우, 그냥 전체 유저정보를 불러온다.
+            if (email == null) { // email이 없을 경우, 그냥 전체 유저정보를 불러온다.
                 List<GetUserRes> getUsersRes = userProvider.getUsers();
                 return new BaseResponse<>(getUsersRes);
             }
-            // query string인 name이 있을 경우, 조건을 만족하는 유저정보들을 불러온다.
-            List<GetUserRes> getUsersRes = userProvider.getUsersByNickname(name);
+            // email이 있을 경우, 조건을 만족하는 유저정보를 불러온다.
+            List<GetUserRes> getUsersRes = userProvider.getUsersByEmail(email);
             return new BaseResponse<>(getUsersRes);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }
     }
 
+    /**
+     * 인덱스로 조회
+     */
     @ResponseBody
     @GetMapping("/{userIdx}")
     public BaseResponse<GetUserRes> getUser(@PathVariable("userIdx") int userIdx) {

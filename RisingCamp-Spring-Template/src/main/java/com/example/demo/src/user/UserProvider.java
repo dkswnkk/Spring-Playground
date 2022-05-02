@@ -9,12 +9,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
+
 import static com.example.demo.config.BaseResponseStatus.*;
 
 //Provider : Read의 비즈니스 로직 처리
 @Service    // [Business Layer에서 Service를 명시하기 위해서 사용] 비즈니스 로직이나 respository layer 호출하는 함수에 사용된다.
-            // [Business Layer]는 컨트롤러와 데이터 베이스를 연결
+// [Business Layer]는 컨트롤러와 데이터 베이스를 연결
 /**
  * Provider란?
  * Controller에 의해 호출되어 실제 비즈니스 로직과 트랜잭션을 처리: Read의 비즈니스 로직 처리
@@ -72,7 +74,6 @@ public class UserProvider {
         }
     }
 
-
     // User들의 정보를 조회
     public List<GetUserRes> getUsers() throws BaseException {
         try {
@@ -83,10 +84,10 @@ public class UserProvider {
         }
     }
 
-    // 해당 nickname을 갖는 User들의 정보 조회
-    public List<GetUserRes> getUsersByNickname(String nickname) throws BaseException {
+    // 해당 Email을 갖는 User들의 정보 조회
+    public List<GetUserRes> getUsersByEmail(String email) throws BaseException {
         try {
-            List<GetUserRes> getUsersRes = userDao.getUsersByName(nickname);
+            List<GetUserRes> getUsersRes = userDao.getUsersByEmail(email);
             return getUsersRes;
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
