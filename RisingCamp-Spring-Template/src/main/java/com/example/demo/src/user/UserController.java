@@ -171,7 +171,7 @@ public class UserController {
             //같다면 유저네임 변경
   **************************************************************************
  */
-            PatchUserReq patchUserReq = new PatchUserReq(userIdx, user.getNickname());
+            PatchUserReq patchUserReq = new PatchUserReq(userIdx, user.getName());
             userService.modifyUserName(patchUserReq);
 
             String result = "회원정보가 수정되었습니다.";

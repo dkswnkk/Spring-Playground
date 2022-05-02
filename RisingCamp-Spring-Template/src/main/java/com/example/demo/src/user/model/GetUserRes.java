@@ -19,7 +19,13 @@ import lombok.Setter;
  */
 public class GetUserRes {
     private int userIdx;
-    private String nickname;
+    private String profileImage;
     private String email;
+    private String name;
     private String password;
+    private String phoneNumber;
+    private MembershipLevel membershipLevel;
+
+    private int coupay;
+    private int coupangCash;
 }

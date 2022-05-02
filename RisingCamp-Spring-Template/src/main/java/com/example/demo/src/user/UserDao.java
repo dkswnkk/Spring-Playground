@@ -89,15 +89,21 @@ public class UserDao {
         String getPwdQuery = "select userIdx, password,email,nickname from User where email = ?"; // 해당 email을 만족하는 User의 정보들을 조회한다.
         String getPwdParams = postLoginReq.getEmail(); // 주입될 email값을 클라이언트의 요청에서 주어진 정보를 통해 가져온다.
 
-        return this.jdbcTemplate.queryForObject(getPwdQuery,
+        User user = this.jdbcTemplate.queryForObject(getPwdQuery,
                 (rs, rowNum) -> new User(
                         rs.getInt("userIdx"),
+                        rs.getString("profileImage"),
                         rs.getString("email"),
+                        rs.getString("name"),
                         rs.getString("password"),
-                        rs.getString("nickname")
+                        rs.getString("phoneNumber"),
+                        MembershipLevel.of(rs.getString("membershipLevel")),
+                        rs.getInt("coupay"),
+                        rs.getInt("coupangCash")
                 ), // RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
                 getPwdParams
-        ); // 한 개의 회원정보를 얻기 위한 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
+        );
+        return user; // 한 개의 회원정보를 얻기 위한 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
     }
 
     // User 테이블에 존재하는 전체 유저들의 정보 조회
@@ -106,9 +112,14 @@ public class UserDao {
         return this.jdbcTemplate.query(getUsersQuery,
                 (rs, rowNum) -> new GetUserRes(
                         rs.getInt("userIdx"),
-                        rs.getString("nickname"),
-                        rs.getString("Email"),
-                        rs.getString("password")) // RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
+                        rs.getString("profileImage"),
+                        rs.getString("email"),
+                        rs.getString("name"),
+                        rs.getString("password"),
+                        rs.getString("phoneNumber"),
+                        MembershipLevel.of(rs.getString("membershipLevel")),
+                        rs.getInt("coupay"),
+                        rs.getInt("coupangCash")) // RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
         ); // 복수개의 회원정보들을 얻기 위해 jdbcTemplate 함수(Query, 객체 매핑 정보)의 결과 반환(동적쿼리가 아니므로 Parmas부분이 없음)
     }
 
@@ -119,9 +130,14 @@ public class UserDao {
         return this.jdbcTemplate.query(getUsersByNicknameQuery,
                 (rs, rowNum) -> new GetUserRes(
                         rs.getInt("userIdx"),
-                        rs.getString("nickname"),
-                        rs.getString("Email"),
-                        rs.getString("password")), // RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
+                        rs.getString("profileImage"),
+                        rs.getString("email"),
+                        rs.getString("name"),
+                        rs.getString("password"),
+                        rs.getString("phoneNumber"),
+                        MembershipLevel.of(rs.getString("membershipLevel")),
+                        rs.getInt("coupay"),
+                        rs.getInt("coupangCash")), // RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
                 getUsersByNicknameParams); // 해당 닉네임을 갖는 모든 User 정보를 얻기 위해 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
     }
 
@@ -132,9 +148,14 @@ public class UserDao {
         return this.jdbcTemplate.queryForObject(getUserQuery,
                 (rs, rowNum) -> new GetUserRes(
                         rs.getInt("userIdx"),
-                        rs.getString("nickname"),
-                        rs.getString("Email"),
-                        rs.getString("password")), // RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
+                        rs.getString("profileImage"),
+                        rs.getString("email"),
+                        rs.getString("name"),
+                        rs.getString("password"),
+                        rs.getString("phoneNumber"),
+                        MembershipLevel.of(rs.getString("membershipLevel")),
+                        rs.getInt("coupay"),
+                        rs.getInt("coupangCash")), // RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
                 getUserParams); // 한 개의 회원정보를 얻기 위한 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
     }
 }
