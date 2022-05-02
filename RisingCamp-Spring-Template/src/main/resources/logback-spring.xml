@@ -45,7 +45,7 @@
         <appender-ref ref="STDOUT"/>
     </root>
 
-    <logger name="com.example.demo" level="WARN">
+    <logger name="com.example.demo" level="DUBUG">
         <appender-ref ref="APP_FILE"/>
         <appender-ref ref="ERROR_FILE"/>
     </logger>

@@ -6,6 +6,7 @@ import com.example.demo.config.secret.Secret;
 import com.example.demo.src.user.model.*;
 import com.example.demo.utils.AES128;
 import com.example.demo.utils.JwtService;
+import com.fasterxml.jackson.databind.ser.Serializers;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,6 +88,16 @@ public class UserService {
 //            throw new BaseException(DATABASE_ERROR);
 //        }
 //    }
+    public void updateMembership(int userIdx, String memberType) throws BaseException {
+        try {
+            int result = userDao.updateMembership(userIdx, memberType);
+            if (result == 0) {
+                throw new BaseException(USERS_EMPTY_USER_ID);
+            }
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 
     // 회원정보 삭제(Patch)
     public int deleteUser(int userIdx) throws BaseException {

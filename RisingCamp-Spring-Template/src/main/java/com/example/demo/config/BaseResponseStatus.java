@@ -31,6 +31,7 @@ public enum BaseResponseStatus {
     POST_USERS_EXISTS_EMAIL(false, 2017, "중복된 이메일입니다."),
     POST_USERS_EMPTY_PROFILE_IMAGE(false, 2018, "프로필 사진을 등록해주세요."),
     POST_USERS_INVALID_PHONE_NUMBER(false, 2019, "전화번호 형식을 확인해주세요."),
+    PATCH_USERS_INVALID_MEMBERSHIP_LEVEL(false,2022,"멤버십 등급이 올바른지 확인해주세요"),
 
 
     /**

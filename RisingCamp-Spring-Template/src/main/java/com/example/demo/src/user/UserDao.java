@@ -2,6 +2,7 @@ package com.example.demo.src.user;
 
 
 import com.example.demo.src.user.model.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -10,7 +11,7 @@ import javax.sql.DataSource;
 import java.util.List;
 
 @Repository //  [Persistence Layer에서 DAO를 명시하기 위해 사용]
-
+@Slf4j
 /**
  * DAO란?
  * 데이터베이스 관련 작업을 전담하는 클래스
@@ -159,7 +160,13 @@ public class UserDao {
                 getUserParams); // 한 개의 회원정보를 얻기 위한 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
     }
 
-    // 해당 userIdx의 데이터 삭제(states변경)
+    public int updateMembership(int userIdx, String memberType) {
+        String updateMembershipQuery = "update User set membershipLevel = ? where userIdx = ? AND status = true";
+        Object[] updateMembershipParams = new Object[]{memberType, userIdx}; // 주입될 값들(nickname, userIdx) 순
+        return this.jdbcTemplate.update(updateMembershipQuery, updateMembershipParams); // 대응시켜 매핑시켜 쿼리 요청(생성했으면 1, 실패했으면 0)
+    }
+
+    // 해당 userIdx의 데이터 삭제(status변경)
     public int deleteUser(int userIdx) {
         String deleteUserQuery = "update User set status = 0 where userIdx = ?";
         Object[] modifyUserNameParams = new Object[]{userIdx};
