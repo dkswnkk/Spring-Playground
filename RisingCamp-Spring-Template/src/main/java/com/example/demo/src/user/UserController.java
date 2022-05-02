@@ -138,31 +138,49 @@ public class UserController {
     }
 
     /**
-     * 유저정보변경 API
-     * [PATCH] /users/:userIdx
+     * 회원탈퇴
      */
-    @ResponseBody
-    @PatchMapping("/{userIdx}")
-    public BaseResponse<String> modifyUserName(@PathVariable("userIdx") int userIdx, @RequestBody User user) {
-        try {
-/**
- *********** 해당 부분은 7주차 - JWT 수업 후 주석해체 해주세요!  ****************
- //jwt에서 idx 추출.
- int userIdxByJwt = jwtService.getUserIdx();
- //userIdx와 접근한 유저가 같은지 확인
- if(userIdx != userIdxByJwt){
- return new BaseResponse<>(INVALID_USER_JWT);
- }
- //같다면 유저네임 변경
- **************************************************************************
- */
-            PatchUserReq patchUserReq = new PatchUserReq(userIdx, user.getName());
-            userService.modifyUserName(patchUserReq);
-
-            String result = "회원정보가 수정되었습니다.";
-            return new BaseResponse<>(result);
+    @DeleteMapping("/{userIdx}")
+    public BaseResponse<String> deleteUser(@PathVariable("userIdx") int userIdx){
+        try{
+            int id = userService.deleteUser(userIdx);
+            return new BaseResponse(id);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }
     }
+
+
+
+
+
+
+    /**
+     * 유저정보변경 API
+     * [PATCH] /users/:userIdx
+     */
+//    @ResponseBody
+//    @PatchMapping("/{userIdx}")
+//    public BaseResponse<String> modifyUserName(@PathVariable("userIdx") int userIdx, @RequestBody User user) {
+//        try {
+///**
+// *********** 해당 부분은 7주차 - JWT 수업 후 주석해체 해주세요!  ****************
+// //jwt에서 idx 추출.
+// int userIdxByJwt = jwtService.getUserIdx();
+// //userIdx와 접근한 유저가 같은지 확인
+// if(userIdx != userIdxByJwt){
+// return new BaseResponse<>(INVALID_USER_JWT);
+// }
+// //같다면 유저네임 변경
+// **************************************************************************
+// */
+//            PatchUserReq patchUserReq = new PatchUserReq(userIdx, user.getName());
+//            userService.modifyUserName(patchUserReq);
+//
+//            String result = "회원정보가 수정되었습니다.";
+//            return new BaseResponse<>(result);
+//        } catch (BaseException exception) {
+//            return new BaseResponse<>((exception.getStatus()));
+//        }
+//    }
 }
