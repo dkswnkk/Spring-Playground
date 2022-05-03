@@ -2,6 +2,10 @@ package com.example.demo.src.repository;
 
 
 import com.example.demo.src.domain.user.*;
+import com.example.demo.src.domain.user.common.Address;
+import com.example.demo.src.domain.user.common.MembershipLevel;
+import com.example.demo.src.domain.user.common.User;
+import com.example.demo.src.domain.user.user.GetUserRes;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -76,6 +80,22 @@ public class UserDao {
                 checkEmailParams); // checkEmailQuery, checkEmailParams를 통해 가져온 값(int)을 반환한다. -> 쿼리문의 결과(존재하지 않음(False,0),존재함(True, 1))를 int형(0,1)으로 반환됩니다.
     }
 
+    public List<Address> getAddress(int userIdx) {
+        String getAddressQuery = "select * from Address A where A.userIdx = ? AND A.status = true";
+        return this.jdbcTemplate.query(getAddressQuery,
+                (rs, rowNum) -> new Address(
+                        rs.getString("name"),
+                        rs.getString("phoneNumber"),
+                        rs.getString("city"),
+                        rs.getString("street"),
+                        rs.getString("detail"),
+                        rs.getString("zipcode"),
+                        rs.getBoolean("defaultAddress")
+                ),
+                userIdx
+        );
+    }
+
 //    // 회원정보 변경
 //    public int modifyUserName(PatchUserReq patchUserReq) {
 //        String modifyUserNameQuery = "update User set nickname = ? where userIdx = ? "; // 해당 userIdx를 만족하는 User를 해당 nickname으로 변경한다.
@@ -86,79 +106,87 @@ public class UserDao {
 
 
     // 로그인: 해당 email에 해당되는 user의 암호화된 비밀번호 값을 가져온다.
-    public User getPwd(PostLoginReq postLoginReq) {
-        String getPwdQuery = "select userIdx, password,email,nickname from User where email = ?"; // 해당 email을 만족하는 User의 정보들을 조회한다.
-        String getPwdParams = postLoginReq.getEmail(); // 주입될 email값을 클라이언트의 요청에서 주어진 정보를 통해 가져온다.
+//    public User getPwd(PostLoginReq postLoginReq) {
+//        String getPwdQuery = "select userIdx, password,email,nickname from User where email = ?"; // 해당 email을 만족하는 User의 정보들을 조회한다.
+//        String getPwdParams = postLoginReq.getEmail(); // 주입될 email값을 클라이언트의 요청에서 주어진 정보를 통해 가져온다.
+//
+//        User user = this.jdbcTemplate.queryForObject(getPwdQuery,
+//                (rs, rowNum) -> new User(
+//                        rs.getInt("U.userIdx"),
+//                        rs.getString("U.profileImage"),
+//                        rs.getString("U.email"),
+//                        rs.getString("U.name"),
+//                        rs.getString("U.password"),
+//                        rs.getString("U.phoneNumber"),
+//                        MembershipLevel.of(rs.getString("U.membershipLevel")),
+//                        rs.getInt("U.coupay"),
+//                        rs.getInt("U.coupangCash"),
+//                        new Address(rs.getString("A.name"), rs.getString("A.phoneNumber"), rs.getString("A.city"), rs.getString("A.street"), rs.getString("A.detail"), rs.getString("A.zipcode"), rs.getBoolean("A.default"))
+//                ),
+//                getPwdParams
+//        );
+//        return user; // 한 개의 회원정보를 얻기 위한 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
+//    }
 
-        User user = this.jdbcTemplate.queryForObject(getPwdQuery,
-                (rs, rowNum) -> new User(
-                        rs.getInt("userIdx"),
-                        rs.getString("profileImage"),
-                        rs.getString("email"),
-                        rs.getString("name"),
-                        rs.getString("password"),
-                        rs.getString("phoneNumber"),
-                        MembershipLevel.of(rs.getString("membershipLevel")),
-                        rs.getInt("coupay"),
-                        rs.getInt("coupangCash")
-                ), // RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
-                getPwdParams
-        );
-        return user; // 한 개의 회원정보를 얻기 위한 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
-    }
 
     // User 테이블에 존재하는 전체 유저들의 정보 조회
-    public List<GetUserRes> getUsers() {
-        String getUsersQuery = "select * from User where status = true"; //User 테이블에 존재하는 모든 회원들의 정보를 조회하는 쿼리
+    public List<User> getUsers() {
+        String getUsersQuery = "select * from User U where U.status = true"; //User 테이블에 존재하는 모든 회원들의 정보를 조회하는 쿼리
         return this.jdbcTemplate.query(getUsersQuery,
-                (rs, rowNum) -> new GetUserRes(
-                        rs.getInt("userIdx"),
-                        rs.getString("profileImage"),
-                        rs.getString("email"),
-                        rs.getString("name"),
-                        rs.getString("password"),
-                        rs.getString("phoneNumber"),
-                        MembershipLevel.of(rs.getString("membershipLevel")),
-                        rs.getInt("coupay"),
-                        rs.getInt("coupangCash")) // RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
+                (rs, rowNum) -> new User(
+                        rs.getInt("U.userIdx"),
+                        rs.getString("U.profileImage"),
+                        rs.getString("U.email"),
+                        rs.getString("U.name"),
+                        rs.getString("U.password"),
+                        rs.getString("U.phoneNumber"),
+                        MembershipLevel.of(rs.getString("U.membershipLevel")),
+                        rs.getInt("U.coupay"),
+                        rs.getInt("U.coupangCash")
+                ),
+                null
+                // RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
         ); // 복수개의 회원정보들을 얻기 위해 jdbcTemplate 함수(Query, 객체 매핑 정보)의 결과 반환(동적쿼리가 아니므로 Parmas부분이 없음)
     }
 
     // 해당 email을 갖는 유저들의 정보 조회
-    public List<GetUserRes> getUsersByEmail(String email) {
-        String getUsersByEmailQuery = "select * from User where email = ? AND status = true"; // 해당 이메일을 가진 탈퇴하지 않은 유저
-        String getUsersByEmailParams = email;
-        return this.jdbcTemplate.query(getUsersByEmailQuery,
-                (rs, rowNum) -> new GetUserRes(
-                        rs.getInt("userIdx"),
-                        rs.getString("profileImage"),
-                        rs.getString("email"),
-                        rs.getString("name"),
-                        rs.getString("password"),
-                        rs.getString("phoneNumber"),
-                        MembershipLevel.of(rs.getString("membershipLevel")),
-                        rs.getInt("coupay"),
-                        rs.getInt("coupangCash")), // RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
-                getUsersByEmailParams); // 해당 닉네임을 갖는 모든 User 정보를 얻기 위해 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
-    }
+//    public List<GetUserRes> getUsersByEmail(String email) {
+//        String getUsersByEmailQuery = "select * from User where email = ? AND status = true"; // 해당 이메일을 가진 탈퇴하지 않은 유저
+//        String getUsersByEmailParams = email;
+//        return this.jdbcTemplate.query(getUsersByEmailQuery,
+//                (rs, rowNum) -> new GetUserRes(
+//                        rs.getInt("U.userIdx"),
+//                        rs.getString("U.profileImage"),
+//                        rs.getString("U.email"),
+//                        rs.getString("U.name"),
+//                        rs.getString("U.password"),
+//                        rs.getString("U.phoneNumber"),
+//                        MembershipLevel.of(rs.getString("U.membershipLevel")),
+//                        rs.getInt("U.coupay"),
+//                        rs.getInt("U.coupangCash"),
+//                        new Address(rs.getString("A.name"), rs.getString("A.phoneNumber"), rs.getString("A.city"), rs.getString("A.street"), rs.getString("A.detail"), rs.getString("A.zipcode"), rs.getBoolean("A.default"))
+//                ),// RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
+//                getUsersByEmailParams); // 해당 닉네임을 갖는 모든 User 정보를 얻기 위해 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
+//    }
 
     // 해당 userIdx를 갖는 유저조회
-    public GetUserRes getUser(int userIdx) {
-        String getUserQuery = "select * from User where userIdx = ? AND status = true"; // 해당 userIdx를 만족하는 탈퇴하지 않은 유저를 조회하는 쿼리문
-        int getUserParams = userIdx;
-        return this.jdbcTemplate.queryForObject(getUserQuery,
-                (rs, rowNum) -> new GetUserRes(
-                        rs.getInt("userIdx"),
-                        rs.getString("profileImage"),
-                        rs.getString("email"),
-                        rs.getString("name"),
-                        rs.getString("password"),
-                        rs.getString("phoneNumber"),
-                        MembershipLevel.of(rs.getString("membershipLevel")),
-                        rs.getInt("coupay"),
-                        rs.getInt("coupangCash")), // RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
-                getUserParams); // 한 개의 회원정보를 얻기 위한 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
-    }
+//    public List<GetUserRes> getUser(int userIdx) {
+//        String getUserQuery = "select * from User U join Address A where U.userIdx = ? AND U.status = true AND A.status = true"; // 해당 userIdx를 만족하는 탈퇴하지 않은 유저를 조회하는 쿼리문
+//        return this.jdbcTemplate.query(getUserQuery,
+//                (rs, rowNum) -> new GetUserRes(
+//                        rs.getInt("U.userIdx"),
+//                        rs.getString("U.profileImage"),
+//                        rs.getString("U.email"),
+//                        rs.getString("U.name"),
+//                        rs.getString("U.password"),
+//                        rs.getString("U.phoneNumber"),
+//                        MembershipLevel.of(rs.getString("U.membershipLevel")),
+//                        rs.getInt("U.coupay"),
+//                        rs.getInt("U.coupangCash"),
+//                        new Address(rs.getString("A.name"), rs.getString("A.phoneNumber"), rs.getString("A.city"), rs.getString("A.street"), rs.getString("A.detail"), rs.getString("A.zipcode"), rs.getBoolean("A.default"))
+//                ), // RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
+//                userIdx); // 한 개의 회원정보를 얻기 위한 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
+//    }
 
     public int updateMembership(int userIdx, String memberType) {
         String updateMembershipQuery = "update User set membershipLevel = ? where userIdx = ? AND status = true";

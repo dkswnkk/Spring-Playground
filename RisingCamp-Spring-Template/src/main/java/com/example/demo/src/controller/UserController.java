@@ -1,6 +1,9 @@
 package com.example.demo.src.controller;
 
 import com.example.demo.src.domain.user.*;
+import com.example.demo.src.domain.user.common.Address;
+import com.example.demo.src.domain.user.common.User;
+import com.example.demo.src.domain.user.user.GetUserRes;
 import com.example.demo.src.service.user.UserProvider;
 import com.example.demo.src.service.user.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +13,8 @@ import com.example.demo.utils.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -81,18 +86,18 @@ public class UserController {
      * 로그인 API
      * [POST] /users/logIn
      */
-    @ResponseBody
-    @PostMapping("/log-in")
-    public BaseResponse<PostLoginRes> logIn(@RequestBody PostLoginReq postLoginReq) {
-        try {
-            // TODO: 로그인 값들에 대한 형식적인 validatin 처리해주셔야합니다!
-            // TODO: 유저의 status ex) 비활성화된 유저, 탈퇴한 유저 등을 관리해주고 있다면 해당 부분에 대한 validation 처리도 해주셔야합니다.
-            PostLoginRes postLoginRes = userProvider.logIn(postLoginReq);
-            return new BaseResponse<>(postLoginRes);
-        } catch (BaseException exception) {
-            return new BaseResponse<>(exception.getStatus());
-        }
-    }
+//    @ResponseBody
+//    @PostMapping("/log-in")
+//    public BaseResponse<PostLoginRes> logIn(@RequestBody PostLoginReq postLoginReq) {
+//        try {
+//            // TODO: 로그인 값들에 대한 형식적인 validatin 처리해주셔야합니다!
+//            // TODO: 유저의 status ex) 비활성화된 유저, 탈퇴한 유저 등을 관리해주고 있다면 해당 부분에 대한 validation 처리도 해주셔야합니다.
+//            PostLoginRes postLoginRes = userProvider.logIn(postLoginReq);
+//            return new BaseResponse<>(postLoginRes);
+//        } catch (BaseException exception) {
+//            return new BaseResponse<>(exception.getStatus());
+//        }
+//    }
 
 
     /**
@@ -100,15 +105,17 @@ public class UserController {
      */
     @ResponseBody
     @GetMapping("")
-    public BaseResponse<List<GetUserRes>> getUsers(@RequestParam(required = false) String email) {
+    public BaseResponse<List<GetUserRes>> getUsers() {
         try {
-            if (email == null) { // email이 없을 경우, 그냥 전체 유저정보를 불러온다.
-                List<GetUserRes> getUsersRes = userProvider.getUsers();
-                return new BaseResponse<>(getUsersRes);
+            List<GetUserRes> getUserRes = new ArrayList<>(); // 반환할거 클라이언트에게
+            List<User> getUsers = userProvider.getUsers();
+            for (User getUser : getUsers) {
+                int userIdx = getUser.getUserIdx();
+                List<Address> getAddress = userProvider.getAddress(userIdx);
+                getUserRes.add(new GetUserRes(getUser, getAddress));
             }
-            // email이 있을 경우, 조건을 만족하는 유저정보를 불러온다.
-            List<GetUserRes> getUsersRes = userProvider.getUsersByEmail(email);
-            return new BaseResponse<>(getUsersRes);
+            return new BaseResponse<>(getUserRes);
+
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }
@@ -117,18 +124,17 @@ public class UserController {
     /**
      * 인덱스로 조회
      */
-    @ResponseBody
-    @GetMapping("/{userIdx}")
-    public BaseResponse<GetUserRes> getUser(@PathVariable("userIdx") int userIdx) {
-        log.debug("userIdx: {}", userIdx);
-        try {
-            GetUserRes getUserRes = userProvider.getUser(userIdx);
-            return new BaseResponse<>(getUserRes);
-        } catch (BaseException exception) {
-            return new BaseResponse<>((exception.getStatus()));
-        }
-
-    }
+//    @ResponseBody
+//    @GetMapping("/{userIdx}")
+//    public BaseResponse<List<GetUserRes>> getUser(@PathVariable("userIdx") int userIdx) {
+//        try {
+//            List<GetUserRes> getUserRes = userProvider.getUser(userIdx);
+//            return new BaseResponse<>(getUserRes);
+//        } catch (BaseException exception) {
+//            return new BaseResponse<>((exception.getStatus()));
+//        }
+//
+//    }
 
     /**
      * 회원탈퇴

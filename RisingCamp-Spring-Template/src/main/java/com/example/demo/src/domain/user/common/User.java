@@ -1,10 +1,10 @@
-package com.example.demo.src.domain.user;
+package com.example.demo.src.domain.user.common;
 
 import lombok.*;
 
-@Getter // 해당 클래스에 대한 접근자 생성
-@Setter // 해당 클래스에 대한 설정자 생성
+@Getter
 @AllArgsConstructor // 해당 클래스의 모든 멤버 변수(userIdx, nickname, email, password)를 받는 생성자를 생성
+@NoArgsConstructor
 /**
  * 유저관련된 정보들을 담고 있는 클래스(유저 관련정보를 추출할 때 해당 클래스에서 Getter를 사용해서 가져온다.)
  * GetUserRes는 클라이언트한테 response줄 때 DTO고(DTO란 DB의 정보를 Service나 Controller등에 보낼때 사용하는 객체를 의미한다.)
@@ -18,8 +18,6 @@ public class User {
     private String password;
     private String phoneNumber;
     private MembershipLevel membershipLevel;
-
     private int coupay;
     private int coupangCash;
-
 }
