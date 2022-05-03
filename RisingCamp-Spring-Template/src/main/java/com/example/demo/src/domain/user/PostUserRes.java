@@ -1,4 +1,4 @@
-package com.example.demo.src.user.model;
+package com.example.demo.src.domain.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,7 +1,7 @@
-package com.example.demo.src.user;
+package com.example.demo.src.repository;
 
 
-import com.example.demo.src.user.model.*;
+import com.example.demo.src.domain.user.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
