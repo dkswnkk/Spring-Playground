@@ -1,5 +1,7 @@
 package com.example.demo.src.repository;
 
+import com.example.demo.src.domain.user.dto.GetUserRes;
+import com.example.demo.src.domain.user.dto.PatchAddressReq;
 import com.example.demo.src.domain.user.dto.PostUserReq;
 import com.example.demo.src.domain.user.entitiy.Address;
 import com.example.demo.src.domain.user.entitiy.MembershipLevel;
@@ -11,6 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository //  [Persistence Layer에서 DAO를 명시하기 위해 사용]
@@ -84,6 +87,7 @@ public class UserDao {
         String getAddressQuery = "select * from Address A join TimeInfo TI on A.addressIdx = TI.addressIdx where A.userIdx = ? AND A.status = true AND TI.status = true";
         return this.jdbcTemplate.query(getAddressQuery,
                 (rs, rowNum) -> new Address(
+                        rs.getInt("A.addressIdx"),
                         rs.getString("A.name"),
                         rs.getString("A.phoneNumber"),
                         rs.getString("A.city"),
@@ -220,4 +224,52 @@ public class UserDao {
     }
 
 
+    public int updateAddress(PatchAddressReq getAddressReq) {
+        String updateAddressQuery = "update Address A" +
+                " join TimeInfo TI on A.addressIdx = TI.addressIdx" +
+                " set A.name = ?," +
+                " A.city = ?," +
+                " A.street = ?," +
+                " A.detail = ?," +
+                " A.zipcode = ?," +
+                " A.phoneNumber = ?," +
+                " TI.basicTimeInfo = ?," +
+                " TI.basicHousePassword = ?," +
+                " TI.dawnTimeInfo = ?," +
+                " TI.dawnTimePassword = ?," +
+                " A.defaultAddress = ?" +
+                " where A.addressIdx=? AND A.status = true AND TI.status = true";
+
+        Object[] updateAddressParams = new Object[]{
+                getAddressReq.getName(),
+                getAddressReq.getCity(),
+                getAddressReq.getStreet(),
+                getAddressReq.getDetail(),
+                getAddressReq.getZipcode(),
+                getAddressReq.getPhoneNumber(),
+                getAddressReq.getBasicTimeInfo(),
+                getAddressReq.getBasicHousePassword(),
+                getAddressReq.getDawnTimeInfo(),
+                getAddressReq.getDawnTimePassword(),
+                getAddressReq.getIsDefault(),
+                getAddressReq.getAddressIdx()
+        };
+
+        return this.jdbcTemplate.update(updateAddressQuery, updateAddressParams);
+
+    }
+
+    public int initDefaultAddress(int userIdx) {
+        String initDefaultAddressQuery = "update Address A join User U set A.defaultAddress = false where A.status = true AND U.status = true AND A.userIdx = ?";
+        return this.jdbcTemplate.update(initDefaultAddressQuery, userIdx);
+    }
+
+
+    //    // 회원정보 변경
+//    public int modifyUserName(PatchUserReq patchUserReq) {
+//        String modifyUserNameQuery = "update User set nickname = ? where userIdx = ? "; // 해당 userIdx를 만족하는 User를 해당 nickname으로 변경한다.
+//        Object[] modifyUserNameParams = new Object[]{patchUserReq.getNickname(), patchUserReq.getUserIdx()}; // 주입될 값들(nickname, userIdx) 순
+//
+//        return this.jdbcTemplate.update(modifyUserNameQuery, modifyUserNameParams); // 대응시켜 매핑시켜 쿼리 요청(생성했으면 1, 실패했으면 0)
+//    }
 }

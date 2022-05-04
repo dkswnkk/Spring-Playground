@@ -2,9 +2,7 @@ package com.example.demo.src.controller;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
-import com.example.demo.src.domain.user.dto.GetUserRes;
-import com.example.demo.src.domain.user.dto.PostUserReq;
-import com.example.demo.src.domain.user.dto.PostUserRes;
+import com.example.demo.src.domain.user.dto.*;
 import com.example.demo.src.domain.user.entitiy.Address;
 import com.example.demo.src.domain.user.entitiy.PushNotificationAgreement;
 import com.example.demo.src.domain.user.entitiy.User;
@@ -191,6 +189,19 @@ public class UserController {
         try {
             userService.updateMembership(userIdx, memberType);
             return new BaseResponse<>(String.format("유저 %d의 멤버 등급이 %s으로 변경되었습니다.", userIdx, memberType));
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    @PatchMapping("/{userIdx}/address")
+    public BaseResponse<PatchAddressRes> updateAddress(@PathVariable int userIdx, @RequestBody PatchAddressReq getAddressReq) {
+        try {
+            if(getAddressReq.getIsDefault()==false){    // 지금 입력하는 주소지가 기본 주소라면 이미있는 기본 주소지를 0으로 만듬
+                userService.initDefaultAddress(userIdx);
+            }
+            PatchAddressRes patchAddressRes = new PatchAddressRes(userService.updateAddress(getAddressReq));
+            return new BaseResponse<>(patchAddressRes);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }

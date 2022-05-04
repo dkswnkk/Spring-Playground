@@ -3,8 +3,10 @@ package com.example.demo.src.service.user;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.secret.Secret;
+import com.example.demo.src.domain.user.dto.PatchAddressReq;
 import com.example.demo.src.domain.user.dto.PostUserReq;
 import com.example.demo.src.domain.user.dto.PostUserRes;
+import com.example.demo.src.domain.user.entitiy.Address;
 import com.example.demo.src.repository.UserDao;
 import com.example.demo.utils.AES128;
 import com.example.demo.utils.JwtService;
@@ -85,6 +87,31 @@ public class UserService {
     public void updateMembership(int userIdx, String memberType) throws BaseException {
         try {
             int result = userDao.updateMembership(userIdx, memberType);
+            if (result == 0) {
+                throw new BaseException(USERS_EMPTY_USER_ID);
+            }
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    // 주소 변경
+    public PatchAddressReq updateAddress(PatchAddressReq patchAddressReq) throws BaseException {
+        try {
+            int result = userDao.updateAddress(patchAddressReq);
+            if (result == 0) {
+                throw new BaseException(UPDATE_FAIL_ADDRESS);
+            }
+            return patchAddressReq;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    // 해당 유저의 모든 주소를 기본배송지가 아님으로 변경
+    public void initDefaultAddress(int userIdx) throws BaseException {
+        try {
+            int result = userDao.initDefaultAddress(userIdx);
             if (result == 0) {
                 throw new BaseException(USERS_EMPTY_USER_ID);
             }
