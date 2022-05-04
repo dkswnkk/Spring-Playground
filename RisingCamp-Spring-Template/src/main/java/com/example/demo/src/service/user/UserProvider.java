@@ -1,12 +1,11 @@
 package com.example.demo.src.service.user;
 
 import com.example.demo.config.BaseException;
-import com.example.demo.src.domain.user.common.Address;
-import com.example.demo.src.domain.user.common.User;
-import com.example.demo.src.domain.user.user.GetUserRes;
+import com.example.demo.src.domain.user.entitiy.Address;
+import com.example.demo.src.domain.user.entitiy.PushNotificationAgreement;
+import com.example.demo.src.domain.user.entitiy.User;
 import com.example.demo.src.repository.UserDao;
 import com.example.demo.utils.JwtService;
-import com.fasterxml.jackson.databind.ser.Serializers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -76,18 +75,18 @@ public class UserProvider {
         }
     }
 
-    // User들의 정보를 조회
+    // 모든 User 조회
     public List<User> getUsers() throws BaseException {
         try {
             List<User> getUserRes = userDao.getUsers();
-            log.debug("유저");
             return getUserRes;
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
     }
 
-    public List<Address> getAddress(int userIdx) throws BaseException{
+    // 주소 조회
+    public List<Address> getAddress(int userIdx) throws BaseException {
         try {
             List<Address> getAddress = userDao.getAddress(userIdx);
             return getAddress;
@@ -96,6 +95,14 @@ public class UserProvider {
         }
     }
 
+    public List<PushNotificationAgreement> getAgreements(int userIdx) throws BaseException {
+        try {
+            List<PushNotificationAgreement> getAgreements = userDao.getAgreement(userIdx);
+            return getAgreements;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 
     // 해당 Email을 갖는 User들의 정보 조회
 //    public List<GetUserRes> getUsersByEmail(String email) throws BaseException {
@@ -108,14 +115,14 @@ public class UserProvider {
 //    }
 
 
-    // 해당 userIdx를 갖는 User의 정보 조회
-//    public List<GetUserRes> getUser(int userIdx) throws BaseException {
-//        try {
-//            List<GetUserRes> getUserRes = userDao.getUser(userIdx);
-//            return getUserRes;
-//        } catch (Exception exception) {
-//            throw new BaseException(DATABASE_ERROR);
-//        }
-//    }
+    //해당 userIdx를 갖는 User의 정보 조회
+    public User getUser(int userIdx) throws BaseException {
+        try {
+            User getUserRes = userDao.getUser(userIdx);
+            return getUserRes;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 
 }

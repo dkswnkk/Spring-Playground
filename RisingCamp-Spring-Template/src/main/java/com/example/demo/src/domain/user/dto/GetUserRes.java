@@ -1,10 +1,9 @@
-package com.example.demo.src.domain.user.user;
-
-
-import com.example.demo.src.domain.user.common.Address;
-import com.example.demo.src.domain.user.common.MembershipLevel;
-import com.example.demo.src.domain.user.common.User;
-import lombok.*;
+package com.example.demo.src.domain.user.dto;
+import com.example.demo.src.domain.user.entitiy.Address;
+import com.example.demo.src.domain.user.entitiy.MembershipLevel;
+import com.example.demo.src.domain.user.entitiy.PushNotificationAgreement;
+import com.example.demo.src.domain.user.entitiy.User;
+import lombok.Data;
 
 import java.util.List;
 
@@ -26,9 +25,10 @@ public class GetUserRes {
     private MembershipLevel membershipLevel;
     private int coupay;
     private int coupangCash;
+    private List<PushNotificationAgreement> agreements;
     private List<Address> addressList;
 
-    public GetUserRes(User user, List<Address> address) {
+    public GetUserRes(User user, List<Address> address, List<PushNotificationAgreement> agreements) {
         this.userIdx = user.getUserIdx();
         this.profileImage = user.getProfileImage();
         this.email = user.getEmail();
@@ -38,5 +38,6 @@ public class GetUserRes {
         this.coupay = user.getCoupay();
         this.coupangCash = user.getCoupangCash();
         this.addressList = address;
+        this.agreements = agreements;
     }
 }

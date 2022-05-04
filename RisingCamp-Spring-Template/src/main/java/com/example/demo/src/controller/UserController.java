@@ -1,22 +1,22 @@
 package com.example.demo.src.controller;
 
-import com.example.demo.src.domain.user.*;
-import com.example.demo.src.domain.user.common.Address;
-import com.example.demo.src.domain.user.common.User;
-import com.example.demo.src.domain.user.user.GetUserRes;
-import com.example.demo.src.service.user.UserProvider;
-import com.example.demo.src.service.user.UserService;
-import lombok.extern.slf4j.Slf4j;
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
+import com.example.demo.src.domain.user.dto.GetUserRes;
+import com.example.demo.src.domain.user.dto.PostUserReq;
+import com.example.demo.src.domain.user.dto.PostUserRes;
+import com.example.demo.src.domain.user.entitiy.Address;
+import com.example.demo.src.domain.user.entitiy.PushNotificationAgreement;
+import com.example.demo.src.domain.user.entitiy.User;
+import com.example.demo.src.service.user.UserProvider;
+import com.example.demo.src.service.user.UserService;
 import com.example.demo.utils.JwtService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-
 
 import static com.example.demo.config.BaseResponseStatus.*;
 import static com.example.demo.utils.ValidationRegex.isRegexEmail;
@@ -112,7 +112,8 @@ public class UserController {
             for (User getUser : getUsers) {
                 int userIdx = getUser.getUserIdx();
                 List<Address> getAddress = userProvider.getAddress(userIdx);
-                getUserRes.add(new GetUserRes(getUser, getAddress));
+                List<PushNotificationAgreement> getAgreements = userProvider.getAgreements(userIdx);
+                getUserRes.add(new GetUserRes(getUser, getAddress, getAgreements));
             }
             return new BaseResponse<>(getUserRes);
 
@@ -124,17 +125,21 @@ public class UserController {
     /**
      * 인덱스로 조회
      */
-//    @ResponseBody
-//    @GetMapping("/{userIdx}")
-//    public BaseResponse<List<GetUserRes>> getUser(@PathVariable("userIdx") int userIdx) {
-//        try {
-//            List<GetUserRes> getUserRes = userProvider.getUser(userIdx);
-//            return new BaseResponse<>(getUserRes);
-//        } catch (BaseException exception) {
-//            return new BaseResponse<>((exception.getStatus()));
-//        }
-//
-//    }
+    @ResponseBody
+    @GetMapping("/{userIdx}")
+    public BaseResponse<List<GetUserRes>> getUser(@PathVariable("userIdx") int userIdx) {
+        try {
+            List<GetUserRes> getUserRes = new ArrayList<>(); // 반환할거 클라이언트에게
+            User getUser = userProvider.getUser(userIdx);
+            List<Address> getAddress = userProvider.getAddress(userIdx);
+            List<PushNotificationAgreement> getAgreements = userProvider.getAgreements(userIdx);
+            getUserRes.add(new GetUserRes((User) getUser, getAddress, getAgreements));
+            return new BaseResponse<>(getUserRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+
+    }
 
     /**
      * 회원탈퇴
