@@ -10,6 +10,7 @@ import com.example.demo.src.service.user.UserProvider;
 import com.example.demo.src.service.user.UserService;
 import com.example.demo.utils.JwtService;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -197,7 +198,7 @@ public class UserController {
     @PatchMapping("/{userIdx}/address")
     public BaseResponse<PatchAddressRes> updateAddress(@PathVariable int userIdx, @RequestBody PatchAddressReq getAddressReq) {
         try {
-            if (getAddressReq.getIsDefault() == false) {    // 지금 입력하는 주소지가 기본 주소라면 이미있는 기본 주소지를 0으로 만듬
+            if (getAddressReq.getIsDefault() == true) {    // 지금 입력하는 주소지가 기본 주소라면 이미있는 기본 주소지를 0으로 만듬
                 userService.initDefaultAddress(userIdx);
             }
             PatchAddressRes patchAddressRes = new PatchAddressRes(userService.updateAddress(getAddressReq));
@@ -211,14 +212,36 @@ public class UserController {
     public BaseResponse<List<GetAddressRes>> deleteAddress(@PathVariable int userIdx, @RequestParam("addressIdx") int addressIdx) {
         try {
             userService.deleteAddress(addressIdx);
-            List<GetAddressRes> getAddressRes = new ArrayList<>();
-            List<Address> addresses= userService.getAddress(userIdx);
-            for (Address address : addresses) {
-                getAddressRes.add(new GetAddressRes(address));
-            }
-            return new BaseResponse<>(getAddressRes);
+            return getListBaseResponse(userService.getAddress(userIdx), userIdx);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }
+    }
+
+    @PostMapping("/{userIdx}/address")
+    public BaseResponse<List<GetAddressRes>> insertAddress(@PathVariable int userIdx, @RequestBody PostAddressReq postAddressReq) {
+        try {
+            if (postAddressReq.getIsDefault() == true) {    // 지금 등록하는 주소지가 기본 주소라면 이미있는 기본 주소지를 0으로 만듬
+                userService.initDefaultAddress(userIdx);
+            }
+
+            int lastAddressIdx = userService.insertAddress(userIdx, postAddressReq);
+            userService.insertTimeInfo(lastAddressIdx, postAddressReq);
+
+            return getListBaseResponse(userProvider.getAddress(userIdx), userIdx);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    @NotNull
+    private BaseResponse<List<GetAddressRes>> getListBaseResponse(List<Address> address2, @PathVariable int userIdx) throws BaseException {
+        List<GetAddressRes> getAddressRes = new ArrayList<>();
+        List<Address> addresses = address2;
+
+        for (Address address : addresses) {
+            getAddressRes.add(new GetAddressRes(address));
+        }
+        return new BaseResponse<>(getAddressRes);
     }
 }

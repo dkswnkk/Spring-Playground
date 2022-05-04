@@ -2,6 +2,7 @@ package com.example.demo.src.repository;
 
 import com.example.demo.src.domain.user.dto.GetUserRes;
 import com.example.demo.src.domain.user.dto.PatchAddressReq;
+import com.example.demo.src.domain.user.dto.PostAddressReq;
 import com.example.demo.src.domain.user.dto.PostUserReq;
 import com.example.demo.src.domain.user.entitiy.Address;
 import com.example.demo.src.domain.user.entitiy.MembershipLevel;
@@ -268,7 +269,38 @@ public class UserDao {
         return this.jdbcTemplate.update(initDefaultAddressQuery, userIdx);
     }
 
+    public int insertAddress(int userIdx, PostAddressReq postAddressReq) {
+        String insertAddressQuery = "insert into Address(userIdx, name, phoneNumber, city, street, detail, zipcode, defaultAddress)" +
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        Object[] insertAddressParams = {userIdx,
+                postAddressReq.getName(),
+                postAddressReq.getPhoneNumber(),
+                postAddressReq.getCity(),
+                postAddressReq.getStreet(),
+                postAddressReq.getDetail(),
+                postAddressReq.getZipcode(),
+                postAddressReq.getIsDefault()
+        };
+        return this.jdbcTemplate.update(insertAddressQuery, insertAddressParams);
+    }
 
+    public int getLastInsertId() {
+        String lastInsertIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
+    }
+
+    public int insertTimeInfo(int addressIdx, PostAddressReq postAddressReq) {
+        String insertTimeInfoQuery = "insert into TimeInfo(addressIdx, basicTimeInfo, basicHousePassword, dawnTimeInfo, dawnTimePassword)" +
+                " VALUES (?, ?, ?, ?, ?)";
+        Object[] insertTimeInfoParams = {
+                addressIdx,
+                postAddressReq.getBasicTimeInfo(),
+                postAddressReq.getBasicHousePassword(),
+                postAddressReq.getDawnTimeInfo(),
+                postAddressReq.getDawnTimePassword(),
+        };
+        return this.jdbcTemplate.update(insertTimeInfoQuery, insertTimeInfoParams);
+    }
     //    // 회원정보 변경
 //    public int modifyUserName(PatchUserReq patchUserReq) {
 //        String modifyUserNameQuery = "update User set nickname = ? where userIdx = ? "; // 해당 userIdx를 만족하는 User를 해당 nickname으로 변경한다.

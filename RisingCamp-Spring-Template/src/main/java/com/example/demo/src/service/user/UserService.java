@@ -4,6 +4,7 @@ package com.example.demo.src.service.user;
 import com.example.demo.config.BaseException;
 import com.example.demo.config.secret.Secret;
 import com.example.demo.src.domain.user.dto.PatchAddressReq;
+import com.example.demo.src.domain.user.dto.PostAddressReq;
 import com.example.demo.src.domain.user.dto.PostUserReq;
 import com.example.demo.src.domain.user.dto.PostUserRes;
 import com.example.demo.src.domain.user.entitiy.Address;
@@ -151,6 +152,30 @@ public class UserService {
             if (result == 0) {
                 throw new BaseException(ADDRESS_EMPTY_ADDRESS_ID);
             }
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+
+    public void insertTimeInfo(int addressIdx, PostAddressReq postAddressReq) throws BaseException {
+        try {
+            int result = userDao.insertTimeInfo(addressIdx, postAddressReq);
+            if (result == 0) {
+                throw new BaseException(ADDRESS_EMPTY_ADDRESS_ID);
+            }
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public int insertAddress(int userIdx, PostAddressReq postAddressReq) throws BaseException {
+        try {
+            int result = userDao.insertAddress(userIdx, postAddressReq);
+            if (result == 0) {
+                throw new BaseException(ADDRESS_EMPTY_ADDRESS_ID);
+            }
+            return userDao.getLastInsertId();
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
