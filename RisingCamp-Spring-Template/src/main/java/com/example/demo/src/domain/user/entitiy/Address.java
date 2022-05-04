@@ -13,6 +13,11 @@ public class Address {
     private String street;
     private String detail;
     private String zipcode;
+    private String basicTimeInfo;
+    private String basicHousePassword;
+    private String dawnTimeInfo;
+    private String dawnTimePassword;
     private Boolean isDefault;
+
 }
 

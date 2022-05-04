@@ -81,16 +81,20 @@ public class UserDao {
 
     // 주소 조회
     public List<Address> getAddress(int userIdx) {
-        String getAddressQuery = "select * from Address A where A.userIdx = ? AND A.status = true";
+        String getAddressQuery = "select * from Address A join TimeInfo TI on A.addressIdx = TI.addressIdx where A.userIdx = ? AND A.status = true AND TI.status = true";
         return this.jdbcTemplate.query(getAddressQuery,
                 (rs, rowNum) -> new Address(
-                        rs.getString("name"),
-                        rs.getString("phoneNumber"),
-                        rs.getString("city"),
-                        rs.getString("street"),
-                        rs.getString("detail"),
-                        rs.getString("zipcode"),
-                        rs.getBoolean("defaultAddress")
+                        rs.getString("A.name"),
+                        rs.getString("A.phoneNumber"),
+                        rs.getString("A.city"),
+                        rs.getString("A.street"),
+                        rs.getString("A.detail"),
+                        rs.getString("A.zipcode"),
+                        rs.getString("TI.basicTimeInfo"),
+                        rs.getString("TI.basicHousePassword"),
+                        rs.getString("TI.dawnTimeInfo"),
+                        rs.getString("TI.dawnTimePassword"),
+                        rs.getBoolean("A.defaultAddress")
                 ),
                 userIdx
         );
