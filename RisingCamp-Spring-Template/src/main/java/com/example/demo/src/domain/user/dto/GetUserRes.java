@@ -33,7 +33,7 @@ public class GetUserRes {
         this.profileImage = user.getProfileImage();
         this.email = user.getEmail();
         this.name = user.getName();
-        this.phoneNumber = user.getName();
+        this.phoneNumber = user.getPhoneNumber();
         this.membershipLevel = user.getMembershipLevel();
         this.coupay = user.getCoupay();
         this.coupangCash = user.getCoupangCash();

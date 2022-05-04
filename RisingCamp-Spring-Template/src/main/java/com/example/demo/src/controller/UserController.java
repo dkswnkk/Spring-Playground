@@ -181,7 +181,7 @@ public class UserController {
 //            return new BaseResponse<>((exception.getStatus()));
 //        }
 //    }
-    @PatchMapping("/{userIdx}")
+    @PatchMapping("/{userIdx}/membership")
     public BaseResponse<String> updateMembership(@PathVariable("userIdx") int userIdx, @RequestParam("memberType") String memberType) {
         if (!memberType.equals("BASIC") && !memberType.equals("ROCKET")) {
             return new BaseResponse<>(PATCH_USERS_INVALID_MEMBERSHIP_LEVEL);
@@ -197,11 +197,26 @@ public class UserController {
     @PatchMapping("/{userIdx}/address")
     public BaseResponse<PatchAddressRes> updateAddress(@PathVariable int userIdx, @RequestBody PatchAddressReq getAddressReq) {
         try {
-            if(getAddressReq.getIsDefault()==false){    // 지금 입력하는 주소지가 기본 주소라면 이미있는 기본 주소지를 0으로 만듬
+            if (getAddressReq.getIsDefault() == false) {    // 지금 입력하는 주소지가 기본 주소라면 이미있는 기본 주소지를 0으로 만듬
                 userService.initDefaultAddress(userIdx);
             }
             PatchAddressRes patchAddressRes = new PatchAddressRes(userService.updateAddress(getAddressReq));
             return new BaseResponse<>(patchAddressRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    @DeleteMapping("/{userIdx}/address")
+    public BaseResponse<List<GetAddressRes>> deleteAddress(@PathVariable int userIdx, @RequestParam("addressIdx") int addressIdx) {
+        try {
+            userService.deleteAddress(addressIdx);
+            List<GetAddressRes> getAddressRes = new ArrayList<>();
+            List<Address> addresses= userService.getAddress(userIdx);
+            for (Address address : addresses) {
+                getAddressRes.add(new GetAddressRes(address));
+            }
+            return new BaseResponse<>(getAddressRes);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }

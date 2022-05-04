@@ -23,7 +23,9 @@ public enum BaseResponseStatus {
     INVALID_USER_JWT(false, 2003, "권한이 없는 유저의 접근입니다."),
 
     // users
-    USERS_EMPTY_USER_ID(false, 2010, "유저 아이디 값을 확인해주세요."),
+    USERS_EMPTY_USER_ID(false, 2010, "유저가 존재하지않습니다."),
+    ADDRESS_EMPTY_ADDRESS_ID(false, 2011, "주소지가 존재하지 않습니다."),
+
 
     // [POST] /users
     POST_USERS_EMPTY_EMAIL(false, 2015, "이메일을 입력해주세요."),
@@ -31,8 +33,7 @@ public enum BaseResponseStatus {
     POST_USERS_EXISTS_EMAIL(false, 2017, "중복된 이메일입니다."),
     POST_USERS_EMPTY_PROFILE_IMAGE(false, 2018, "프로필 사진을 등록해주세요."),
     POST_USERS_INVALID_PHONE_NUMBER(false, 2019, "전화번호 형식을 확인해주세요."),
-    PATCH_USERS_INVALID_MEMBERSHIP_LEVEL(false,2022,"멤버십 등급이 올바른지 확인해주세요"),
-
+    PATCH_USERS_INVALID_MEMBERSHIP_LEVEL(false, 2022, "멤버십 등급이 올바른지 확인해주세요"),
 
     /**
      * 3000 : Response 오류
@@ -40,7 +41,7 @@ public enum BaseResponseStatus {
     // Common
     RESPONSE_ERROR(false, 3000, "값을 불러오는데 실패하였습니다."),
 
-    // [POST] /users
+
     DUPLICATED_EMAIL(false, 3013, "중복된 이메일입니다."),
     FAILED_TO_LOGIN(false, 3014, "없는 아이디거나 비밀번호가 틀렸습니다."),
 
@@ -53,7 +54,7 @@ public enum BaseResponseStatus {
 
     //[PATCH] /users/{userIdx}
     MODIFY_FAIL_USERNAME(false, 4014, "유저네임 수정 실패"),
-    UPDATE_FAIL_ADDRESS(false,4015,"주소지 수정 실페"),
+    UPDATE_FAIL_ADDRESS(false, 4015, "주소지 수정 실페"),
     PASSWORD_ENCRYPTION_ERROR(false, 4011, "비밀번호 암호화에 실패하였습니다."),
     PASSWORD_DECRYPTION_ERROR(false, 4012, "비밀번호 복호화에 실패하였습니다.");
 

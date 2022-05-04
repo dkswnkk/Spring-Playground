@@ -223,7 +223,6 @@ public class UserDao {
         return this.jdbcTemplate.update(deleteUserQuery, modifyUserNameParams); // 대응시켜 매핑시켜 쿼리 요청(생성했으면 1, 실패했으면 0)
     }
 
-
     public int updateAddress(PatchAddressReq getAddressReq) {
         String updateAddressQuery = "update Address A" +
                 " join TimeInfo TI on A.addressIdx = TI.addressIdx" +
@@ -257,6 +256,11 @@ public class UserDao {
 
         return this.jdbcTemplate.update(updateAddressQuery, updateAddressParams);
 
+    }
+
+    public int deleteAddress(int addressIdx) {
+        String deleteAddressQuery = "update Address set status = 0 where addressIdx =?";
+        return this.jdbcTemplate.update(deleteAddressQuery, addressIdx);
     }
 
     public int initDefaultAddress(int userIdx) {

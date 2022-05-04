@@ -10,9 +10,12 @@ import com.example.demo.src.domain.user.entitiy.Address;
 import com.example.demo.src.repository.UserDao;
 import com.example.demo.utils.AES128;
 import com.example.demo.utils.JwtService;
+import com.fasterxml.jackson.databind.ser.Serializers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 import static com.example.demo.config.BaseResponseStatus.*;
 
@@ -95,6 +98,15 @@ public class UserService {
         }
     }
 
+    public List<Address> getAddress(int userIdx) throws BaseException {
+        try {
+            List<Address> address = userDao.getAddress(userIdx);
+            return address;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
     // 주소 변경
     public PatchAddressReq updateAddress(PatchAddressReq patchAddressReq) throws BaseException {
         try {
@@ -128,6 +140,17 @@ public class UserService {
                 throw new BaseException(USERS_EMPTY_USER_ID);
             }
             return userIdx;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void deleteAddress(int addressIdx) throws BaseException {
+        try {
+            int result = userDao.deleteAddress(addressIdx);
+            if (result == 0) {
+                throw new BaseException(ADDRESS_EMPTY_ADDRESS_ID);
+            }
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
