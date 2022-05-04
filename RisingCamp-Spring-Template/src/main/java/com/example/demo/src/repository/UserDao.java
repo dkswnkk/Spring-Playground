@@ -1,9 +1,6 @@
 package com.example.demo.src.repository;
 
-import com.example.demo.src.domain.user.dto.GetUserRes;
-import com.example.demo.src.domain.user.dto.PatchAddressReq;
-import com.example.demo.src.domain.user.dto.PostAddressReq;
-import com.example.demo.src.domain.user.dto.PostUserReq;
+import com.example.demo.src.domain.user.dto.*;
 import com.example.demo.src.domain.user.entitiy.Address;
 import com.example.demo.src.domain.user.entitiy.MembershipLevel;
 import com.example.demo.src.domain.user.entitiy.PushNotificationAgreement;
@@ -115,27 +112,27 @@ public class UserDao {
 
 
     // 로그인: 해당 email에 해당되는 user의 암호화된 비밀번호 값을 가져온다.
-//    public User getPwd(PostLoginReq postLoginReq) {
-//        String getPwdQuery = "select userIdx, password,email,nickname from User where email = ?"; // 해당 email을 만족하는 User의 정보들을 조회한다.
-//        String getPwdParams = postLoginReq.getEmail(); // 주입될 email값을 클라이언트의 요청에서 주어진 정보를 통해 가져온다.
-//
-//        User user = this.jdbcTemplate.queryForObject(getPwdQuery,
-//                (rs, rowNum) -> new User(
-//                        rs.getInt("U.userIdx"),
-//                        rs.getString("U.profileImage"),
-//                        rs.getString("U.email"),
-//                        rs.getString("U.name"),
-//                        rs.getString("U.password"),
-//                        rs.getString("U.phoneNumber"),
-//                        MembershipLevel.of(rs.getString("U.membershipLevel")),
-//                        rs.getInt("U.coupay"),
-//                        rs.getInt("U.coupangCash"),
-//                        new Address(rs.getString("A.name"), rs.getString("A.phoneNumber"), rs.getString("A.city"), rs.getString("A.street"), rs.getString("A.detail"), rs.getString("A.zipcode"), rs.getBoolean("A.default"))
-//                ),
-//                getPwdParams
-//        );
-//        return user; // 한 개의 회원정보를 얻기 위한 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
-//    }
+    public User getPwd(PostLoginReq postLoginReq) {
+        String getPwdQuery = "select * from User U where U.email = ?";
+        String getPwdParams = postLoginReq.getEmail();
+
+        User user = this.jdbcTemplate.queryForObject(getPwdQuery,
+                (rs, rowNum) -> new User(
+                        rs.getInt("U.userIdx"),
+                        rs.getString("U.profileImage"),
+                        rs.getString("U.email"),
+                        rs.getString("U.name"),
+                        rs.getString("U.password"),
+                        rs.getString("U.phoneNumber"),
+                        MembershipLevel.of(rs.getString("U.membershipLevel")),
+                        rs.getInt("U.coupay"),
+                        rs.getInt("U.coupangCash"),
+                        rs.getBoolean("U.status")
+                ),
+                getPwdParams
+        );
+        return user; // 한 개의 회원정보를 얻기 위한 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
+    }
 
 
     // 모든 유저 조회
@@ -151,7 +148,8 @@ public class UserDao {
                         rs.getString("U.phoneNumber"),
                         MembershipLevel.of(rs.getString("U.membershipLevel")),
                         rs.getInt("U.coupay"),
-                        rs.getInt("U.coupangCash")
+                        rs.getInt("U.coupangCash"),
+                        rs.getBoolean("U.status")
                 ),
                 null
                 // RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
@@ -206,7 +204,8 @@ public class UserDao {
                         rs.getString("U.phoneNumber"),
                         MembershipLevel.of(rs.getString("U.membershipLevel")),
                         rs.getInt("U.coupay"),
-                        rs.getInt("U.coupangCash")
+                        rs.getInt("U.coupangCash"),
+                        rs.getBoolean("U.status")
                 ), // RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
                 userIdx); // 한 개의 회원정보를 얻기 위한 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
     }

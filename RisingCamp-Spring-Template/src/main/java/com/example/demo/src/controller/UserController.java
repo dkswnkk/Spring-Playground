@@ -81,22 +81,22 @@ public class UserController {
         }
     }
 
-    /**
-     * 로그인 API
-     * [POST] /users/logIn
-     */
-//    @ResponseBody
-//    @PostMapping("/log-in")
-//    public BaseResponse<PostLoginRes> logIn(@RequestBody PostLoginReq postLoginReq) {
-//        try {
-//            // TODO: 로그인 값들에 대한 형식적인 validatin 처리해주셔야합니다!
-//            // TODO: 유저의 status ex) 비활성화된 유저, 탈퇴한 유저 등을 관리해주고 있다면 해당 부분에 대한 validation 처리도 해주셔야합니다.
-//            PostLoginRes postLoginRes = userProvider.logIn(postLoginReq);
-//            return new BaseResponse<>(postLoginRes);
-//        } catch (BaseException exception) {
-//            return new BaseResponse<>(exception.getStatus());
-//        }
-//    }
+
+    @ResponseBody
+    @PostMapping("/log-in")
+    public BaseResponse<List<GetUserRes>> logIn(@RequestBody PostLoginReq postLoginReq) {
+        try {
+            int userIdx = userProvider.logIn(postLoginReq);
+            User user = userProvider.getUser(userIdx);
+            List<GetUserRes> getUserRes = new ArrayList<>();
+            List<Address> getAddress = userProvider.getAddress(userIdx);
+            List<PushNotificationAgreement> getAgreements = userProvider.getAgreements(userIdx);
+            getUserRes.add(new GetUserRes(user, getAddress, getAgreements));
+            return new BaseResponse<>(getUserRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
 
 
     /**

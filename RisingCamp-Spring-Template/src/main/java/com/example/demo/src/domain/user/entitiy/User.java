@@ -20,4 +20,5 @@ public class User {
     private MembershipLevel membershipLevel;
     private int coupay;
     private int coupangCash;
+    private Boolean status;
 }
