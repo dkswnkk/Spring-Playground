@@ -13,8 +13,6 @@ import java.util.List;
 
 @Repository
 @Slf4j
-
-
 public class AddressDao {
     private JdbcTemplate jdbcTemplate;
 
@@ -77,6 +75,21 @@ public class AddressDao {
 
         return this.jdbcTemplate.update(updateAddressQuery, updateAddressParams);
 
+    }
+
+    public int insertAddress(int userIdx, PostAddressReq postAddressReq) {
+        String insertAddressQuery = "insert into Address(userIdx, name, phoneNumber, city, street, detail, zipcode, defaultAddress)" +
+                " VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        Object[] insertAddressParams = {userIdx,
+                postAddressReq.getName(),
+                postAddressReq.getPhoneNumber(),
+                postAddressReq.getCity(),
+                postAddressReq.getStreet(),
+                postAddressReq.getDetail(),
+                postAddressReq.getZipcode(),
+                postAddressReq.getIsDefault()
+        };
+        return this.jdbcTemplate.update(insertAddressQuery, insertAddressParams);
     }
 
     public int deleteAddress(int addressIdx) {

@@ -238,6 +238,18 @@ public class UserController {
         }
     }
 
+
+    @PatchMapping("{userIdx}/notification")
+    public BaseResponse<GetPushNotificationAgreementRes> updatePushNotificationAgreement(@PathVariable int userIdx, @RequestParam("notificationName") String notificationName) {
+        try {
+            userIdx = userService.updatePushNotification(userIdx, notificationName);
+            List<PushNotificationAgreement> pushNotificationAgreement = userProvider.getAgreements(userIdx);
+            return new BaseResponse<>(new GetPushNotificationAgreementRes(pushNotificationAgreement.get(0)));
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
     @NotNull
     private BaseResponse<List<GetAddressRes>> getListBaseResponse(List<Address> address2, @PathVariable int userIdx) throws BaseException {
         List<GetAddressRes> getAddressRes = new ArrayList<>();

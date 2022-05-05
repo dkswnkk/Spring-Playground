@@ -22,21 +22,6 @@ public class PushNotificationAgreementDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public int insertAddress(int userIdx, PostAddressReq postAddressReq) {
-        String insertAddressQuery = "insert into Address(userIdx, name, phoneNumber, city, street, detail, zipcode, defaultAddress)" +
-                " VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        Object[] insertAddressParams = {userIdx,
-                postAddressReq.getName(),
-                postAddressReq.getPhoneNumber(),
-                postAddressReq.getCity(),
-                postAddressReq.getStreet(),
-                postAddressReq.getDetail(),
-                postAddressReq.getZipcode(),
-                postAddressReq.getIsDefault()
-        };
-        return this.jdbcTemplate.update(insertAddressQuery, insertAddressParams);
-    }
-
     public List<PushNotificationAgreement> getAgreement(int userIdx) {
         String getAgreementQuery = "select * from PushNotificationAgreement where userIdx = ?";
         return this.jdbcTemplate.query(getAgreementQuery,
@@ -66,4 +51,25 @@ public class PushNotificationAgreementDao {
         };
         return this.jdbcTemplate.update(insertPushNotificationAgreementQuery, insertPushNotificationAgreementParams);
     }
+
+//    public PushNotificationAgreement getPushNotification(int userIdx) {
+//        String getPushOrderNotificationQuery = "select * from PushNotificationAgreement where status = true AND userIdx = ?";
+//        return this.jdbcTemplate.queryForObject(getPushOrderNotificationQuery,
+//                (rs, rowNum) -> new PushNotificationAgreement(
+//                        rs.getBoolean("orderNotification"),
+//                        rs.getBoolean("restockNotification"),
+//                        rs.getBoolean("reviewNotification"),
+//                        rs.getBoolean("serviceCenterNotification"),
+//                        rs.getBoolean("sellerShopNotification"),
+//                        rs.getBoolean("adNotification")
+//                ), // RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
+//                userIdx); // 한 개의 회원정보를 얻기 위한 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
+//    }
+
+
+    public int updatePushNotification(int userIdx, String notificationName) {
+        String updatePushOrderNotificationQuery = String.format("update PushNotificationAgreement set %s = !%s where status = true AND userIdx = %d", notificationName, notificationName, userIdx);
+        return this.jdbcTemplate.update(updatePushOrderNotificationQuery);
+    }
 }
+

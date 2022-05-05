@@ -68,9 +68,7 @@ public class UserService {
         }
         try {
             int userIdx = userDao.createUser(postUserReq);
-            log.debug("여기는 돌아");
             userIdx = pushNotificationAgreementDao.insertPushNotificationAgreement(userIdx, postUserReq);
-            log.debug("여기가 안돌아");
             return userIdx;
 
 //  *********** 해당 부분은 7주차 수업 후 주석해제하서 대체해서 사용해주세요! ***********
@@ -177,11 +175,23 @@ public class UserService {
 
     public int insertAddress(int userIdx, PostAddressReq postAddressReq) throws BaseException {
         try {
-            int result = pushNotificationAgreementDao.insertAddress(userIdx, postAddressReq);
+            int result = addressDao.insertAddress(userIdx, postAddressReq);
             if (result == 0) {
                 throw new BaseException(ADDRESS_EMPTY_ADDRESS_ID);
             }
             return userDao.getLastInsertId();
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public int updatePushNotification(int userIdx, String notificationName) throws BaseException {
+        try {
+            int result = pushNotificationAgreementDao.updatePushNotification(userIdx, notificationName);
+            if (result == 0) {
+                throw new BaseException(ADDRESS_EMPTY_ADDRESS_ID);
+            }
+            return userIdx;
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
