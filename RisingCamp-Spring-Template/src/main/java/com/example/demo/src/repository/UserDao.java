@@ -71,6 +71,24 @@ public class UserDao {
         return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class); // 해당 쿼리문의 결과 마지막으로 삽인된 유저의 userIdx번호를 반환한다.
     }
 
+    // 푸쉬알림 여부 등록
+    public int insertPushNotificationAgreement(int userIdx, PostUserReq postUserReq) {
+        log.debug("뭐야 여기 까지 안와?");
+        String insertPushNotificationAgreementQuery = "insert into PushNotificationAgreement (userIdx, orderNotification, restockNotification, reviewNotification, serviceCenterNotification, sellerShopNotification, adNotification) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        log.debug("엥??? 역;는?");
+        log.debug("대체 뭔데 {}", postUserReq.getPushNotificationAgreement().isOrderNotification());
+        Object[] insertPushNotificationAgreementParams = new Object[]{
+                userIdx,
+                postUserReq.getPushNotificationAgreement().isOrderNotification(),
+                postUserReq.getPushNotificationAgreement().isRestockNotification(),
+                postUserReq.getPushNotificationAgreement().isReviewNotification(),
+                postUserReq.getPushNotificationAgreement().isServiceCenterNotification(),
+                postUserReq.getPushNotificationAgreement().isSellerShopNotification(),
+                postUserReq.getPushNotificationAgreement().isServiceCenterNotification()
+        };
+        return this.jdbcTemplate.update(insertPushNotificationAgreementQuery, insertPushNotificationAgreementParams);
+    }
+
     // 이메일 확인
     public int checkEmail(String email) {
         String checkEmailQuery = "select exists(select email from User where email = ? AND status = true)"; // User Table에 해당 email 값을 갖는 유저 정보가 존재하는가?

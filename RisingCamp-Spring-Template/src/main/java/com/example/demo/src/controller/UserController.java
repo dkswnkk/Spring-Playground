@@ -55,8 +55,8 @@ public class UserController {
      */
     @ResponseBody
     @PostMapping("/sign-up")
-    public BaseResponse<PostUserRes> createUser(@RequestBody PostUserReq postUserReq) {
-
+    public BaseResponse<List<GetUserRes>> createUser(@RequestBody PostUserReq postUserReq) {
+        log.debug("대체 뭔데{}", postUserReq.getPushNotificationAgreement().isAdNotification());
         if (postUserReq.getEmail() == null) {
             return new BaseResponse<>(POST_USERS_EMPTY_EMAIL);
         }
@@ -74,8 +74,12 @@ public class UserController {
             return new BaseResponse<>(POST_USERS_INVALID_EMAIL);
         }
         try {
-            PostUserRes postUserRes = userService.createUser(postUserReq);
-            return new BaseResponse<>(postUserRes);
+            int userIdx = userService.createUser(postUserReq);
+            List<GetUserRes> getUserRes = new ArrayList<>();
+            List<PushNotificationAgreement> getAgreements = userProvider.getAgreements(userIdx);
+            User user = userProvider.getUser(userIdx);
+            getUserRes.add(new GetUserRes(user, new ArrayList<>(), getAgreements));
+            return new BaseResponse<>(getUserRes);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }

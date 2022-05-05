@@ -1,4 +1,5 @@
 package com.example.demo.src.domain.user.dto;
+
 import com.example.demo.src.domain.user.entitiy.Address;
 import com.example.demo.src.domain.user.entitiy.MembershipLevel;
 import com.example.demo.src.domain.user.entitiy.PushNotificationAgreement;
@@ -40,4 +41,6 @@ public class GetUserRes {
         this.addressList = address;
         this.agreements = agreements;
     }
+
+
 }

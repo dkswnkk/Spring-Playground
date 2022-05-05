@@ -48,7 +48,7 @@ public class UserService {
 
     // ******************************************************************************
     // 회원가입(POST)
-    public PostUserRes createUser(PostUserReq postUserReq) throws BaseException {
+    public int createUser(PostUserReq postUserReq) throws BaseException {
         // 중복 확인: 해당 이메일을 가진 이미 있을 때
         if (userProvider.checkEmail(postUserReq.getEmail()) == 1) {
             throw new BaseException(POST_USERS_EXISTS_EMAIL);
@@ -65,7 +65,10 @@ public class UserService {
         }
         try {
             int userIdx = userDao.createUser(postUserReq);
-            return new PostUserRes(userIdx);
+            log.debug("여기는 돌아");
+            userIdx = userDao.insertPushNotificationAgreement(userIdx, postUserReq);
+            log.debug("여기가 안돌아");
+            return userIdx;
 
 //  *********** 해당 부분은 7주차 수업 후 주석해제하서 대체해서 사용해주세요! ***********
 //            //jwt 발급.
