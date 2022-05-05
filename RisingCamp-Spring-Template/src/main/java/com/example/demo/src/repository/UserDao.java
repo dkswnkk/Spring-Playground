@@ -1,17 +1,15 @@
 package com.example.demo.src.repository;
 
-import com.example.demo.src.domain.user.dto.*;
-import com.example.demo.src.domain.user.entitiy.Address;
-import com.example.demo.src.domain.user.entitiy.MembershipLevel;
-import com.example.demo.src.domain.user.entitiy.PushNotificationAgreement;
-import com.example.demo.src.domain.user.entitiy.User;
+import com.example.demo.src.domain.dto.PostLoginReq;
+import com.example.demo.src.domain.dto.PostUserReq;
+import com.example.demo.src.domain.entitiy.MembershipLevel;
+import com.example.demo.src.domain.entitiy.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository //  [Persistence Layer에서 DAO를 명시하기 위해 사용]
@@ -71,24 +69,6 @@ public class UserDao {
         return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class); // 해당 쿼리문의 결과 마지막으로 삽인된 유저의 userIdx번호를 반환한다.
     }
 
-    // 푸쉬알림 여부 등록
-    public int insertPushNotificationAgreement(int userIdx, PostUserReq postUserReq) {
-        log.debug("뭐야 여기 까지 안와?");
-        String insertPushNotificationAgreementQuery = "insert into PushNotificationAgreement (userIdx, orderNotification, restockNotification, reviewNotification, serviceCenterNotification, sellerShopNotification, adNotification) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        log.debug("엥??? 역;는?");
-        log.debug("대체 뭔데 {}", postUserReq.getPushNotificationAgreement().isOrderNotification());
-        Object[] insertPushNotificationAgreementParams = new Object[]{
-                userIdx,
-                postUserReq.getPushNotificationAgreement().isOrderNotification(),
-                postUserReq.getPushNotificationAgreement().isRestockNotification(),
-                postUserReq.getPushNotificationAgreement().isReviewNotification(),
-                postUserReq.getPushNotificationAgreement().isServiceCenterNotification(),
-                postUserReq.getPushNotificationAgreement().isSellerShopNotification(),
-                postUserReq.getPushNotificationAgreement().isServiceCenterNotification()
-        };
-        return this.jdbcTemplate.update(insertPushNotificationAgreementQuery, insertPushNotificationAgreementParams);
-    }
-
     // 이메일 확인
     public int checkEmail(String email) {
         String checkEmailQuery = "select exists(select email from User where email = ? AND status = true)"; // User Table에 해당 email 값을 갖는 유저 정보가 존재하는가?
@@ -98,27 +78,7 @@ public class UserDao {
                 checkEmailParams); // checkEmailQuery, checkEmailParams를 통해 가져온 값(int)을 반환한다. -> 쿼리문의 결과(존재하지 않음(False,0),존재함(True, 1))를 int형(0,1)으로 반환됩니다.
     }
 
-    // 주소 조회
-    public List<Address> getAddress(int userIdx) {
-        String getAddressQuery = "select * from Address A join TimeInfo TI on A.addressIdx = TI.addressIdx where A.userIdx = ? AND A.status = true AND TI.status = true";
-        return this.jdbcTemplate.query(getAddressQuery,
-                (rs, rowNum) -> new Address(
-                        rs.getInt("A.addressIdx"),
-                        rs.getString("A.name"),
-                        rs.getString("A.phoneNumber"),
-                        rs.getString("A.city"),
-                        rs.getString("A.street"),
-                        rs.getString("A.detail"),
-                        rs.getString("A.zipcode"),
-                        rs.getString("TI.basicTimeInfo"),
-                        rs.getString("TI.basicHousePassword"),
-                        rs.getString("TI.dawnTimeInfo"),
-                        rs.getString("TI.dawnTimePassword"),
-                        rs.getBoolean("A.defaultAddress")
-                ),
-                userIdx
-        );
-    }
+
 
 //    // 회원정보 변경
 //    public int modifyUserName(PatchUserReq patchUserReq) {
@@ -174,21 +134,6 @@ public class UserDao {
         ); // 복수개의 회원정보들을 얻기 위해 jdbcTemplate 함수(Query, 객체 매핑 정보)의 결과 반환(동적쿼리가 아니므로 Parmas부분이 없음)
     }
 
-    public List<PushNotificationAgreement> getAgreement(int userIdx) {
-        String getAgreementQuery = "select * from PushNotificationAgreement where userIdx = ?";
-        return this.jdbcTemplate.query(getAgreementQuery,
-                (rs, rowNum) -> new PushNotificationAgreement(
-                        rs.getBoolean("orderNotification"),
-                        rs.getBoolean("restockNotification"),
-                        rs.getBoolean("reviewNotification"),
-                        rs.getBoolean("serviceCenterNotification"),
-                        rs.getBoolean("sellerShopNotification"),
-                        rs.getBoolean("adNotification")
-                ),
-                userIdx
-        );
-    }
-
     // 해당 email을 갖는 유저들의 정보 조회
 //    public List<GetUserRes> getUsersByEmail(String email) {
 //        String getUsersByEmailQuery = "select * from User where email = ? AND status = true"; // 해당 이메일을 가진 탈퇴하지 않은 유저
@@ -241,83 +186,12 @@ public class UserDao {
         return this.jdbcTemplate.update(deleteUserQuery, modifyUserNameParams); // 대응시켜 매핑시켜 쿼리 요청(생성했으면 1, 실패했으면 0)
     }
 
-    public int updateAddress(PatchAddressReq getAddressReq) {
-        String updateAddressQuery = "update Address A" +
-                " join TimeInfo TI on A.addressIdx = TI.addressIdx" +
-                " set A.name = ?," +
-                " A.city = ?," +
-                " A.street = ?," +
-                " A.detail = ?," +
-                " A.zipcode = ?," +
-                " A.phoneNumber = ?," +
-                " TI.basicTimeInfo = ?," +
-                " TI.basicHousePassword = ?," +
-                " TI.dawnTimeInfo = ?," +
-                " TI.dawnTimePassword = ?," +
-                " A.defaultAddress = ?" +
-                " where A.addressIdx=? AND A.status = true AND TI.status = true";
-
-        Object[] updateAddressParams = new Object[]{
-                getAddressReq.getName(),
-                getAddressReq.getCity(),
-                getAddressReq.getStreet(),
-                getAddressReq.getDetail(),
-                getAddressReq.getZipcode(),
-                getAddressReq.getPhoneNumber(),
-                getAddressReq.getBasicTimeInfo(),
-                getAddressReq.getBasicHousePassword(),
-                getAddressReq.getDawnTimeInfo(),
-                getAddressReq.getDawnTimePassword(),
-                getAddressReq.getIsDefault(),
-                getAddressReq.getAddressIdx()
-        };
-
-        return this.jdbcTemplate.update(updateAddressQuery, updateAddressParams);
-
-    }
-
-    public int deleteAddress(int addressIdx) {
-        String deleteAddressQuery = "update Address set status = 0 where addressIdx =?";
-        return this.jdbcTemplate.update(deleteAddressQuery, addressIdx);
-    }
-
-    public int initDefaultAddress(int userIdx) {
-        String initDefaultAddressQuery = "update Address A join User U set A.defaultAddress = false where A.status = true AND U.status = true AND A.userIdx = ?";
-        return this.jdbcTemplate.update(initDefaultAddressQuery, userIdx);
-    }
-
-    public int insertAddress(int userIdx, PostAddressReq postAddressReq) {
-        String insertAddressQuery = "insert into Address(userIdx, name, phoneNumber, city, street, detail, zipcode, defaultAddress)" +
-                " VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        Object[] insertAddressParams = {userIdx,
-                postAddressReq.getName(),
-                postAddressReq.getPhoneNumber(),
-                postAddressReq.getCity(),
-                postAddressReq.getStreet(),
-                postAddressReq.getDetail(),
-                postAddressReq.getZipcode(),
-                postAddressReq.getIsDefault()
-        };
-        return this.jdbcTemplate.update(insertAddressQuery, insertAddressParams);
-    }
 
     public int getLastInsertId() {
         String lastInsertIdQuery = "select last_insert_id()";
         return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
     }
 
-    public int insertTimeInfo(int addressIdx, PostAddressReq postAddressReq) {
-        String insertTimeInfoQuery = "insert into TimeInfo(addressIdx, basicTimeInfo, basicHousePassword, dawnTimeInfo, dawnTimePassword)" +
-                " VALUES (?, ?, ?, ?, ?)";
-        Object[] insertTimeInfoParams = {
-                addressIdx,
-                postAddressReq.getBasicTimeInfo(),
-                postAddressReq.getBasicHousePassword(),
-                postAddressReq.getDawnTimeInfo(),
-                postAddressReq.getDawnTimePassword(),
-        };
-        return this.jdbcTemplate.update(insertTimeInfoQuery, insertTimeInfoParams);
-    }
     //    // 회원정보 변경
 //    public int modifyUserName(PatchUserReq patchUserReq) {
 //        String modifyUserNameQuery = "update User set nickname = ? where userIdx = ? "; // 해당 userIdx를 만족하는 User를 해당 nickname으로 변경한다.

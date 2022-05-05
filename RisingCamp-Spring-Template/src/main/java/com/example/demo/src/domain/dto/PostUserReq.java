@@ -1,6 +1,6 @@
-package com.example.demo.src.domain.user.dto;
+package com.example.demo.src.domain.dto;
 
-import com.example.demo.src.domain.user.entitiy.PushNotificationAgreement;
+import com.example.demo.src.domain.entitiy.PushNotificationAgreement;
 import lombok.*;
 
 @Data

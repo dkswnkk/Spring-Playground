@@ -1,10 +1,13 @@
-package com.example.demo.src.domain.user.dto;
+package com.example.demo.src.domain.entitiy;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 
-import lombok.Data;
-
-@Data
-public class PostAddressReq {
+@Getter
+@AllArgsConstructor
+public class Address {
+    private int addressIdx;
     private String name;
     private String phoneNumber;
     private String city;
@@ -17,3 +20,4 @@ public class PostAddressReq {
     private String dawnTimePassword;
     private Boolean isDefault;
 }
+

@@ -1,19 +1,19 @@
-package com.example.demo.src.service.user;
+package com.example.demo.src.service;
 
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.secret.Secret;
-import com.example.demo.src.domain.user.dto.PatchAddressReq;
-import com.example.demo.src.domain.user.dto.PostAddressReq;
-import com.example.demo.src.domain.user.dto.PostUserReq;
-import com.example.demo.src.domain.user.dto.PostUserRes;
-import com.example.demo.src.domain.user.entitiy.Address;
+import com.example.demo.src.domain.dto.PatchAddressReq;
+import com.example.demo.src.domain.dto.PostAddressReq;
+import com.example.demo.src.domain.dto.PostUserReq;
+import com.example.demo.src.domain.entitiy.Address;
+import com.example.demo.src.repository.AddressDao;
+import com.example.demo.src.repository.PushNotificationAgreementDao;
 import com.example.demo.src.repository.UserDao;
 import com.example.demo.utils.AES128;
 import com.example.demo.utils.JwtService;
-import com.fasterxml.jackson.databind.ser.Serializers;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,6 +28,7 @@ import static com.example.demo.config.BaseResponseStatus.*;
  */
 @Slf4j
 @Service    // [Business Layer에서 Service를 명시하기 위해서 사용] 비즈니스 로직이나 respository layer 호출하는 함수에 사용된다.
+@RequiredArgsConstructor
 // [Business Layer]는 컨트롤러와 데이터 베이스를 연결
 public class UserService {
 //    final Logger logger = LoggerFactory.getLogger(this.getClass()); // Log 처리부분: Log를 기록하기 위해 필요한 함수입니다.
@@ -36,15 +37,17 @@ public class UserService {
     private final UserDao userDao;
     private final UserProvider userProvider;
     private final JwtService jwtService; // JWT부분은 7주차에 다루므로 모르셔도 됩니다!
+    private final PushNotificationAgreementDao pushNotificationAgreementDao;
+    private final AddressDao addressDao;
 
 
-    @Autowired //readme 참고
-    public UserService(UserDao userDao, UserProvider userProvider, JwtService jwtService) {
-        this.userDao = userDao;
-        this.userProvider = userProvider;
-        this.jwtService = jwtService; // JWT부분은 7주차에 다루므로 모르셔도 됩니다!
-
-    }
+//    @Autowired //readme 참고
+//    public UserService(UserDao userDao, UserProvider userProvider, JwtService jwtService) {
+//        this.userDao = userDao;
+//        this.userProvider = userProvider;
+//        this.jwtService = jwtService; // JWT부분은 7주차에 다루므로 모르셔도 됩니다!
+//
+//    }
 
     // ******************************************************************************
     // 회원가입(POST)
@@ -66,7 +69,7 @@ public class UserService {
         try {
             int userIdx = userDao.createUser(postUserReq);
             log.debug("여기는 돌아");
-            userIdx = userDao.insertPushNotificationAgreement(userIdx, postUserReq);
+            userIdx = pushNotificationAgreementDao.insertPushNotificationAgreement(userIdx, postUserReq);
             log.debug("여기가 안돌아");
             return userIdx;
 
@@ -104,7 +107,7 @@ public class UserService {
 
     public List<Address> getAddress(int userIdx) throws BaseException {
         try {
-            List<Address> address = userDao.getAddress(userIdx);
+            List<Address> address = addressDao.getAddress(userIdx);
             return address;
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
@@ -114,7 +117,7 @@ public class UserService {
     // 주소 변경
     public PatchAddressReq updateAddress(PatchAddressReq patchAddressReq) throws BaseException {
         try {
-            int result = userDao.updateAddress(patchAddressReq);
+            int result = addressDao.updateAddress(patchAddressReq);
             if (result == 0) {
                 throw new BaseException(UPDATE_FAIL_ADDRESS);
             }
@@ -127,7 +130,7 @@ public class UserService {
     // 해당 유저의 모든 주소를 기본배송지가 아님으로 변경
     public void initDefaultAddress(int userIdx) throws BaseException {
         try {
-            int result = userDao.initDefaultAddress(userIdx);
+            int result = addressDao.initDefaultAddress(userIdx);
             if (result == 0) {
                 throw new BaseException(USERS_EMPTY_USER_ID);
             }
@@ -151,7 +154,7 @@ public class UserService {
 
     public void deleteAddress(int addressIdx) throws BaseException {
         try {
-            int result = userDao.deleteAddress(addressIdx);
+            int result = addressDao.deleteAddress(addressIdx);
             if (result == 0) {
                 throw new BaseException(ADDRESS_EMPTY_ADDRESS_ID);
             }
@@ -163,7 +166,7 @@ public class UserService {
 
     public void insertTimeInfo(int addressIdx, PostAddressReq postAddressReq) throws BaseException {
         try {
-            int result = userDao.insertTimeInfo(addressIdx, postAddressReq);
+            int result = addressDao.insertTimeInfo(addressIdx, postAddressReq);
             if (result == 0) {
                 throw new BaseException(ADDRESS_EMPTY_ADDRESS_ID);
             }
@@ -174,7 +177,7 @@ public class UserService {
 
     public int insertAddress(int userIdx, PostAddressReq postAddressReq) throws BaseException {
         try {
-            int result = userDao.insertAddress(userIdx, postAddressReq);
+            int result = pushNotificationAgreementDao.insertAddress(userIdx, postAddressReq);
             if (result == 0) {
                 throw new BaseException(ADDRESS_EMPTY_ADDRESS_ID);
             }

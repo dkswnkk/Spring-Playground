@@ -1,4 +1,4 @@
-package com.example.demo.src.domain.user.entitiy;
+package com.example.demo.src.domain.entitiy;
 
 import java.util.Arrays;
 

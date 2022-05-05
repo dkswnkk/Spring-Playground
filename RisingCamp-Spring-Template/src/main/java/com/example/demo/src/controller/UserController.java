@@ -2,12 +2,12 @@ package com.example.demo.src.controller;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
-import com.example.demo.src.domain.user.dto.*;
-import com.example.demo.src.domain.user.entitiy.Address;
-import com.example.demo.src.domain.user.entitiy.PushNotificationAgreement;
-import com.example.demo.src.domain.user.entitiy.User;
-import com.example.demo.src.service.user.UserProvider;
-import com.example.demo.src.service.user.UserService;
+import com.example.demo.src.domain.dto.*;
+import com.example.demo.src.domain.entitiy.Address;
+import com.example.demo.src.domain.entitiy.PushNotificationAgreement;
+import com.example.demo.src.domain.entitiy.User;
+import com.example.demo.src.service.UserProvider;
+import com.example.demo.src.service.UserService;
 import com.example.demo.utils.JwtService;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;

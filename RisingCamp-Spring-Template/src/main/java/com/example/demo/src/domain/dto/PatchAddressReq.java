@@ -1,13 +1,9 @@
-package com.example.demo.src.domain.user.entitiy;
+package com.example.demo.src.domain.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Data;
 
-
-@Getter
-@AllArgsConstructor
-public class Address {
+@Data
+public class PatchAddressReq {
     private int addressIdx;
     private String name;
     private String phoneNumber;

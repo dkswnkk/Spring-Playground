@@ -1,10 +1,10 @@
-package com.example.demo.src.domain.user.dto;
+package com.example.demo.src.domain.dto;
+
 
 import lombok.Data;
 
 @Data
-public class PatchAddressReq {
-    private int addressIdx;
+public class PostAddressReq {
     private String name;
     private String phoneNumber;
     private String city;
@@ -17,4 +17,3 @@ public class PatchAddressReq {
     private String dawnTimePassword;
     private Boolean isDefault;
 }
-
