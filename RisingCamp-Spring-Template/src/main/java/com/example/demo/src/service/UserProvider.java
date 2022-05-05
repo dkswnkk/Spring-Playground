@@ -11,6 +11,7 @@ import com.example.demo.src.repository.PushNotificationAgreementDao;
 import com.example.demo.src.repository.UserDao;
 import com.example.demo.utils.AES128;
 import com.example.demo.utils.JwtService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ import static com.example.demo.config.BaseResponseStatus.*;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class UserProvider {
     // *********************** 동작에 있어 필요한 요소들을 불러옵니다. *************************
     private final UserDao userDao;
@@ -35,13 +37,13 @@ public class UserProvider {
     private final AddressDao addressDao;
     private final PushNotificationAgreementDao pushNotificationAgreementDao;
 
-    @Autowired //readme 참고
-    public UserProvider(UserDao userDao, JwtService jwtServic, AddressDao addressDao, PushNotificationAgreementDao pushNotificationAgreementDao) {
-        this.userDao = userDao;
-//        this.jwtService = jwtService; // JWT부분은 7주차에 다루므로 모르셔도 됩니다!
-        this.addressDao = addressDao;
-        this.pushNotificationAgreementDao = pushNotificationAgreementDao;
-    }
+//    @Autowired //readme 참고
+//    public UserProvider(UserDao userDao, JwtService jwtServic, AddressDao addressDao, PushNotificationAgreementDao pushNotificationAgreementDao) {
+//        this.userDao = userDao;
+////        this.jwtService = jwtService; // JWT부분은 7주차에 다루므로 모르셔도 됩니다!
+//        this.addressDao = addressDao;
+//        this.pushNotificationAgreementDao = pushNotificationAgreementDao;
+//    }
     // ******************************************************************************
 
 
