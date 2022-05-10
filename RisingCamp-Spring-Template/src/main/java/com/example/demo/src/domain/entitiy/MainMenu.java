@@ -12,13 +12,14 @@ import java.util.Map;
 @Slf4j
 @AllArgsConstructor
 public class MainMenu {
-    private int mainMenuIdx;
+    private Long mainMenuIdx;
     private String title;
     private String url;
 
     public MainMenu(Map<String, Object> menu) {
-        log.debug(menu.toString());
-        this.mainMenuIdx = Integer.parseInt(String.valueOf(menu.get("mainMenuIdx")));
+//        this.mainMenuIdx = Integer.parseInt(String.valueOf(menu.get("mainMenuIdx")));
+        log.debug("{}",menu.get("mainMenuIdx").getClass());
+        this.mainMenuIdx = (Long) menu.get("mainMenuIdx");
         this.title = (String) menu.get("title");
         this.url = (String) menu.get("imageUrl");
     }

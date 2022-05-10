@@ -1,6 +1,5 @@
 package com.example.demo.src.repository;
 
-import com.example.demo.src.domain.dto.PostAddressReq;
 import com.example.demo.src.domain.dto.PostUserReq;
 import com.example.demo.src.domain.entitiy.PushNotificationAgreement;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +37,7 @@ public class PushNotificationAgreementDao {
     }
 
     // 푸쉬알림 여부 등록
-    public int insertPushNotificationAgreement(int userIdx, PostUserReq postUserReq) {
+    public void insertPushNotificationAgreement(int userIdx, PostUserReq postUserReq) {
         String insertPushNotificationAgreementQuery = "insert into PushNotificationAgreement (userIdx, orderNotification, restockNotification, reviewNotification, serviceCenterNotification, sellerShopNotification, adNotification) VALUES (?, ?, ?, ?, ?, ?, ?)";
         Object[] insertPushNotificationAgreementParams = new Object[]{
                 userIdx,
@@ -49,7 +48,7 @@ public class PushNotificationAgreementDao {
                 postUserReq.getPushNotificationAgreement().isSellerShopNotification(),
                 postUserReq.getPushNotificationAgreement().isServiceCenterNotification()
         };
-        return this.jdbcTemplate.update(insertPushNotificationAgreementQuery, insertPushNotificationAgreementParams);
+        this.jdbcTemplate.update(insertPushNotificationAgreementQuery, insertPushNotificationAgreementParams);
     }
 
 //    public PushNotificationAgreement getPushNotification(int userIdx) {

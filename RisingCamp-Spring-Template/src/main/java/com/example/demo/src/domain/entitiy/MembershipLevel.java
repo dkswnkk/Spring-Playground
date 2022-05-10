@@ -10,7 +10,7 @@ public enum MembershipLevel {
     BASIC("BASIC"),
     ROCKET("ROCKET");
 
-    private String value;
+    private final String value;
 
     MembershipLevel(String value) {
         this.value = value;

@@ -22,14 +22,14 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/app/mainMenus")
+@RequestMapping("/app/main")
 @Slf4j
 @RequiredArgsConstructor
 public class MainMenuController {
 
     private final MainMenuProvider mainMenuProvider;
 
-    @GetMapping("")
+    @GetMapping("/menu")
     public BaseResponse<List<MainMenu>> getMainMenu() {
         try {
             List<MainMenu> getMainMenuRes = mainMenuProvider.getMainMenu();

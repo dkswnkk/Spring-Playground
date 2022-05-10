@@ -5,18 +5,18 @@ import lombok.Getter;
 
 @Getter
 public class GetAddressRes {
-    private int addressIdx;
-    private String name;
-    private String phoneNumber;
-    private String city;
-    private String street;
-    private String detail;
-    private String zipcode;
-    private String basicTimeInfo;
-    private String basicHousePassword;
-    private String dawnTimeInfo;
-    private String dawnTimePassword;
-    private Boolean isDefault;
+    private final int addressIdx;
+    private final String name;
+    private final String phoneNumber;
+    private final String city;
+    private final String street;
+    private final String detail;
+    private final String zipcode;
+    private final String basicTimeInfo;
+    private final String basicHousePassword;
+    private final String dawnTimeInfo;
+    private final String dawnTimePassword;
+    private final Boolean isDefault;
 
     public GetAddressRes(Address address) {
         this.addressIdx = address.getAddressIdx();

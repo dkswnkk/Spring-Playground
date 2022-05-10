@@ -52,7 +52,7 @@ public class AddressDao {
                 " A.zipcode = ?," +
                 " A.phoneNumber = ?," +
                 " TI.basicTimeInfo = ?," +
-                " TI.basicHousePassword = ?," +
+                " TI.basicHousePasswozrd = ?," +
                 " TI.dawnTimeInfo = ?," +
                 " TI.dawnTimePassword = ?," +
                 " A.defaultAddress = ?" +

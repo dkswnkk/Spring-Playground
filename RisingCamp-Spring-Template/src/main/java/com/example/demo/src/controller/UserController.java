@@ -24,9 +24,9 @@ import static com.example.demo.utils.ValidationRegex.isRegexEmail;
 @RequestMapping("/app/users")
 @Slf4j
 @RequiredArgsConstructor
-/**
- * Controller란?
- * 사용자의 Request를 전달받아 요청의 처리를 담당하는 Service, Prodiver 를 호출
+/*
+  Controller란?
+  사용자의 Request를 전달받아 요청의 처리를 담당하는 Service, Prodiver 를 호출
  */
 public class UserController {
 
@@ -35,7 +35,7 @@ public class UserController {
    // @Autowired  // 객체 생성을 스프링에서 자동으로 생성해주는 역할. 주입하려 하는 객체의 타입이 일치하는 객체를 자동으로 주입한다.
     // IoC(Inversion of Control, 제어의 역전) / DI(Dependency Injection, 의존관계 주입)에 대한 공부하시면, 더 깊이 있게 Spring에 대한 공부를 하실 수 있을 겁니다!(일단은 모르고 넘어가셔도 무방합니다.)
     // IoC 간단설명,  메소드나 객체의 호출작업을 개발자가 결정하는 것이 아니라, 외부에서 결정되는 것을 의미
-    // DI 간단설명, 객체를 직접 생성하는 게 아니라 외부에서 생성한 후 주입 시켜주는 방식
+    // DI 간단설명, 객체를 직접 생성하는 게 아니라 외부에서 생x성한 후 주입 시켜주는 방식
     private final UserProvider userProvider;
     private final UserService userService;
     private final JwtService jwtService; // JWT부분은 7주차에 다루므로 모르셔도 됩니다!
@@ -94,6 +94,8 @@ public class UserController {
             List<Address> getAddress = userProvider.getAddress(userIdx);
             List<PushNotificationAgreement> getAgreements = userProvider.getAgreements(userIdx);
             getUserRes.add(new GetUserRes(user, getAddress, getAgreements));
+
+            List<String> list = new ArrayList<>();
             return new BaseResponse<>(getUserRes);
         } catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
@@ -149,7 +151,7 @@ public class UserController {
     public BaseResponse<String> deleteUser(@PathVariable("userIdx") int userIdx) {
         try {
             int id = userService.deleteUser(userIdx);
-            return new BaseResponse(String.format("유저 아이디 %d이 삭제되었습니다.", id));
+            return new BaseResponse(true);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }
@@ -190,7 +192,7 @@ public class UserController {
         }
         try {
             userService.updateMembership(userIdx, memberType);
-            return new BaseResponse<>(String.format("유저 %d의 멤버 등급이 %s으로 변경되었습니다.", userIdx, memberType));
+            return new BaseResponse<>(memberType);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }
@@ -199,7 +201,7 @@ public class UserController {
     @PatchMapping("/{userIdx}/address")
     public BaseResponse<PatchAddressRes> updateAddress(@PathVariable int userIdx, @RequestBody PatchAddressReq getAddressReq) {
         try {
-            if (getAddressReq.getIsDefault() == true) {    // 지금 입력하는 주소지가 기본 주소라면 이미있는 기본 주소지를 0으로 만듬
+            if (getAddressReq.getIsDefault()) {    // 지금 입력하는 주소지가 기본 주소라면 이미있는 기본 주소지를 0으로 만듬
                 userService.initDefaultAddress(userIdx);
             }
             PatchAddressRes patchAddressRes = new PatchAddressRes(userService.updateAddress(getAddressReq));
@@ -222,7 +224,7 @@ public class UserController {
     @PostMapping("/{userIdx}/address")
     public BaseResponse<List<GetAddressRes>> insertAddress(@PathVariable int userIdx, @RequestBody PostAddressReq postAddressReq) {
         try {
-            if (postAddressReq.getIsDefault() == true) {    // 지금 등록하는 주소지가 기본 주소라면 이미있는 기본 주소지를 0으로 만듬
+            if (postAddressReq.getIsDefault()) {    // 지금 등록하는 주소지가 기본 주소라면 이미있는 기본 주소지를 0으로 만듬
                 userService.initDefaultAddress(userIdx);
             }
 

@@ -37,20 +37,10 @@ public class UserProvider {
     private final AddressDao addressDao;
     private final PushNotificationAgreementDao pushNotificationAgreementDao;
 
-//    @Autowired //readme 참고
-//    public UserProvider(UserDao userDao, JwtService jwtServic, AddressDao addressDao, PushNotificationAgreementDao pushNotificationAgreementDao) {
-//        this.userDao = userDao;
-////        this.jwtService = jwtService; // JWT부분은 7주차에 다루므로 모르셔도 됩니다!
-//        this.addressDao = addressDao;
-//        this.pushNotificationAgreementDao = pushNotificationAgreementDao;
-//    }
-    // ******************************************************************************
-
-
     // 로그인(password 검사)
     public int logIn(PostLoginReq postLoginReq) throws BaseException {
         User user = userDao.getPwd(postLoginReq);
-        if (user.getStatus() == false) {
+        if (!user.getStatus()) {
             throw new BaseException(FAILED_TO_LOGIN);
         }
         String password;
@@ -62,8 +52,7 @@ public class UserProvider {
         }
 
         if (postLoginReq.getPassword().equals(password)) { //비말번호가 일치한다면 userIdx를 가져온다.
-            int userIdx = userDao.getPwd(postLoginReq).getUserIdx();
-            return userIdx;
+            return userDao.getPwd(postLoginReq).getUserIdx();
 //  *********** 해당 부분은 7주차 - JWT 수업 후 주석해제 및 대체해주세요!  **************** //
 //            String jwt = jwtService.createJwt(userIdx);
 //            return new PostLoginRes(userIdx,jwt);
@@ -86,8 +75,7 @@ public class UserProvider {
     // 모든 User 조회
     public List<User> getUsers() throws BaseException {
         try {
-            List<User> getUserRes = userDao.getUsers();
-            return getUserRes;
+            return userDao.getUsers();
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
@@ -96,8 +84,7 @@ public class UserProvider {
     // 주소 조회
     public List<Address> getAddress(int userIdx) throws BaseException {
         try {
-            List<Address> getAddress = addressDao.getAddress(userIdx);
-            return getAddress;
+            return addressDao.getAddress(userIdx);
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
@@ -105,8 +92,7 @@ public class UserProvider {
 
     public List<PushNotificationAgreement> getAgreements(int userIdx) throws BaseException {
         try {
-            List<PushNotificationAgreement> getAgreements = pushNotificationAgreementDao.getAgreement(userIdx);
-            return getAgreements;
+            return pushNotificationAgreementDao.getAgreement(userIdx);
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
@@ -126,8 +112,7 @@ public class UserProvider {
     //해당 userIdx를 갖는 User의 정보 조회
     public User getUser(int userIdx) throws BaseException {
         try {
-            User getUserRes = userDao.getUser(userIdx);
-            return getUserRes;
+            return userDao.getUser(userIdx);
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
