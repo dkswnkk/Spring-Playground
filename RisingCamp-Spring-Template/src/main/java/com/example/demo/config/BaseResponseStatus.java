@@ -1,5 +1,4 @@
 package com.example.demo.config;
-
 import lombok.Getter;
 
 /**

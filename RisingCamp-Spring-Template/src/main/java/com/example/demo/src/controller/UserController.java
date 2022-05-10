@@ -3,6 +3,13 @@ package com.example.demo.src.controller;
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
 import com.example.demo.src.domain.dto.*;
+import com.example.demo.src.domain.dto.address.GetAddressRes;
+import com.example.demo.src.domain.dto.address.PatchAddressReq;
+import com.example.demo.src.domain.dto.address.PatchAddressRes;
+import com.example.demo.src.domain.dto.address.PostAddressReq;
+import com.example.demo.src.domain.dto.sign.PostLoginReq;
+import com.example.demo.src.domain.dto.user.GetUserRes;
+import com.example.demo.src.domain.dto.user.PostUserReq;
 import com.example.demo.src.domain.entitiy.Address;
 import com.example.demo.src.domain.entitiy.PushNotificationAgreement;
 import com.example.demo.src.domain.entitiy.User;
@@ -72,7 +79,7 @@ public class UserController {
             return new BaseResponse<>(POST_USERS_INVALID_EMAIL);
         }
         try {
-            int userIdx = userService.createUser(postUserReq);
+            Long userIdx= userService.createUser(postUserReq);
             List<GetUserRes> getUserRes = new ArrayList<>();
             List<PushNotificationAgreement> getAgreements = userProvider.getAgreements(userIdx);
             User user = userProvider.getUser(userIdx);
@@ -88,7 +95,7 @@ public class UserController {
     @PostMapping("/log-in")
     public BaseResponse<List<GetUserRes>> logIn(@RequestBody PostLoginReq postLoginReq) {
         try {
-            int userIdx = userProvider.logIn(postLoginReq);
+            Long userIdx= userProvider.logIn(postLoginReq);
             User user = userProvider.getUser(userIdx);
             List<GetUserRes> getUserRes = new ArrayList<>();
             List<Address> getAddress = userProvider.getAddress(userIdx);
@@ -113,7 +120,7 @@ public class UserController {
             List<GetUserRes> getUserRes = new ArrayList<>(); // 반환할거 클라이언트에게
             List<User> getUsers = userProvider.getUsers();
             for (User getUser : getUsers) {
-                int userIdx = getUser.getUserIdx();
+                Long userIdx= getUser.getUserIdx();
                 List<Address> getAddress = userProvider.getAddress(userIdx);
                 List<PushNotificationAgreement> getAgreements = userProvider.getAgreements(userIdx);
                 getUserRes.add(new GetUserRes(getUser, getAddress, getAgreements));
@@ -130,7 +137,7 @@ public class UserController {
      */
     @ResponseBody
     @GetMapping("/{userIdx}")
-    public BaseResponse<List<GetUserRes>> getUser(@PathVariable("userIdx") int userIdx) {
+    public BaseResponse<List<GetUserRes>> getUser(@PathVariable("userIdx") Long userIdx) {
         try {
             List<GetUserRes> getUserRes = new ArrayList<>(); // 반환할거 클라이언트에게
             User getUser = userProvider.getUser(userIdx);
@@ -148,9 +155,9 @@ public class UserController {
      * 회원탈퇴
      */
     @DeleteMapping("/{userIdx}")
-    public BaseResponse<String> deleteUser(@PathVariable("userIdx") int userIdx) {
+    public BaseResponse<String> deleteUser(@PathVariable("userIdx") Long userIdx) {
         try {
-            int id = userService.deleteUser(userIdx);
+            Long id = userService.deleteUser(userIdx);
             return new BaseResponse(true);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
@@ -163,12 +170,12 @@ public class UserController {
      */
 //    @ResponseBody
 //    @PatchMapping("/{userIdx}")
-//    public BaseResponse<String> modifyUserName(@PathVariable("userIdx") int userIdx, @RequestBody User user) {
+//    public BaseResponse<String> modifyUserName(@PathVariable("userIdx") Long userIdx, @RequestBody User user) {
 //        try {
 ///**
 // *********** 해당 부분은 7주차 - JWT 수업 후 주석해체 해주세요!  ****************
 // //jwt에서 idx 추출.
-// int userIdxByJwt = jwtService.getUserIdx();
+// Long userIdxByJwt = jwtService.getUserIdx();
 // //userIdx와 접근한 유저가 같은지 확인
 // if(userIdx != userIdxByJwt){
 // return new BaseResponse<>(INVALID_USER_JWT);
@@ -186,7 +193,7 @@ public class UserController {
 //        }
 //    }
     @PatchMapping("/{userIdx}/membership")
-    public BaseResponse<String> updateMembership(@PathVariable("userIdx") int userIdx, @RequestParam("memberType") String memberType) {
+    public BaseResponse<String> updateMembership(@PathVariable("userIdx") Long userIdx, @RequestParam("memberType") String memberType) {
         if (!memberType.equals("BASIC") && !memberType.equals("ROCKET")) {
             return new BaseResponse<>(PATCH_USERS_INVALID_MEMBERSHIP_LEVEL);
         }
@@ -199,7 +206,7 @@ public class UserController {
     }
 
     @PatchMapping("/{userIdx}/address")
-    public BaseResponse<PatchAddressRes> updateAddress(@PathVariable int userIdx, @RequestBody PatchAddressReq getAddressReq) {
+    public BaseResponse<PatchAddressRes> updateAddress(@PathVariable Long userIdx, @RequestBody PatchAddressReq getAddressReq) {
         try {
             if (getAddressReq.getIsDefault()) {    // 지금 입력하는 주소지가 기본 주소라면 이미있는 기본 주소지를 0으로 만듬
                 userService.initDefaultAddress(userIdx);
@@ -212,7 +219,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{userIdx}/address")
-    public BaseResponse<List<GetAddressRes>> deleteAddress(@PathVariable int userIdx, @RequestParam("addressIdx") int addressIdx) {
+    public BaseResponse<List<GetAddressRes>> deleteAddress(@PathVariable Long userIdx, @RequestParam("addressIdx") int addressIdx) {
         try {
             userService.deleteAddress(addressIdx);
             return getListBaseResponse(userService.getAddress(userIdx), userIdx);
@@ -222,7 +229,7 @@ public class UserController {
     }
 
     @PostMapping("/{userIdx}/address")
-    public BaseResponse<List<GetAddressRes>> insertAddress(@PathVariable int userIdx, @RequestBody PostAddressReq postAddressReq) {
+    public BaseResponse<List<GetAddressRes>> insertAddress(@PathVariable Long userIdx, @RequestBody PostAddressReq postAddressReq) {
         try {
             if (postAddressReq.getIsDefault()) {    // 지금 등록하는 주소지가 기본 주소라면 이미있는 기본 주소지를 0으로 만듬
                 userService.initDefaultAddress(userIdx);
@@ -239,7 +246,7 @@ public class UserController {
 
 
     @PatchMapping("{userIdx}/notification")
-    public BaseResponse<GetPushNotificationAgreementRes> updatePushNotificationAgreement(@PathVariable int userIdx, @RequestParam("notificationName") String notificationName) {
+    public BaseResponse<GetPushNotificationAgreementRes> updatePushNotificationAgreement(@PathVariable Long userIdx, @RequestParam("notificationName") String notificationName) {
         try {
             userIdx = userService.updatePushNotification(userIdx, notificationName);
             List<PushNotificationAgreement> pushNotificationAgreement = userProvider.getAgreements(userIdx);
@@ -250,11 +257,10 @@ public class UserController {
     }
 
     @NotNull
-    private BaseResponse<List<GetAddressRes>> getListBaseResponse(List<Address> address2, @PathVariable int userIdx) throws BaseException {
+    private BaseResponse<List<GetAddressRes>> getListBaseResponse(List<Address> address2, @PathVariable Long userIdx) throws BaseException {
         List<GetAddressRes> getAddressRes = new ArrayList<>();
-        List<Address> addresses = address2;
 
-        for (Address address : addresses) {
+        for (Address address : address2) {
             getAddressRes.add(new GetAddressRes(address));
         }
         return new BaseResponse<>(getAddressRes);

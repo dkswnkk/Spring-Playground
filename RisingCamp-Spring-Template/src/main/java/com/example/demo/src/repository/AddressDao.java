@@ -1,7 +1,7 @@
 package com.example.demo.src.repository;
 
-import com.example.demo.src.domain.dto.PatchAddressReq;
-import com.example.demo.src.domain.dto.PostAddressReq;
+import com.example.demo.src.domain.dto.address.PatchAddressReq;
+import com.example.demo.src.domain.dto.address.PostAddressReq;
 import com.example.demo.src.domain.entitiy.Address;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +20,13 @@ public class AddressDao {
     public void setDataSource(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
+
     // 주소 조회
-    public List<Address> getAddress(int userIdx) {
+    public List<Address> getAddress(Long userIdx) {
         String getAddressQuery = "select * from Address A join TimeInfo TI on A.addressIdx = TI.addressIdx where A.userIdx = ? AND A.status = true AND TI.status = true";
         return this.jdbcTemplate.query(getAddressQuery,
                 (rs, rowNum) -> new Address(
-                        rs.getInt("A.addressIdx"),
+                        rs.getLong("A.addressIdx"),
                         rs.getString("A.name"),
                         rs.getString("A.phoneNumber"),
                         rs.getString("A.city"),
@@ -77,7 +78,7 @@ public class AddressDao {
 
     }
 
-    public int insertAddress(int userIdx, PostAddressReq postAddressReq) {
+    public int insertAddress(Long userIdx, PostAddressReq postAddressReq) {
         String insertAddressQuery = "insert into Address(userIdx, name, phoneNumber, city, street, detail, zipcode, defaultAddress)" +
                 " VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         Object[] insertAddressParams = {userIdx,
@@ -97,7 +98,7 @@ public class AddressDao {
         return this.jdbcTemplate.update(deleteAddressQuery, addressIdx);
     }
 
-    public int initDefaultAddress(int userIdx) {
+    public int initDefaultAddress(Long userIdx) {
         String initDefaultAddressQuery = "update Address A join User U set A.defaultAddress = false where A.status = true AND U.status = true AND A.userIdx = ?";
         return this.jdbcTemplate.update(initDefaultAddressQuery, userIdx);
     }

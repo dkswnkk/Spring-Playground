@@ -1,4 +1,4 @@
-package com.example.demo.src.domain.dto;
+package com.example.demo.src.domain.dto.user;
 
 import com.example.demo.src.domain.entitiy.Address;
 import com.example.demo.src.domain.entitiy.MembershipLevel;
@@ -18,7 +18,7 @@ import java.util.List;
  */
 @Data
 public class GetUserRes {
-    private int userIdx;
+    private Long userIdx;
     private String profileImage;
     private String email;
     private String name;

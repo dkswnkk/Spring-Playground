@@ -1,4 +1,4 @@
-package com.example.demo.src.domain.dto;
+package com.example.demo.src.domain.dto.sign;
 
 import lombok.*;
 

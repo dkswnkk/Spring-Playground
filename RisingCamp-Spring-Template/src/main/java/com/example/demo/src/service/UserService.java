@@ -3,9 +3,9 @@ package com.example.demo.src.service;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.secret.Secret;
-import com.example.demo.src.domain.dto.PatchAddressReq;
-import com.example.demo.src.domain.dto.PostAddressReq;
-import com.example.demo.src.domain.dto.PostUserReq;
+import com.example.demo.src.domain.dto.address.PatchAddressReq;
+import com.example.demo.src.domain.dto.address.PostAddressReq;
+import com.example.demo.src.domain.dto.user.PostUserReq;
 import com.example.demo.src.domain.entitiy.Address;
 import com.example.demo.src.repository.AddressDao;
 import com.example.demo.src.repository.PushNotificationAgreementDao;
@@ -51,7 +51,7 @@ public class UserService {
 
     // ******************************************************************************
     // 회원가입(POST)
-    public int createUser(PostUserReq postUserReq) throws BaseException {
+    public Long createUser(PostUserReq postUserReq) throws BaseException {
         // 중복 확인: 해당 이메일을 가진 이미 있을 때
         if (userProvider.checkEmail(postUserReq.getEmail()) == 1) {
             throw new BaseException(POST_USERS_EXISTS_EMAIL);
@@ -67,7 +67,7 @@ public class UserService {
             throw new BaseException(PASSWORD_ENCRYPTION_ERROR);
         }
         try {
-            int userIdx = userDao.createUser(postUserReq);
+            Long userIdx= userDao.createUser(postUserReq);
             pushNotificationAgreementDao.insertPushNotificationAgreement(userIdx, postUserReq);
             return userIdx;
 
@@ -92,7 +92,7 @@ public class UserService {
 //            throw new BaseException(DATABASE_ERROR);
 //        }
 //    }
-    public void updateMembership(int userIdx, String memberType) throws BaseException {
+    public void updateMembership(Long userIdx, String memberType) throws BaseException {
         try {
             int result = userDao.updateMembership(userIdx, memberType);
             if (result == 0) {
@@ -103,7 +103,7 @@ public class UserService {
         }
     }
 
-    public List<Address> getAddress(int userIdx) throws BaseException {
+    public List<Address> getAddress(Long userIdx) throws BaseException {
         try {
             return addressDao.getAddress(userIdx);
         } catch (Exception exception) {
@@ -125,7 +125,7 @@ public class UserService {
     }
 
     // 해당 유저의 모든 주소를 기본배송지가 아님으로 변경
-    public void initDefaultAddress(int userIdx) throws BaseException {
+    public void initDefaultAddress(Long userIdx) throws BaseException {
         try {
             int result = addressDao.initDefaultAddress(userIdx);
             if (result == 0) {
@@ -137,7 +137,7 @@ public class UserService {
     }
 
     // 회원정보 삭제(Patch)
-    public int deleteUser(int userIdx) throws BaseException {
+    public Long deleteUser(Long userIdx) throws BaseException {
         try {
             int result = userDao.deleteUser(userIdx);
             if (result == 0) {
@@ -172,7 +172,7 @@ public class UserService {
         }
     }
 
-    public int insertAddress(int userIdx, PostAddressReq postAddressReq) throws BaseException {
+    public int insertAddress(Long userIdx, PostAddressReq postAddressReq) throws BaseException {
         try {
             int result = addressDao.insertAddress(userIdx, postAddressReq);
             if (result == 0) {
@@ -184,7 +184,7 @@ public class UserService {
         }
     }
 
-    public int updatePushNotification(int userIdx, String notificationName) throws BaseException {
+    public Long updatePushNotification(Long userIdx, String notificationName) throws BaseException {
         try {
             int result = pushNotificationAgreementDao.updatePushNotification(userIdx, notificationName);
             if (result == 0) {

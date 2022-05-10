@@ -2,7 +2,7 @@ package com.example.demo.src.service;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.secret.Secret;
-import com.example.demo.src.domain.dto.PostLoginReq;
+import com.example.demo.src.domain.dto.sign.PostLoginReq;
 import com.example.demo.src.domain.entitiy.Address;
 import com.example.demo.src.domain.entitiy.PushNotificationAgreement;
 import com.example.demo.src.domain.entitiy.User;
@@ -10,10 +10,8 @@ import com.example.demo.src.repository.AddressDao;
 import com.example.demo.src.repository.PushNotificationAgreementDao;
 import com.example.demo.src.repository.UserDao;
 import com.example.demo.utils.AES128;
-import com.example.demo.utils.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,7 +36,7 @@ public class UserProvider {
     private final PushNotificationAgreementDao pushNotificationAgreementDao;
 
     // 로그인(password 검사)
-    public int logIn(PostLoginReq postLoginReq) throws BaseException {
+    public Long logIn(PostLoginReq postLoginReq) throws BaseException {
         User user = userDao.getPwd(postLoginReq);
         if (!user.getStatus()) {
             throw new BaseException(FAILED_TO_LOGIN);
@@ -82,7 +80,7 @@ public class UserProvider {
     }
 
     // 주소 조회
-    public List<Address> getAddress(int userIdx) throws BaseException {
+    public List<Address> getAddress(Long userIdx) throws BaseException {
         try {
             return addressDao.getAddress(userIdx);
         } catch (Exception exception) {
@@ -90,7 +88,7 @@ public class UserProvider {
         }
     }
 
-    public List<PushNotificationAgreement> getAgreements(int userIdx) throws BaseException {
+    public List<PushNotificationAgreement> getAgreements(Long userIdx) throws BaseException {
         try {
             return pushNotificationAgreementDao.getAgreement(userIdx);
         } catch (Exception exception) {
@@ -110,7 +108,7 @@ public class UserProvider {
 
 
     //해당 userIdx를 갖는 User의 정보 조회
-    public User getUser(int userIdx) throws BaseException {
+    public User getUser(Long userIdx) throws BaseException {
         try {
             return userDao.getUser(userIdx);
         } catch (Exception exception) {

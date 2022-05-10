@@ -1,6 +1,5 @@
 package com.example.demo.src.repository;
 
-import com.example.demo.src.domain.entitiy.MainMenu;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -12,7 +11,7 @@ import java.util.Map;
 
 @Repository
 @Slf4j
-public class MainDao {
+public class MenuDao {
 
     private JdbcTemplate jdbcTemplate;
 
@@ -25,4 +24,10 @@ public class MainDao {
         String getMainMenuQuery = "select * from MainMenu where status = true";
         return this.jdbcTemplate.queryForList(getMainMenuQuery);
     }
+
+    public List<Map<String, Object>> getMainCategory(Long mainMenuIdx) {
+        String getMainCategoryQuery = "select * from MainCategory where mainMenuIdx = ? AND status = true";
+        return this.jdbcTemplate.queryForList(getMainCategoryQuery, mainMenuIdx);
+    }
+
 }

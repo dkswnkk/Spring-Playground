@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class Address {
-    private int addressIdx;
+    private Long addressIdx;
     private String name;
     private String phoneNumber;
     private String city;

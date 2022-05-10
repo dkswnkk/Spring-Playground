@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.Collection;
+
 import static com.example.demo.config.BaseResponseStatus.SUCCESS;
 
 @Getter
@@ -34,4 +36,3 @@ public class BaseResponse<T> {//BaseResponse 객체를 사용할때 성공, 실�
         this.code = status.getCode();
     }
 }
-

@@ -1,6 +1,6 @@
 package com.example.demo.src.repository;
 
-import com.example.demo.src.domain.dto.PostUserReq;
+import com.example.demo.src.domain.dto.user.PostUserReq;
 import com.example.demo.src.domain.entitiy.PushNotificationAgreement;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class PushNotificationAgreementDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public List<PushNotificationAgreement> getAgreement(int userIdx) {
+    public List<PushNotificationAgreement> getAgreement(Long userIdx) {
         String getAgreementQuery = "select * from PushNotificationAgreement where userIdx = ?";
         return this.jdbcTemplate.query(getAgreementQuery,
                 (rs, rowNum) -> new PushNotificationAgreement(
@@ -37,7 +37,7 @@ public class PushNotificationAgreementDao {
     }
 
     // 푸쉬알림 여부 등록
-    public void insertPushNotificationAgreement(int userIdx, PostUserReq postUserReq) {
+    public void insertPushNotificationAgreement(Long userIdx, PostUserReq postUserReq) {
         String insertPushNotificationAgreementQuery = "insert into PushNotificationAgreement (userIdx, orderNotification, restockNotification, reviewNotification, serviceCenterNotification, sellerShopNotification, adNotification) VALUES (?, ?, ?, ?, ?, ?, ?)";
         Object[] insertPushNotificationAgreementParams = new Object[]{
                 userIdx,
@@ -51,7 +51,7 @@ public class PushNotificationAgreementDao {
         this.jdbcTemplate.update(insertPushNotificationAgreementQuery, insertPushNotificationAgreementParams);
     }
 
-//    public PushNotificationAgreement getPushNotification(int userIdx) {
+//    public PushNotificationAgreement getPushNotification(Long userIdx) {
 //        String getPushOrderNotificationQuery = "select * from PushNotificationAgreement where status = true AND userIdx = ?";
 //        return this.jdbcTemplate.queryForObject(getPushOrderNotificationQuery,
 //                (rs, rowNum) -> new PushNotificationAgreement(
@@ -66,7 +66,7 @@ public class PushNotificationAgreementDao {
 //    }
 
 
-    public int updatePushNotification(int userIdx, String notificationName) {
+    public int updatePushNotification(Long userIdx, String notificationName) {
         String updatePushOrderNotificationQuery = String.format("update PushNotificationAgreement set %s = !%s where status = true AND userIdx = %d", notificationName, notificationName, userIdx);
         return this.jdbcTemplate.update(updatePushOrderNotificationQuery);
     }

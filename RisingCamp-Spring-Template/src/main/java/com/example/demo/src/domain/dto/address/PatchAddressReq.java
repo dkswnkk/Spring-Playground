@@ -1,10 +1,10 @@
-package com.example.demo.src.domain.dto;
+package com.example.demo.src.domain.dto.address;
 
 import lombok.Data;
 
 @Data
 public class PatchAddressReq {
-    private int addressIdx;
+    private Long addressIdx;
     private String name;
     private String phoneNumber;
     private String city;

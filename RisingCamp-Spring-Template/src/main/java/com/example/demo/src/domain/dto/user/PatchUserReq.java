@@ -1,4 +1,4 @@
-package com.example.demo.src.domain.dto;
+package com.example.demo.src.domain.dto.user;
 
 import lombok.*;
 
@@ -11,5 +11,5 @@ import lombok.*;
  * 회원정보 수정 요청(Patch Request)을 하기 위해 서버에 전달할 데이터의 형태
  */
 public class PatchUserReq {
-    private int userIdx;
+    private Long userIdx;
 }

@@ -1,7 +1,7 @@
 package com.example.demo.src.repository;
 
-import com.example.demo.src.domain.dto.PostLoginReq;
-import com.example.demo.src.domain.dto.PostUserReq;
+import com.example.demo.src.domain.dto.sign.PostLoginReq;
+import com.example.demo.src.domain.dto.user.PostUserReq;
 import com.example.demo.src.domain.entitiy.MembershipLevel;
 import com.example.demo.src.domain.entitiy.User;
 import lombok.extern.slf4j.Slf4j;
@@ -58,7 +58,7 @@ public class UserDao {
      */
 
     // 회원가입
-    public int createUser(PostUserReq postUserReq) {
+    public Long createUser(PostUserReq postUserReq) {
         String createUserQuery = "insert into User (profileImage, email, name, password, phoneNumber) VALUES (?,?,?,?,?)"; // 실행될 동적 쿼리문
         Object[] createUserParams = new Object[]{postUserReq.getProfileImage(), postUserReq.getEmail(), postUserReq.getName(), postUserReq.getPassword(), postUserReq.getPhoneNumber()}; // 동적 쿼리의 ?부분에 주입될 값
         this.jdbcTemplate.update(createUserQuery, createUserParams);
@@ -66,7 +66,7 @@ public class UserDao {
         // 즉 DB의 User Table에 (email, password, nickname)값을 가지는 유저 데이터를 삽입(생성)한다.
 
         String lastInsertIdQuery = "select last_insert_id()"; // 가장 마지막에 삽입된(생성된) id값은 가져온다.
-        return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class); // 해당 쿼리문의 결과 마지막으로 삽인된 유저의 userIdx번호를 반환한다.
+        return this.jdbcTemplate.queryForObject(lastInsertIdQuery, Long.class); // 해당 쿼리문의 결과 마지막으로 삽인된 유저의 userIdx번호를 반환한다.
     }
 
     // 이메일 확인
@@ -95,7 +95,7 @@ public class UserDao {
 
         return this.jdbcTemplate.queryForObject(getPwdQuery,
                 (rs, rowNum) -> new User(
-                        rs.getInt("U.userIdx"),
+                        rs.getLong("U.userIdx"),
                         rs.getString("U.profileImage"),
                         rs.getString("U.email"),
                         rs.getString("U.name"),
@@ -116,7 +116,7 @@ public class UserDao {
         String getUsersQuery = "select * from User U where U.status = true"; //User 테이블에 존재하는 모든 회원들의 정보를 조회하는 쿼리
         return this.jdbcTemplate.query(getUsersQuery,
                 (rs, rowNum) -> new User(
-                        rs.getInt("U.userIdx"),
+                        rs.getLong("U.userIdx"),
                         rs.getString("U.profileImage"),
                         rs.getString("U.email"),
                         rs.getString("U.name"),
@@ -153,11 +153,11 @@ public class UserDao {
 //    }
 
     // 해당 userIdx를 갖는 유저조회
-    public User getUser(int userIdx) {
+    public User getUser(Long userIdx) {
         String getUserQuery = "select * from User U where U.userIdx = ? AND U.status = true"; // 해당 userIdx를 만족하는 탈퇴하지 않은 유저를 조회하는 쿼리문
         return this.jdbcTemplate.queryForObject(getUserQuery,
                 (rs, rowNum) -> new User(
-                        rs.getInt("U.userIdx"),
+                        rs.getLong("U.userIdx"),
                         rs.getString("U.profileImage"),
                         rs.getString("U.email"),
                         rs.getString("U.name"),
@@ -171,14 +171,14 @@ public class UserDao {
                 userIdx); // 한 개의 회원정보를 얻기 위한 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
     }
 
-    public int updateMembership(int userIdx, String memberType) {
+    public int updateMembership(Long userIdx, String memberType) {
         String updateMembershipQuery = "update User set membershipLevel = ? where userIdx = ? AND status = true";
         Object[] updateMembershipParams = new Object[]{memberType, userIdx}; // 주입될 값들(nickname, userIdx) 순
         return this.jdbcTemplate.update(updateMembershipQuery, updateMembershipParams); // 대응시켜 매핑시켜 쿼리 요청(생성했으면 1, 실패했으면 0)
     }
 
     // 해당 userIdx의 데이터 삭제(status변경)
-    public int deleteUser(int userIdx) {
+    public int deleteUser(Long userIdx) {
         String deleteUserQuery = "update User set status = 0 where userIdx = ?";
         Object[] modifyUserNameParams = new Object[]{userIdx};
         return this.jdbcTemplate.update(deleteUserQuery, modifyUserNameParams); // 대응시켜 매핑시켜 쿼리 요청(생성했으면 1, 실패했으면 0)

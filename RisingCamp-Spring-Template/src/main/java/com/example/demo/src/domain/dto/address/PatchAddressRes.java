@@ -1,10 +1,10 @@
-package com.example.demo.src.domain.dto;
+package com.example.demo.src.domain.dto.address;
 
 import lombok.Getter;
 
 @Getter
 public class PatchAddressRes {
-    private final int addressIdx;
+    private final Long addressIdx;
     private final String name;
     private final String phoneNumber;
     private final String city;
