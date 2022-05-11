@@ -6,7 +6,7 @@ import com.example.demo.config.secret.Secret;
 import com.example.demo.src.domain.dto.address.PatchAddressReq;
 import com.example.demo.src.domain.dto.address.PostAddressReq;
 import com.example.demo.src.domain.dto.user.PostUserReq;
-import com.example.demo.src.domain.entitiy.Address;
+import com.example.demo.src.domain.entitiy.user.Address;
 import com.example.demo.src.repository.AddressDao;
 import com.example.demo.src.repository.PushNotificationAgreementDao;
 import com.example.demo.src.repository.UserDao;

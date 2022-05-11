@@ -2,8 +2,8 @@ package com.example.demo.src.repository;
 
 import com.example.demo.src.domain.dto.sign.PostLoginReq;
 import com.example.demo.src.domain.dto.user.PostUserReq;
-import com.example.demo.src.domain.entitiy.MembershipLevel;
-import com.example.demo.src.domain.entitiy.User;
+import com.example.demo.src.domain.entitiy.user.MembershipLevel;
+import com.example.demo.src.domain.entitiy.user.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;

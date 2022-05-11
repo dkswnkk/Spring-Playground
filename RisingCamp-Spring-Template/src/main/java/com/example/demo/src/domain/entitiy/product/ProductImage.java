@@ -1,16 +1,16 @@
-package com.example.demo.src.domain.entitiy;
+package com.example.demo.src.domain.entitiy.product;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.sql.Timestamp;
 
-@AllArgsConstructor
 @Getter
-public class MainCategory {
-    private Long mainCategoryIdx;
-    private Long mainMenuIdx;
-    private String title;
+@AllArgsConstructor
+public class ProductImage {
+    private Long productImageIdx;
+    private Long productIdx;
+    private boolean thumbnail;
     private String imageUrl;
     private Boolean status;
     private Timestamp createdAt;

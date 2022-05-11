@@ -1,7 +1,7 @@
 package com.example.demo.src.repository;
 
 import com.example.demo.src.domain.dto.user.PostUserReq;
-import com.example.demo.src.domain.entitiy.PushNotificationAgreement;
+import com.example.demo.src.domain.entitiy.user.PushNotificationAgreement;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;

@@ -1,9 +1,9 @@
 package com.example.demo.src.domain.dto.user;
 
-import com.example.demo.src.domain.entitiy.Address;
-import com.example.demo.src.domain.entitiy.MembershipLevel;
-import com.example.demo.src.domain.entitiy.PushNotificationAgreement;
-import com.example.demo.src.domain.entitiy.User;
+import com.example.demo.src.domain.entitiy.user.Address;
+import com.example.demo.src.domain.entitiy.user.MembershipLevel;
+import com.example.demo.src.domain.entitiy.user.PushNotificationAgreement;
+import com.example.demo.src.domain.entitiy.user.User;
 import lombok.Data;
 
 import java.util.List;

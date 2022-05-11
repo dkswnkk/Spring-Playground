@@ -2,7 +2,7 @@ package com.example.demo.src.repository;
 
 import com.example.demo.src.domain.dto.address.PatchAddressReq;
 import com.example.demo.src.domain.dto.address.PostAddressReq;
-import com.example.demo.src.domain.entitiy.Address;
+import com.example.demo.src.domain.entitiy.user.Address;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;

@@ -1,6 +1,6 @@
 package com.example.demo.src.domain.dto.address;
 
-import com.example.demo.src.domain.entitiy.Address;
+import com.example.demo.src.domain.entitiy.user.Address;
 import lombok.Getter;
 
 @Getter
