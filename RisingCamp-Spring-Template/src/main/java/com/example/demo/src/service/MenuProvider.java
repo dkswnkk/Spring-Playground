@@ -6,7 +6,10 @@ import com.example.demo.src.domain.dto.menu.GetMainCategoryRes;
 import com.example.demo.src.domain.dto.menu.GetMainMenuRes;
 import com.example.demo.src.domain.dto.menu.GetSubCategoryRes;
 import com.example.demo.src.domain.dto.menu.SubCategoryDto;
+import com.example.demo.src.domain.dto.product.GetMainMenuProductRes;
+import com.example.demo.src.domain.entitiy.product.Product;
 import com.example.demo.src.repository.MenuDao;
+import com.example.demo.src.repository.ProductDao;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,6 +27,7 @@ import static com.example.demo.config.BaseResponseStatus.DATABASE_ERROR;
 public class MenuProvider {
 
     private final MenuDao mainDao;
+    private final ProductDao productDao;
 
     @Transactional(readOnly = true)
     public List<GetMainMenuRes> getMainMenu() throws BaseException {
@@ -62,6 +66,22 @@ public class MenuProvider {
                 subCategories.add(new SubCategoryDto(cagegory));
             }
             return new GetSubCategoryRes(subCategories);
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public List<GetMainMenuProductRes> getMainMenuProduct(Long mainMenuIdx) throws BaseException {
+        try {
+            List<GetMainMenuProductRes> getMainMenuProductRes = new ArrayList<>();
+            List<Map<String, Object>> getProduct = productDao.getMainMenuProductList(mainMenuIdx);
+
+            for (Map<String, Object> product : getProduct) {
+                Map<String, Object> review = productDao.getPreviewProductReview((Long) product.get("productIdx"));
+                getMainMenuProductRes.add(new GetMainMenuProductRes(product, review));
+            }
+            return getMainMenuProductRes;
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }

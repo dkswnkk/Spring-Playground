@@ -51,4 +51,5 @@ public class MainMenuController {
             return new BaseResponse<>(exception.getStatus());
         }
     }
+    
 }
