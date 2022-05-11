@@ -5,13 +5,12 @@ import com.example.demo.config.BaseResponse;
 import com.example.demo.config.BaseResponseStatus;
 import com.example.demo.src.domain.dto.menu.GetMainCategoryRes;
 import com.example.demo.src.domain.dto.menu.GetMainMenuRes;
+import com.example.demo.src.domain.dto.menu.GetSubCategoryRes;
 import com.example.demo.src.service.MenuProvider;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -38,6 +37,16 @@ public class MainMenuController {
         try {
             List<GetMainCategoryRes> getMainCategoryRes = menuProvider.getMainCategory(mainMenuIdx);
             return new BaseResponse<>(getMainCategoryRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+    @GetMapping("menu/{mainMenuIdx}/{mainCategoryIdx}")
+    public BaseResponse<GetSubCategoryRes> getSubCategory(@PathVariable Long mainMenuIdx, @PathVariable Long mainCategoryIdx, @RequestParam("depth") int depth) {
+        try {
+            GetSubCategoryRes getSubCategoryRes = menuProvider.getSubCategory(mainCategoryIdx, depth);
+            return new BaseResponse<>(getSubCategoryRes);
         } catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
         }

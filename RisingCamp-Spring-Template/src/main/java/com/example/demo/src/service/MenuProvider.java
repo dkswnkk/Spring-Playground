@@ -4,8 +4,11 @@ package com.example.demo.src.service;
 import com.example.demo.config.BaseException;
 import com.example.demo.src.domain.dto.menu.GetMainCategoryRes;
 import com.example.demo.src.domain.dto.menu.GetMainMenuRes;
+import com.example.demo.src.domain.dto.menu.GetSubCategoryRes;
+import com.example.demo.src.domain.dto.menu.SubCategoryDto;
 import com.example.demo.src.domain.entitiy.MainMenu;
 import com.example.demo.src.repository.MenuDao;
+import com.fasterxml.jackson.databind.ser.Serializers;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -47,6 +50,20 @@ public class MenuProvider {
                 mainCategories.add(new GetMainCategoryRes(cagegory));
             }
             return mainCategories;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public GetSubCategoryRes getSubCategory(Long parentCategoryIdx, int depth) throws BaseException {
+        try {
+            List<SubCategoryDto> subCategories = new ArrayList<>();
+            List<Map<String, Object>> getSubCategories = mainDao.getSubCategory(parentCategoryIdx, depth);
+            for (Map<String, Object> cagegory : getSubCategories) {
+                subCategories.add(new SubCategoryDto(cagegory));
+            }
+            return new GetSubCategoryRes(subCategories);
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
