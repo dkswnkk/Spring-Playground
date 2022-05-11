@@ -59,10 +59,10 @@ public class MenuProvider {
     }
 
     @Transactional(readOnly = true)
-    public GetSubCategoryRes getSubCategory(Long parentCategoryIdx, int depth) throws BaseException {
+    public GetSubCategoryRes getSubCategory(Long mainCategoryIdx, int depth) throws BaseException {
         try {
             List<SubCategoryDto> subCategories = new ArrayList<>();
-            List<Map<String, Object>> getSubCategories = mainDao.getSubCategory(parentCategoryIdx, depth);
+            List<Map<String, Object>> getSubCategories = mainDao.getSubCategory(mainCategoryIdx, depth);
             for (Map<String, Object> cagegory : getSubCategories) {
                 subCategories.add(new SubCategoryDto(cagegory));
             }

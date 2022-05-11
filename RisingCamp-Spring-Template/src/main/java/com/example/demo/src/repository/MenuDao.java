@@ -30,8 +30,14 @@ public class MenuDao {
         return this.jdbcTemplate.queryForList(getMainCategoryQuery, mainMenuIdx);
     }
 
-    public List<Map<String, Object>> getSubCategory(Long parentCategoryIdx, int depth) {
-        String getSubCategoryQuery = "select * from SubCategory where depth = ? AND parentCategoryIdx = ? AND status = true";
-        return this.jdbcTemplate.queryForList(getSubCategoryQuery, depth, parentCategoryIdx);
+    public List<Map<String, Object>> getSubCategory(Long mainCategoryIdx, int depth) {
+        String getSubCategoryQuery;
+        if(depth>=2){
+            getSubCategoryQuery = String.format("select * from SubCategory where depth = %d AND parentCategoryIdx = %d AND status = true", depth, mainCategoryIdx);
+        }
+        else{
+            getSubCategoryQuery = String.format("select * from SubCategory where depth = %d AND mainCategoryIdx = %d AND status = true",depth, mainCategoryIdx);
+        }
+        return this.jdbcTemplate.queryForList(getSubCategoryQuery);
     }
 }

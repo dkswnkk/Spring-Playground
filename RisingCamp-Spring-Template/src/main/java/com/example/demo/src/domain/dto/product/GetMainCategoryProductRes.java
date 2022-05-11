@@ -20,7 +20,7 @@ public class GetMainCategoryProductRes {
         this.url = (String) product.get("imageUrl");
         this.title = (String) product.get("title");
         this.option = (String) product.get("options");
-        this.detail = (String) product.get("datail");
+        this.detail = (String) product.get("detail");
         this.deliveryStatus = (int) product.get("deliveryStatus");
         this.price = (int) product.get("price");
         this.expectedDelivery = product.get("expectedDelivery").toString();

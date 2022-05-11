@@ -19,7 +19,7 @@ public class Product {
     private String url;
     private String title;
     private String option;
-    private String datail;
+    private String detail;
     private int deliveryStatus;
     private int price;
     private String expectedDelivery;

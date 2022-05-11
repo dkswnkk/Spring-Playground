@@ -28,7 +28,7 @@ public class ProductDao {
                 " PI.imageUrl," +
                 " P.title," +
                 " PO.`option` as options," +
-                " PO.datail," +
+                " PO.detail," +
                 " PO.deliveryStatus," +
                 " PO.price," +
                 " current_date + PO.expectedDelivery as expectedDelivery" +
@@ -52,7 +52,7 @@ public class ProductDao {
                 " PI.imageUrl," +
                 " P.title," +
                 " PO.`option` as options," +
-                " PO.datail," +
+                " PO.detail," +
                 " PO.deliveryStatus," +
                 " PO.price," +
                 " current_date + PO.expectedDelivery as expectedDelivery" +
