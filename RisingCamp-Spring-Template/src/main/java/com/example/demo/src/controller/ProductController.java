@@ -3,6 +3,7 @@ package com.example.demo.src.controller;
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
 import com.example.demo.src.domain.dto.menu.GetSubCategoryRes;
+import com.example.demo.src.domain.dto.product.GetMainCategoryProductRes;
 import com.example.demo.src.domain.dto.product.GetMainMenuProductRes;
 import com.example.demo.src.service.MenuProvider;
 import lombok.RequiredArgsConstructor;
@@ -26,4 +27,15 @@ public class ProductController {
             return new BaseResponse<>(exception.getStatus());
         }
     }
+
+    @GetMapping("/{mainMenuIdx}/{mainCategoryIdx}")
+    public BaseResponse<List<GetMainCategoryProductRes>> getMainCategoryProduct(@PathVariable Long mainMenuIdx, @PathVariable Long mainCategoryIdx) {
+        try {
+            List<GetMainCategoryProductRes> getMainCategoryProductRes = menuProvider.getMainCategoryProductRes(mainMenuIdx, mainCategoryIdx);
+            return new BaseResponse<>(getMainCategoryProductRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 }
