@@ -1,10 +1,9 @@
-package com.example.demo.src.domain.dto.address;
+package com.example.demo.src.domain.dto.user.address;
 
-import com.example.demo.src.domain.entitiy.user.Address;
 import lombok.Getter;
 
 @Getter
-public class GetAddressRes {
+public class PatchAddressRes {
     private final Long addressIdx;
     private final String name;
     private final String phoneNumber;
@@ -18,7 +17,7 @@ public class GetAddressRes {
     private final String dawnTimePassword;
     private final Boolean isDefault;
 
-    public GetAddressRes(Address address) {
+    public PatchAddressRes(PatchAddressReq address) {
         this.addressIdx = address.getAddressIdx();
         this.name = address.getName();
         this.phoneNumber = address.getPhoneNumber();
@@ -33,4 +32,3 @@ public class GetAddressRes {
         this.isDefault = address.getIsDefault();
     }
 }
-

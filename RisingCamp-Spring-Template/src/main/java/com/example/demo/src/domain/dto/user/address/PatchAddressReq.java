@@ -1,4 +1,4 @@
-package com.example.demo.src.domain.dto.address;
+package com.example.demo.src.domain.dto.user.address;
 
 import lombok.Data;
 

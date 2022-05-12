@@ -1,16 +1,16 @@
-package com.example.demo.src.service;
+package com.example.demo.src.service.user;
 
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.secret.Secret;
-import com.example.demo.src.domain.dto.address.PatchAddressReq;
-import com.example.demo.src.domain.dto.address.PostAddressReq;
+import com.example.demo.src.domain.dto.user.address.PatchAddressReq;
+import com.example.demo.src.domain.dto.user.address.PostAddressReq;
 import com.example.demo.src.domain.dto.user.PostUserReq;
 import com.example.demo.src.domain.dto.user.PostUserRes;
 import com.example.demo.src.domain.entitiy.user.Address;
-import com.example.demo.src.repository.AddressDao;
-import com.example.demo.src.repository.PushNotificationAgreementDao;
-import com.example.demo.src.repository.UserDao;
+import com.example.demo.src.repository.user.AddressDao;
+import com.example.demo.src.repository.user.PushNotificationAgreementDao;
+import com.example.demo.src.repository.user.UserDao;
 import com.example.demo.utils.AES128;
 import com.example.demo.utils.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -30,25 +30,13 @@ import static com.example.demo.config.BaseResponseStatus.*;
 @Slf4j
 @Service    // [Business Layer에서 Service를 명시하기 위해서 사용] 비즈니스 로직이나 respository layer 호출하는 함수에 사용된다.
 @RequiredArgsConstructor
-// [Business Layer]는 컨트롤러와 데이터 베이스를 연결
 public class UserService {
-//    final Logger logger = LoggerFactory.getLogger(this.getClass()); // Log 처리부분: Log를 기록하기 위해 필요한 함수입니다.
-
-    // *********************** 동작에 있어 필요한 요소들을 불러옵니다. *************************
     private final UserDao userDao;
     private final UserProvider userProvider;
     private final JwtService jwtService; // JWT부분은 7주차에 다루므로 모르셔도 됩니다!
     private final PushNotificationAgreementDao pushNotificationAgreementDao;
     private final AddressDao addressDao;
 
-
-//    @Autowired //readme 참고
-//    public UserService(UserDao userDao, UserProvider userProvider, JwtService jwtService) {
-//        this.userDao = userDao;
-//        this.userProvider = userProvider;
-//        this.jwtService = jwtService; // JWT부분은 7주차에 다루므로 모르셔도 됩니다!
-//
-//    }
 
     // ******************************************************************************
     // 회원가입(POST)
@@ -187,6 +175,17 @@ public class UserService {
                 throw new BaseException(ADDRESS_EMPTY_ADDRESS_ID);
             }
             return userIdx;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void updateUserProfileImage(Long userIdx, String url) throws BaseException{
+        try {
+            int result = userDao.updateUserProfileImage(userIdx, url);
+            if (result == 0) {
+                throw new BaseException(IMAGE_EMPTY_PROFILE_IMAGE);
+            }
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }

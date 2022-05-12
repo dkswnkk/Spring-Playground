@@ -24,6 +24,7 @@ public enum BaseResponseStatus {
     // users
     USERS_EMPTY_USER_ID(false, 2010, "유저가 존재하지않습니다."),
     ADDRESS_EMPTY_ADDRESS_ID(false, 2011, "주소지가 존재하지 않습니다."),
+    IMAGE_EMPTY_PROFILE_IMAGE(false,2022,"이미지 주소가 올바르지 않습니다."),
 
 
     // [POST] /users

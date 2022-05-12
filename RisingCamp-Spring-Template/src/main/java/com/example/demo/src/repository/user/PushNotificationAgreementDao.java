@@ -1,4 +1,4 @@
-package com.example.demo.src.repository;
+package com.example.demo.src.repository.user;
 
 import com.example.demo.src.domain.dto.user.PostUserReq;
 import com.example.demo.src.domain.entitiy.user.PushNotificationAgreement;

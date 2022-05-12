@@ -1,4 +1,4 @@
-package com.example.demo.src.repository;
+package com.example.demo.src.repository.menu;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

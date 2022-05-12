@@ -1,4 +1,4 @@
-package com.example.demo.src.repository;
+package com.example.demo.src.repository.user;
 
 import com.example.demo.src.domain.dto.sign.PostLoginReq;
 import com.example.demo.src.domain.dto.user.PostUserReq;
@@ -76,7 +76,6 @@ public class UserDao {
                 int.class,
                 email); // checkEmailQuery, checkEmailParams를 통해 가져온 값(int)을 반환한다. -> 쿼리문의 결과(존재하지 않음(False,0),존재함(True, 1))를 int형(0,1)으로 반환됩니다.
     }
-
 
 
 //    // 회원정보 변경
@@ -179,15 +178,20 @@ public class UserDao {
 
     // 해당 userIdx의 데이터 삭제(status변경)
     public int deleteUser(Long userIdx) {
-        String deleteUserQuery = "update User set status = 0 where userIdx = ?";
+        String deleteUserQuery = "update User set status = false where userIdx = ?";
         Object[] modifyUserNameParams = new Object[]{userIdx};
         return this.jdbcTemplate.update(deleteUserQuery, modifyUserNameParams); // 대응시켜 매핑시켜 쿼리 요청(생성했으면 1, 실패했으면 0)
     }
 
+    public int updateUserProfileImage(Long userIdx, String url) {
+        String updateUserProfileImageQuery = "update User set profileImage = ? where userIdx= ? AND status = true";
+        return this.jdbcTemplate.update(updateUserProfileImageQuery, url, userIdx);
+    }
 
-    public int getLastInsertId() {
+
+    public Integer getLastInsertId() {
         String lastInsertIdQuery = "select last_insert_id()";
-        return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
+        return this.jdbcTemplate.queryForObject(lastInsertIdQuery, Integer.class);
     }
 
     //    // 회원정보 변경

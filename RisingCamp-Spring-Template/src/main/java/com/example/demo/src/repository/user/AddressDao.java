@@ -1,7 +1,7 @@
-package com.example.demo.src.repository;
+package com.example.demo.src.repository.user;
 
-import com.example.demo.src.domain.dto.address.PatchAddressReq;
-import com.example.demo.src.domain.dto.address.PostAddressReq;
+import com.example.demo.src.domain.dto.user.address.PatchAddressReq;
+import com.example.demo.src.domain.dto.user.address.PostAddressReq;
 import com.example.demo.src.domain.entitiy.user.Address;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.example.demo.src.repository;
+package com.example.demo.src.repository.product;
 
 import com.example.demo.src.domain.entitiy.product.Product;
 import lombok.extern.slf4j.Slf4j;

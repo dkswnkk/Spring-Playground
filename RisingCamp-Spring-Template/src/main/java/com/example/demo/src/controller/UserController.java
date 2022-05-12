@@ -2,20 +2,17 @@ package com.example.demo.src.controller;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
-import com.example.demo.src.domain.dto.*;
-import com.example.demo.src.domain.dto.address.GetAddressRes;
-import com.example.demo.src.domain.dto.address.PatchAddressReq;
-import com.example.demo.src.domain.dto.address.PatchAddressRes;
-import com.example.demo.src.domain.dto.address.PostAddressReq;
+import com.example.demo.src.domain.dto.user.address.GetAddressRes;
+import com.example.demo.src.domain.dto.user.address.PatchAddressReq;
+import com.example.demo.src.domain.dto.user.address.PatchAddressRes;
+import com.example.demo.src.domain.dto.user.address.PostAddressReq;
 import com.example.demo.src.domain.dto.sign.PostLoginReq;
-import com.example.demo.src.domain.dto.user.GetUserRes;
-import com.example.demo.src.domain.dto.user.PostUserReq;
-import com.example.demo.src.domain.dto.user.PostUserRes;
+import com.example.demo.src.domain.dto.user.*;
 import com.example.demo.src.domain.entitiy.user.Address;
 import com.example.demo.src.domain.entitiy.user.PushNotificationAgreement;
 import com.example.demo.src.domain.entitiy.user.User;
-import com.example.demo.src.service.UserProvider;
-import com.example.demo.src.service.UserService;
+import com.example.demo.src.service.user.UserProvider;
+import com.example.demo.src.service.user.UserService;
 import com.example.demo.utils.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -45,11 +42,6 @@ public class UserController {
     private final JwtService jwtService; // JWT부분은 7주차에 다루므로 모르셔도 됩니다!
 
 
-    // ******************************************************************************
-
-    /**
-     * 회원가입
-     */
     @ResponseBody
     @PostMapping("/sign-up")
     public BaseResponse<PostUserRes> createUser(@RequestBody PostUserReq postUserReq) {
@@ -90,7 +82,6 @@ public class UserController {
             List<PushNotificationAgreement> getAgreements = userProvider.getAgreements(userIdx);
             getUserRes.add(new GetUserRes(user, getAddress, getAgreements));
 
-            List<String> list = new ArrayList<>();
             return new BaseResponse<>(getUserRes);
         } catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
@@ -213,6 +204,22 @@ public class UserController {
         try {
             userService.updateMembership(userIdx, memberType);
             return new BaseResponse<>(memberType);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    @SneakyThrows
+    @PatchMapping("/{userIdx}/profileImage")
+    public BaseResponse<Boolean> updateProfileImage(@PathVariable Long userIdx, @RequestBody PatchProfileImageReq patchProfileImageReq){
+        Long userIdxByJwt = jwtService.getUserIdx();
+        //userIdx와 접근한 유저가 같은지 확인
+        if (!userIdx.equals(userIdxByJwt)) {
+            return new BaseResponse<>(INVALID_USER_JWT);
+        }
+        try {
+            userService.updateUserProfileImage(userIdx, patchProfileImageReq.getUrl());
+            return new BaseResponse<>(true);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }

@@ -1,4 +1,4 @@
-package com.example.demo.src.service;
+package com.example.demo.src.service.user;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.secret.Secret;
@@ -6,9 +6,9 @@ import com.example.demo.src.domain.dto.sign.PostLoginReq;
 import com.example.demo.src.domain.entitiy.user.Address;
 import com.example.demo.src.domain.entitiy.user.PushNotificationAgreement;
 import com.example.demo.src.domain.entitiy.user.User;
-import com.example.demo.src.repository.AddressDao;
-import com.example.demo.src.repository.PushNotificationAgreementDao;
-import com.example.demo.src.repository.UserDao;
+import com.example.demo.src.repository.user.AddressDao;
+import com.example.demo.src.repository.user.PushNotificationAgreementDao;
+import com.example.demo.src.repository.user.UserDao;
 import com.example.demo.utils.AES128;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
