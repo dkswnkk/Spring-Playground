@@ -6,6 +6,7 @@ import com.example.demo.config.secret.Secret;
 import com.example.demo.src.domain.dto.address.PatchAddressReq;
 import com.example.demo.src.domain.dto.address.PostAddressReq;
 import com.example.demo.src.domain.dto.user.PostUserReq;
+import com.example.demo.src.domain.dto.user.PostUserRes;
 import com.example.demo.src.domain.entitiy.user.Address;
 import com.example.demo.src.repository.AddressDao;
 import com.example.demo.src.repository.PushNotificationAgreementDao;
@@ -51,7 +52,7 @@ public class UserService {
 
     // ******************************************************************************
     // 회원가입(POST)
-    public Long createUser(PostUserReq postUserReq) throws BaseException {
+    public PostUserRes createUser(PostUserReq postUserReq) throws BaseException {
         // 중복 확인: 해당 이메일을 가진 이미 있을 때
         if (userProvider.checkEmail(postUserReq.getEmail()) == 1) {
             throw new BaseException(POST_USERS_EXISTS_EMAIL);
@@ -69,13 +70,8 @@ public class UserService {
         try {
             Long userIdx= userDao.createUser(postUserReq);
             pushNotificationAgreementDao.insertPushNotificationAgreement(userIdx, postUserReq);
-            return userIdx;
-
-//  *********** 해당 부분은 7주차 수업 후 주석해제하서 대체해서 사용해주세요! ***********
-//            //jwt 발급.
-//            String jwt = jwtService.createJwt(userIdx);
-//            return new PostUserRes(jwt,userIdx);
-//  *********************************************************************
+            String jwt = jwtService.createJwt(userIdx);
+            return new PostUserRes(userIdx, jwt);
         } catch (Exception exception) { // DB에 이상이 있는 경우 에러 메시지를 보냅니다.
             throw new BaseException(DATABASE_ERROR);
         }
