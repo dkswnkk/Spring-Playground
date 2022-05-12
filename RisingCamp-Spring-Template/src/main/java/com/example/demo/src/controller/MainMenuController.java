@@ -43,7 +43,7 @@ public class MainMenuController {
     }
 
     @GetMapping("menu/{mainMenuIdx}/{mainCategoryIdx}")
-    public BaseResponse<GetSubCategoryRes> getSubCategory(@PathVariable Long mainMenuIdx, @PathVariable Long mainCategoryIdx, @RequestParam("depth") int depth) {
+    public BaseResponse<GetSubCategoryRes> getSubCategory(@PathVariable Long mainMenuIdx, @PathVariable Long mainCategoryIdx, @RequestParam(value = "depth", defaultValue = "1") int depth) {
         try {
             GetSubCategoryRes getSubCategoryRes = menuProvider.getSubCategory(mainCategoryIdx, depth);
             return new BaseResponse<>(getSubCategoryRes);

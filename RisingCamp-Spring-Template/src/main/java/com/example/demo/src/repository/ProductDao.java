@@ -22,6 +22,32 @@ public class ProductDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
+    public List<Map<String, Object>> getSubCategoryProductList(Long mainMenuIdx, Long mainCategoryIdx, Long subCategoryIdx) {
+        String getSubCategoryProductListSQL = "select" +
+                " P.productIdx," +
+                " PI.imageUrl," +
+                " P.title," +
+                " PO.`option` as options," +
+                " PO.detail," +
+                " PO.deliveryStatus," +
+                " PO.price," +
+                " current_date + PO.expectedDelivery as expectedDelivery" +
+                " from Product P" +
+                " join ProductImage PI on P.productIdx = PI.productIdx" +
+                " join ProductOption PO on P.productIdx = PO.productIdx" +
+                " join CategoryProduct CP on P.productIdx = CP.productIdx" +
+                " where PI.thumbnail = true" +
+                " AND PI.status = true" +
+                " AND PO.defaultStatus = true" +
+                " AND PO.status = true" +
+                " AND CP.mainMenuIdx = ?" +
+                " AND CP.mainCategoryIdx = ?" +
+                " AND CP.subCategoryIdx = ?";
+
+        return this.jdbcTemplate.queryForList(getSubCategoryProductListSQL, mainMenuIdx, mainCategoryIdx, subCategoryIdx);
+    }
+
+
     public List<Map<String, Object>> getMainCategoryProductList(Long mainMenuIdx, Long mainCategoryIdx) {
         String getMainMenuProductListQuery = "select" +
                 " P.productIdx," +
@@ -76,7 +102,8 @@ public class ProductDao {
     }
 
     public Map<String, Object> getPreviewProductReview(Long productIdx) {
-        String getPreviewProductReviewQuery = "select count(reviewIdx) as reviewCnt, sum(rate) / count(reviewIdx) as reviewAvg" +
+        String getPreviewProductReviewQuery = "select" +
+                " count(reviewIdx) as reviewCnt, ifnull(sum(rate) / count(reviewIdx), 0.0) as reviewAvg" +
                 " from Product P" +
                 " join Review R on P.productIdx = R.productIdx" +
                 " where R.status = true" +

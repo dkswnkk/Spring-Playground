@@ -8,6 +8,7 @@ import com.example.demo.src.domain.dto.menu.GetSubCategoryRes;
 import com.example.demo.src.domain.dto.menu.SubCategoryDto;
 import com.example.demo.src.domain.dto.product.GetMainCategoryProductRes;
 import com.example.demo.src.domain.dto.product.GetMainMenuProductRes;
+import com.example.demo.src.domain.dto.product.GetSubCategoryProductRes;
 import com.example.demo.src.domain.entitiy.product.Product;
 import com.example.demo.src.repository.MenuDao;
 import com.example.demo.src.repository.ProductDao;
@@ -49,8 +50,8 @@ public class MenuProvider {
         try {
             List<GetMainCategoryRes> mainCategories = new ArrayList<>();
             List<Map<String, Object>> getMainCategories = mainDao.getMainCategory(mainMenuIdx);
-            for (Map<String, Object> cagegory : getMainCategories) {
-                mainCategories.add(new GetMainCategoryRes(cagegory));
+            for (Map<String, Object> category : getMainCategories) {
+                mainCategories.add(new GetMainCategoryRes(category));
             }
             return mainCategories;
         } catch (Exception exception) {
@@ -63,8 +64,8 @@ public class MenuProvider {
         try {
             List<SubCategoryDto> subCategories = new ArrayList<>();
             List<Map<String, Object>> getSubCategories = mainDao.getSubCategory(mainCategoryIdx, depth);
-            for (Map<String, Object> cagegory : getSubCategories) {
-                subCategories.add(new SubCategoryDto(cagegory));
+            for (Map<String, Object> category : getSubCategories) {
+                subCategories.add(new SubCategoryDto(category));
             }
             return new GetSubCategoryRes(subCategories);
         } catch (Exception exception) {
@@ -77,7 +78,6 @@ public class MenuProvider {
         try {
             List<GetMainMenuProductRes> getMainMenuProductRes = new ArrayList<>();
             List<Map<String, Object>> getProduct = productDao.getMainMenuProductList(mainMenuIdx);
-
             for (Map<String, Object> product : getProduct) {
                 Map<String, Object> review = productDao.getPreviewProductReview((Long) product.get("productIdx"));
                 getMainMenuProductRes.add(new GetMainMenuProductRes(product, review));
@@ -104,5 +104,20 @@ public class MenuProvider {
         }
     }
 
+    @Transactional(readOnly = true)
+    public List<GetSubCategoryProductRes> getSubCategoryProductRes(Long mainMenuIdx, Long mainCategoryIdx, Long subCategoryIdx) throws BaseException {
+        try {
+            List<GetSubCategoryProductRes> getSubCategoryProductRes = new ArrayList<>();
+            List<Map<String, Object>> getProduct = productDao.getSubCategoryProductList(mainMenuIdx, mainCategoryIdx, subCategoryIdx);
+
+            for (Map<String, Object> product : getProduct) {
+                Map<String, Object> review = productDao.getPreviewProductReview((Long) product.get("productIdx"));
+                getSubCategoryProductRes.add(new GetSubCategoryProductRes(product, review));
+            }
+            return getSubCategoryProductRes;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 
 }

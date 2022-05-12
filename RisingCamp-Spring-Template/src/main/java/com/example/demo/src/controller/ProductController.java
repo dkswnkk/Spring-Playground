@@ -5,6 +5,7 @@ import com.example.demo.config.BaseResponse;
 import com.example.demo.src.domain.dto.menu.GetSubCategoryRes;
 import com.example.demo.src.domain.dto.product.GetMainCategoryProductRes;
 import com.example.demo.src.domain.dto.product.GetMainMenuProductRes;
+import com.example.demo.src.domain.dto.product.GetSubCategoryProductRes;
 import com.example.demo.src.service.MenuProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -38,4 +39,13 @@ public class ProductController {
         }
     }
 
+    @GetMapping("/{mainMenuIdx}/{mainCategoryIdx}/{subCategoryIdx}")
+    public BaseResponse<List<GetSubCategoryProductRes>> getMainCategoryProduct(@PathVariable Long mainMenuIdx, @PathVariable Long mainCategoryIdx, @PathVariable Long subCategoryIdx) {
+        try {
+            List<GetSubCategoryProductRes> getSubCategoryProductRes = menuProvider.getSubCategoryProductRes(mainMenuIdx, mainCategoryIdx, subCategoryIdx);
+            return new BaseResponse<>(getSubCategoryProductRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
 }
