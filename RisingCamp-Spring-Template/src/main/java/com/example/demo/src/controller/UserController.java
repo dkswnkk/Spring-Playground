@@ -73,14 +73,13 @@ public class UserController {
     @ResponseBody
     @PostMapping("/log-in")
     public BaseResponse<List<GetUserRes>> logIn(@RequestBody PostLoginReq postLoginReq) {
-
         try {
             Long userIdx = userProvider.logIn(postLoginReq);
             User user = userProvider.getUser(userIdx);
             List<GetUserRes> getUserRes = new ArrayList<>();
             List<Address> getAddress = userProvider.getAddress(userIdx);
             List<PushNotificationAgreement> getAgreements = userProvider.getAgreements(userIdx);
-            getUserRes.add(new GetUserRes(user, getAddress, getAgreements));
+            getUserRes.add(new GetUserRes(jwtService.createJwt(userIdx), user, getAddress, getAgreements));
 
             return new BaseResponse<>(getUserRes);
         } catch (BaseException exception) {
@@ -92,24 +91,24 @@ public class UserController {
     /**
      * 모든 회원 조회
      */
-    @ResponseBody
-    @GetMapping("")
-    public BaseResponse<List<GetUserRes>> getUsers() {
-        try {
-            List<GetUserRes> getUserRes = new ArrayList<>(); // 반환할거 클라이언트에게
-            List<User> getUsers = userProvider.getUsers();
-            for (User getUser : getUsers) {
-                Long userIdx = getUser.getUserIdx();
-                List<Address> getAddress = userProvider.getAddress(userIdx);
-                List<PushNotificationAgreement> getAgreements = userProvider.getAgreements(userIdx);
-                getUserRes.add(new GetUserRes(getUser, getAddress, getAgreements));
-            }
-            return new BaseResponse<>(getUserRes);
-
-        } catch (BaseException exception) {
-            return new BaseResponse<>((exception.getStatus()));
-        }
-    }
+//    @ResponseBody
+//    @GetMapping("")
+//    public BaseResponse<List<GetUserRes>> getUsers() {
+//        try {
+//            List<GetUserRes> getUserRes = new ArrayList<>(); // 반환할거 클라이언트에게
+//            List<User> getUsers = userProvider.getUsers();
+//            for (User getUser : getUsers) {
+//                Long userIdx = getUser.getUserIdx();
+//                List<Address> getAddress = userProvider.getAddress(userIdx);
+//                List<PushNotificationAgreement> getAgreements = userProvider.getAgreements(userIdx);
+//                getUserRes.add(new GetUserRes(getUser, getAddress, getAgreements));
+//            }
+//            return new BaseResponse<>(getUserRes);
+//
+//        } catch (BaseException exception) {
+//            return new BaseResponse<>((exception.getStatus()));
+//        }
+//    }
 
     /**
      * 인덱스로 조회
@@ -128,7 +127,7 @@ public class UserController {
             User getUser = userProvider.getUser(userIdx);
             List<Address> getAddress = userProvider.getAddress(userIdx);
             List<PushNotificationAgreement> getAgreements = userProvider.getAgreements(userIdx);
-            getUserRes.add(new GetUserRes((User) getUser, getAddress, getAgreements));
+            getUserRes.add(new GetUserRes(jwtService.getJwt(), (User) getUser, getAddress, getAgreements));
             return new BaseResponse<>(getUserRes);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
@@ -160,6 +159,7 @@ public class UserController {
         String userJwtByIdx = jwtService.createJwt(userIdx);
         return new BaseResponse<>(userJwtByIdx);
     }
+
     /**
      * 유저정보변경 API
      * [PATCH] /users/:userIdx
@@ -211,7 +211,7 @@ public class UserController {
 
     @SneakyThrows
     @PatchMapping("/{userIdx}/profileImage")
-    public BaseResponse<Boolean> updateProfileImage(@PathVariable Long userIdx, @RequestBody PatchProfileImageReq patchProfileImageReq){
+    public BaseResponse<Boolean> updateProfileImage(@PathVariable Long userIdx, @RequestBody PatchProfileImageReq patchProfileImageReq) {
         Long userIdxByJwt = jwtService.getUserIdx();
         //userIdx와 접근한 유저가 같은지 확인
         if (!userIdx.equals(userIdxByJwt)) {
@@ -237,7 +237,7 @@ public class UserController {
             if (getAddressReq.getIsDefault()) {    // 지금 입력하는 주소지가 기본 주소라면 이미있는 기본 주소지를 0으로 만듬
                 userService.initDefaultAddress(userIdx);
             }
-            PatchAddressRes patchAddressRes = new PatchAddressRes(userService.updateAddress(getAddressReq));
+            PatchAddressRes patchAddressRes = new PatchAddressRes(userService.updateAddress(userIdx, getAddressReq));
             return new BaseResponse<>(patchAddressRes);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));

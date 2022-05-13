@@ -43,7 +43,7 @@ public class AddressDao {
         );
     }
 
-    public int updateAddress(PatchAddressReq getAddressReq) {
+    public void updateAddress(PatchAddressReq getAddressReq) {
         String updateAddressQuery = "update Address A" +
                 " join TimeInfo TI on A.addressIdx = TI.addressIdx" +
                 " set A.name = ?," +
@@ -53,7 +53,7 @@ public class AddressDao {
                 " A.zipcode = ?," +
                 " A.phoneNumber = ?," +
                 " TI.basicTimeInfo = ?," +
-                " TI.basicHousePasswozrd = ?," +
+                " TI.basicHousePassword = ?," +
                 " TI.dawnTimeInfo = ?," +
                 " TI.dawnTimePassword = ?," +
                 " A.defaultAddress = ?" +
@@ -74,11 +74,11 @@ public class AddressDao {
                 getAddressReq.getAddressIdx()
         };
 
-        return this.jdbcTemplate.update(updateAddressQuery, updateAddressParams);
+        this.jdbcTemplate.update(updateAddressQuery, updateAddressParams);
 
     }
 
-    public int insertAddress(Long userIdx, PostAddressReq postAddressReq) {
+    public void insertAddress(Long userIdx, PostAddressReq postAddressReq) {
         String insertAddressQuery = "insert into Address(userIdx, name, phoneNumber, city, street, detail, zipcode, defaultAddress)" +
                 " VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         Object[] insertAddressParams = {userIdx,
@@ -90,20 +90,20 @@ public class AddressDao {
                 postAddressReq.getZipcode(),
                 postAddressReq.getIsDefault()
         };
-        return this.jdbcTemplate.update(insertAddressQuery, insertAddressParams);
+        this.jdbcTemplate.update(insertAddressQuery, insertAddressParams);
     }
 
-    public int deleteAddress(int addressIdx) {
+    public void deleteAddress(int addressIdx) {
         String deleteAddressQuery = "update Address set status = 0 where addressIdx =?";
-        return this.jdbcTemplate.update(deleteAddressQuery, addressIdx);
+        this.jdbcTemplate.update(deleteAddressQuery, addressIdx);
     }
 
-    public int initDefaultAddress(Long userIdx) {
+    public void initDefaultAddress(Long userIdx) {
         String initDefaultAddressQuery = "update Address A join User U set A.defaultAddress = false where A.status = true AND U.status = true AND A.userIdx = ?";
-        return this.jdbcTemplate.update(initDefaultAddressQuery, userIdx);
+        this.jdbcTemplate.update(initDefaultAddressQuery, userIdx);
     }
 
-    public int insertTimeInfo(int addressIdx, PostAddressReq postAddressReq) {
+    public void insertTimeInfo(int addressIdx, PostAddressReq postAddressReq) {
         String insertTimeInfoQuery = "insert into TimeInfo(addressIdx, basicTimeInfo, basicHousePassword, dawnTimeInfo, dawnTimePassword)" +
                 " VALUES (?, ?, ?, ?, ?)";
         Object[] insertTimeInfoParams = {
@@ -113,7 +113,7 @@ public class AddressDao {
                 postAddressReq.getDawnTimeInfo(),
                 postAddressReq.getDawnTimePassword(),
         };
-        return this.jdbcTemplate.update(insertTimeInfoQuery, insertTimeInfoParams);
+        this.jdbcTemplate.update(insertTimeInfoQuery, insertTimeInfoParams);
     }
 }
 

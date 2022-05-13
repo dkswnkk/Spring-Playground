@@ -23,7 +23,7 @@ public class ProductDao {
     }
 
     public List<Map<String, Object>> getSubCategoryProductList(Long mainMenuIdx, Long mainCategoryIdx, Long subCategoryIdx) {
-        String getSubCategoryProductListSQL = "select" +
+        String getSubCategoryProductListSQL = "select distinct" +
                 " P.productIdx," +
                 " PI.imageUrl," +
                 " P.title," +
@@ -49,7 +49,7 @@ public class ProductDao {
 
 
     public List<Map<String, Object>> getMainCategoryProductList(Long mainMenuIdx, Long mainCategoryIdx) {
-        String getMainMenuProductListQuery = "select" +
+        String getMainMenuProductListQuery = "select distinct" +
                 " P.productIdx," +
                 " PI.imageUrl," +
                 " P.title," +
@@ -73,7 +73,7 @@ public class ProductDao {
     }
 
     public List<Map<String, Object>> getMainMenuProductList(Long mainMenuIdx) {
-        String getMainMenuProductListQuery = "select" +
+        String getMainMenuProductListQuery = "select distinct" +
                 " P.productIdx," +
                 " PI.imageUrl," +
                 " P.title," +

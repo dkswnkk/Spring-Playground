@@ -177,15 +177,15 @@ public class UserDao {
     }
 
     // 해당 userIdx의 데이터 삭제(status변경)
-    public int deleteUser(Long userIdx) {
+    public void deleteUser(Long userIdx) {
         String deleteUserQuery = "update User set status = false where userIdx = ?";
         Object[] modifyUserNameParams = new Object[]{userIdx};
-        return this.jdbcTemplate.update(deleteUserQuery, modifyUserNameParams); // 대응시켜 매핑시켜 쿼리 요청(생성했으면 1, 실패했으면 0)
+        this.jdbcTemplate.update(deleteUserQuery, modifyUserNameParams); // 대응시켜 매핑시켜 쿼리 요청(생성했으면 1, 실패했으면 0)
     }
 
-    public int updateUserProfileImage(Long userIdx, String url) {
+    public void updateUserProfileImage(Long userIdx, String url) {
         String updateUserProfileImageQuery = "update User set profileImage = ? where userIdx= ? AND status = true";
-        return this.jdbcTemplate.update(updateUserProfileImageQuery, url, userIdx);
+        this.jdbcTemplate.update(updateUserProfileImageQuery, url, userIdx);
     }
 
 

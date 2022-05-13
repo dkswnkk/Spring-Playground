@@ -66,9 +66,9 @@ public class PushNotificationAgreementDao {
 //    }
 
 
-    public int updatePushNotification(Long userIdx, String notificationName) {
+    public void updatePushNotification(Long userIdx, String notificationName) {
         String updatePushOrderNotificationQuery = String.format("update PushNotificationAgreement set %s = !%s where status = true AND userIdx = %d", notificationName, notificationName, userIdx);
-        return this.jdbcTemplate.update(updatePushOrderNotificationQuery);
+        this.jdbcTemplate.update(updatePushOrderNotificationQuery);
     }
 }
 

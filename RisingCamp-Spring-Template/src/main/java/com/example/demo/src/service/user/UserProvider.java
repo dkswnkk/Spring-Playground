@@ -13,6 +13,7 @@ import com.example.demo.utils.AES128;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -62,38 +63,26 @@ public class UserProvider {
     }
 
     // 해당 이메일이 이미 User Table에 존재하는지 확인
+    @Transactional(readOnly = true)
     public int checkEmail(String email) throws BaseException {
-        try {
-            return userDao.checkEmail(email);
-        } catch (Exception exception) {
-            throw new BaseException(DATABASE_ERROR);
-        }
+        return userDao.checkEmail(email);
     }
 
     // 모든 User 조회
+    @Transactional(readOnly = true)
     public List<User> getUsers() throws BaseException {
-        try {
-            return userDao.getUsers();
-        } catch (Exception exception) {
-            throw new BaseException(DATABASE_ERROR);
-        }
+        return userDao.getUsers();
     }
 
     // 주소 조회
+    @Transactional(readOnly = true)
     public List<Address> getAddress(Long userIdx) throws BaseException {
-        try {
-            return addressDao.getAddress(userIdx);
-        } catch (Exception exception) {
-            throw new BaseException(DATABASE_ERROR);
-        }
+        return addressDao.getAddress(userIdx);
     }
 
+    @Transactional(readOnly = true)
     public List<PushNotificationAgreement> getAgreements(Long userIdx) throws BaseException {
-        try {
-            return pushNotificationAgreementDao.getAgreement(userIdx);
-        } catch (Exception exception) {
-            throw new BaseException(DATABASE_ERROR);
-        }
+        return pushNotificationAgreementDao.getAgreement(userIdx);
     }
 
     // 해당 Email을 갖는 User들의 정보 조회

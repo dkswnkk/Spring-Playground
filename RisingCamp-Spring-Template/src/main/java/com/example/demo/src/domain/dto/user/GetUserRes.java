@@ -18,6 +18,7 @@ import java.util.List;
  */
 @Data
 public class GetUserRes {
+    private String token;
     private Long userIdx;
     private String profileImage;
     private String email;
@@ -29,7 +30,8 @@ public class GetUserRes {
     private List<PushNotificationAgreement> agreements;
     private List<Address> addressList;
 
-    public GetUserRes(User user, List<Address> address, List<PushNotificationAgreement> agreements) {
+    public GetUserRes(String token, User user, List<Address> address, List<PushNotificationAgreement> agreements) {
+        this.token = token;
         this.userIdx = user.getUserIdx();
         this.profileImage = user.getProfileImage();
         this.email = user.getEmail();

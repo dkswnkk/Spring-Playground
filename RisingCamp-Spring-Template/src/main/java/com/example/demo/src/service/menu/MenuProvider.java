@@ -27,44 +27,38 @@ public class MenuProvider {
 
     @Transactional(readOnly = true)
     public List<GetMainMenuRes> getMainMenu() throws BaseException {
-        try {
-            List<GetMainMenuRes> mainMenus = new ArrayList<>();
-            List<Map<String, Object>> getMainMenu = mainDao.getMainMenu();
-            for (Map<String, Object> menu : getMainMenu) {
-                mainMenus.add(new GetMainMenuRes(menu));
-            }
-            return mainMenus;
-        } catch (Exception exception) {
-            throw new BaseException(DATABASE_ERROR);
+
+        List<GetMainMenuRes> mainMenus = new ArrayList<>();
+        List<Map<String, Object>> getMainMenu = mainDao.getMainMenu();
+        for (Map<String, Object> menu : getMainMenu) {
+            mainMenus.add(new GetMainMenuRes(menu));
         }
+        return mainMenus;
+
     }
 
     @Transactional(readOnly = true)
     public List<GetMainCategoryRes> getMainCategory(Long mainMenuIdx) throws BaseException {
-        try {
-            List<GetMainCategoryRes> mainCategories = new ArrayList<>();
-            List<Map<String, Object>> getMainCategories = mainDao.getMainCategory(mainMenuIdx);
-            for (Map<String, Object> category : getMainCategories) {
-                mainCategories.add(new GetMainCategoryRes(category));
-            }
-            return mainCategories;
-        } catch (Exception exception) {
-            throw new BaseException(DATABASE_ERROR);
+
+        List<GetMainCategoryRes> mainCategories = new ArrayList<>();
+        List<Map<String, Object>> getMainCategories = mainDao.getMainCategory(mainMenuIdx);
+        for (Map<String, Object> category : getMainCategories) {
+            mainCategories.add(new GetMainCategoryRes(category));
         }
+        return mainCategories;
+
     }
 
     @Transactional(readOnly = true)
     public GetSubCategoryRes getSubCategory(Long mainCategoryIdx, int depth) throws BaseException {
-        try {
-            List<SubCategoryDto> subCategories = new ArrayList<>();
-            List<Map<String, Object>> getSubCategories = mainDao.getSubCategory(mainCategoryIdx, depth);
-            for (Map<String, Object> category : getSubCategories) {
-                subCategories.add(new SubCategoryDto(category));
-            }
-            return new GetSubCategoryRes(subCategories);
-        } catch (Exception exception) {
-            throw new BaseException(DATABASE_ERROR);
+
+        List<SubCategoryDto> subCategories = new ArrayList<>();
+        List<Map<String, Object>> getSubCategories = mainDao.getSubCategory(mainCategoryIdx, depth);
+        for (Map<String, Object> category : getSubCategories) {
+            subCategories.add(new SubCategoryDto(category));
         }
+        return new GetSubCategoryRes(subCategories);
+
     }
 
 }

@@ -16,6 +16,7 @@ import com.example.demo.utils.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -40,6 +41,7 @@ public class UserService {
 
     // ******************************************************************************
     // 회원가입(POST)
+    @Transactional(readOnly = false)
     public PostUserRes createUser(PostUserReq postUserReq) throws BaseException {
         // 중복 확인: 해당 이메일을 가진 이미 있을 때
         if (userProvider.checkEmail(postUserReq.getEmail()) == 1) {
@@ -56,7 +58,7 @@ public class UserService {
             throw new BaseException(PASSWORD_ENCRYPTION_ERROR);
         }
         try {
-            Long userIdx= userDao.createUser(postUserReq);
+            Long userIdx = userDao.createUser(postUserReq);
             pushNotificationAgreementDao.insertPushNotificationAgreement(userIdx, postUserReq);
             String jwt = jwtService.createJwt(userIdx);
             return new PostUserRes(userIdx, jwt);
@@ -76,118 +78,65 @@ public class UserService {
 //            throw new BaseException(DATABASE_ERROR);
 //        }
 //    }
+
+    @Transactional(readOnly = false)
     public void updateMembership(Long userIdx, String memberType) throws BaseException {
-        try {
-            int result = userDao.updateMembership(userIdx, memberType);
-            if (result == 0) {
-                throw new BaseException(USERS_EMPTY_USER_ID);
-            }
-        } catch (Exception exception) {
-            throw new BaseException(DATABASE_ERROR);
-        }
+        userDao.updateMembership(userIdx, memberType);
     }
 
+    @Transactional(readOnly = false)
     public List<Address> getAddress(Long userIdx) throws BaseException {
-        try {
-            return addressDao.getAddress(userIdx);
-        } catch (Exception exception) {
-            throw new BaseException(DATABASE_ERROR);
-        }
+        return addressDao.getAddress(userIdx);
     }
 
     // 주소 변경
-    public PatchAddressReq updateAddress(PatchAddressReq patchAddressReq) throws BaseException {
-        try {
-            int result = addressDao.updateAddress(patchAddressReq);
-            if (result == 0) {
-                throw new BaseException(UPDATE_FAIL_ADDRESS);
-            }
-            return patchAddressReq;
-        } catch (Exception exception) {
-            throw new BaseException(DATABASE_ERROR);
+    @Transactional(readOnly = false)
+    public PatchAddressReq updateAddress(Long userIdx, PatchAddressReq patchAddressReq) throws BaseException {
+        if (patchAddressReq.getIsDefault()) {    // 지금 입력하는 주소지가 기본 주소라면 이미있는 기본 주소지를 0으로 만듬
+            addressDao.initDefaultAddress(userIdx);
         }
+        addressDao.updateAddress(patchAddressReq);
+        return patchAddressReq;
     }
 
     // 해당 유저의 모든 주소를 기본배송지가 아님으로 변경
+    @Transactional(readOnly = false)
     public void initDefaultAddress(Long userIdx) throws BaseException {
-        try {
-            int result = addressDao.initDefaultAddress(userIdx);
-            if (result == 0) {
-                throw new BaseException(USERS_EMPTY_USER_ID);
-            }
-        } catch (Exception exception) {
-            throw new BaseException(DATABASE_ERROR);
-        }
+        addressDao.initDefaultAddress(userIdx);
     }
 
     // 회원정보 삭제(Patch)
+    @Transactional(readOnly = false)
     public Long deleteUser(Long userIdx) throws BaseException {
-        try {
-            int result = userDao.deleteUser(userIdx);
-            if (result == 0) {
-                throw new BaseException(USERS_EMPTY_USER_ID);
-            }
-            return userIdx;
-        } catch (Exception exception) {
-            throw new BaseException(DATABASE_ERROR);
-        }
+        userDao.deleteUser(userIdx);
+        return userIdx;
     }
 
+    @Transactional(readOnly = false)
     public void deleteAddress(int addressIdx) throws BaseException {
-        try {
-            int result = addressDao.deleteAddress(addressIdx);
-            if (result == 0) {
-                throw new BaseException(ADDRESS_EMPTY_ADDRESS_ID);
-            }
-        } catch (Exception exception) {
-            throw new BaseException(DATABASE_ERROR);
-        }
+        addressDao.deleteAddress(addressIdx);
     }
 
-
+    @Transactional(readOnly = false)
     public void insertTimeInfo(int addressIdx, PostAddressReq postAddressReq) throws BaseException {
-        try {
-            int result = addressDao.insertTimeInfo(addressIdx, postAddressReq);
-            if (result == 0) {
-                throw new BaseException(ADDRESS_EMPTY_ADDRESS_ID);
-            }
-        } catch (Exception exception) {
-            throw new BaseException(DATABASE_ERROR);
-        }
+        addressDao.insertTimeInfo(addressIdx, postAddressReq);
     }
 
+    @Transactional(readOnly = false)
     public int insertAddress(Long userIdx, PostAddressReq postAddressReq) throws BaseException {
-        try {
-            int result = addressDao.insertAddress(userIdx, postAddressReq);
-            if (result == 0) {
-                throw new BaseException(ADDRESS_EMPTY_ADDRESS_ID);
-            }
-            return userDao.getLastInsertId();
-        } catch (Exception exception) {
-            throw new BaseException(DATABASE_ERROR);
-        }
+        addressDao.insertAddress(userIdx, postAddressReq);
+        return userDao.getLastInsertId();
+
     }
 
+    @Transactional(readOnly = false)
     public Long updatePushNotification(Long userIdx, String notificationName) throws BaseException {
-        try {
-            int result = pushNotificationAgreementDao.updatePushNotification(userIdx, notificationName);
-            if (result == 0) {
-                throw new BaseException(ADDRESS_EMPTY_ADDRESS_ID);
-            }
-            return userIdx;
-        } catch (Exception exception) {
-            throw new BaseException(DATABASE_ERROR);
-        }
+        pushNotificationAgreementDao.updatePushNotification(userIdx, notificationName);
+        return userIdx;
     }
 
-    public void updateUserProfileImage(Long userIdx, String url) throws BaseException{
-        try {
-            int result = userDao.updateUserProfileImage(userIdx, url);
-            if (result == 0) {
-                throw new BaseException(IMAGE_EMPTY_PROFILE_IMAGE);
-            }
-        } catch (Exception exception) {
-            throw new BaseException(DATABASE_ERROR);
-        }
+    @Transactional(readOnly = false)
+    public void updateUserProfileImage(Long userIdx, String url) throws BaseException {
+        userDao.updateUserProfileImage(userIdx, url);
     }
 }
