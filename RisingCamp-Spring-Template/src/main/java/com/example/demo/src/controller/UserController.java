@@ -2,25 +2,32 @@ package com.example.demo.src.controller;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
+import com.example.demo.src.domain.dto.sign.PostLoginReq;
+import com.example.demo.src.domain.dto.user.*;
 import com.example.demo.src.domain.dto.user.address.GetAddressRes;
 import com.example.demo.src.domain.dto.user.address.PatchAddressReq;
 import com.example.demo.src.domain.dto.user.address.PatchAddressRes;
 import com.example.demo.src.domain.dto.user.address.PostAddressReq;
-import com.example.demo.src.domain.dto.sign.PostLoginReq;
-import com.example.demo.src.domain.dto.user.*;
 import com.example.demo.src.domain.entitiy.user.Address;
 import com.example.demo.src.domain.entitiy.user.PushNotificationAgreement;
 import com.example.demo.src.domain.entitiy.user.User;
 import com.example.demo.src.service.user.UserProvider;
 import com.example.demo.src.service.user.UserService;
 import com.example.demo.utils.JwtService;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static com.example.demo.config.BaseResponseStatus.*;
@@ -41,6 +48,118 @@ public class UserController {
     private final UserService userService;
     private final JwtService jwtService; // JWT부분은 7주차에 다루므로 모르셔도 됩니다!
 
+
+    @ResponseBody
+    @GetMapping("/kakao-login")
+    public String kakaoCallBack(@RequestParam String code) throws BaseException {
+        String access_Token = "";
+        String refresh_Token = "";
+        String reqURL = "https://kauth.kakao.com/oauth/token";
+
+        try {
+            URL url = new URL(reqURL);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+            //POST 요청을 위해 기본값이 false인 setDoOutput을 true로
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
+
+            //POST 요청에 필요로 요구하는 파라미터 스트림을 통해 전송
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
+            StringBuilder sb = new StringBuilder();
+            sb.append("grant_type=authorization_code");
+            sb.append("&client_id=8ead72cbd44f9943b161c5418d935086"); // TODO REST_API_KEY 입력
+            sb.append("&redirect_uri=http://localhost:8080/app/users/kakao-login"); // TODO 인가코드 받은 redirect_uri 입력
+            sb.append("&client_secret=ld8Pl5EGGd24gdOzo6M0TRRw08yFWK7g");
+            sb.append("&code=" + code);
+            bw.write(sb.toString());
+            bw.flush();
+
+            //결과 코드가 200이라면 성공
+//            int responseCode = conn.getResponseCode();
+//            System.out.println("responseCode : " + responseCode);
+
+            //요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
+            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String line = "";
+            StringBuilder result = new StringBuilder();
+
+            while ((line = br.readLine()) != null) {
+                result.append(line);
+            }
+            System.out.println("response body : " + result);
+
+            //Gson 라이브러리에 포함된 클래스로 JSON파싱 객체 생성
+            JsonParser parser = new JsonParser();
+            JsonElement element = parser.parse(result.toString());
+
+            access_Token = element.getAsJsonObject().get("access_token").getAsString();
+            refresh_Token = element.getAsJsonObject().get("refresh_token").getAsString();
+
+
+            System.out.println("access_token : " + access_Token);
+            System.out.println("refresh_token : " + refresh_Token);
+
+            br.close();
+            bw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return access_Token;
+    }
+
+    @GetMapping("kakao-user")
+    @ResponseBody
+    public KakaoUserRes getUserInfo(@RequestParam String access_Token) {
+
+        //    요청하는 클라이언트마다 가진 정보가 다를 수 있기에 HashMap타입으로 선언
+//        HashMap<String, Object> userInfo = new HashMap<>();
+        String reqURL = "https://kapi.kakao.com/v2/user/me";
+        JsonObject kakao_account = null;
+        KakaoUserRes kakaoUserRes = new KakaoUserRes();
+        try {
+            URL url = new URL(reqURL);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+
+            //    요청에 필요한 Header에 포함될 내용
+            conn.setRequestProperty("Authorization", "Bearer " + access_Token);
+
+//            int responseCode = conn.getResponseCode();
+//            System.out.println("responseCode : " + responseCode);
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+            String line = "";
+            String result = "";
+
+            while ((line = br.readLine()) != null) {
+                result += line;
+            }
+            System.out.println("response body : " + result);
+
+            JsonParser parser = new JsonParser();
+            JsonElement element = parser.parse(result);
+
+            JsonObject properties = element.getAsJsonObject().get("properties").getAsJsonObject();
+            kakao_account = element.getAsJsonObject().get("kakao_account").getAsJsonObject();
+
+            kakaoUserRes.setName(properties.getAsJsonObject().get("nickname").getAsString());
+            kakaoUserRes.setEmail(kakao_account.getAsJsonObject().get("email").getAsString());
+            kakaoUserRes.setProfileImage(properties.getAsJsonObject().get("profile_image").getAsString());
+//            kakaoUserRes.setAccessToken(access_Token);
+
+//            userInfo.put("nickname", nickname);
+//            userInfo.put("email", email);
+
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return kakaoUserRes;
+    }
 
     @ResponseBody
     @PostMapping("/sign-up")
@@ -117,10 +236,14 @@ public class UserController {
     @ResponseBody
     @GetMapping("/{userIdx}")
     public BaseResponse<List<GetUserRes>> getUser(@PathVariable("userIdx") Long userIdx) {
-        Long userIdxByJwt = jwtService.getUserIdx();
-        //userIdx와 접근한 유저가 같은지 확인
-        if (!userIdx.equals(userIdxByJwt)) {
-            return new BaseResponse<>(INVALID_USER_JWT);
+        try {
+            Long userIdxByJwt = jwtService.getUserIdx();
+            //userIdx와 접근한 유저가 같은지 확인
+            if (!userIdx.equals(userIdxByJwt)) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
         }
         try {
             List<GetUserRes> getUserRes = new ArrayList<>(); // 반환할거 클라이언트에게
@@ -141,10 +264,14 @@ public class UserController {
     @SneakyThrows
     @DeleteMapping("/{userIdx}")
     public BaseResponse<String> deleteUser(@PathVariable("userIdx") Long userIdx) {
-        Long userIdxByJwt = jwtService.getUserIdx();
-        //userIdx와 접근한 유저가 같은지 확인
-        if (!userIdx.equals(userIdxByJwt)) {
-            return new BaseResponse<>(INVALID_USER_JWT);
+        try {
+            Long userIdxByJwt = jwtService.getUserIdx();
+            //userIdx와 접근한 유저가 같은지 확인
+            if (!userIdx.equals(userIdxByJwt)) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
         }
         try {
             Long id = userService.deleteUser(userIdx);
@@ -191,11 +318,14 @@ public class UserController {
     @SneakyThrows
     @PatchMapping("/{userIdx}/membership")
     public BaseResponse<String> updateMembership(@PathVariable("userIdx") Long userIdx, @RequestParam("memberType") String memberType) {
-
-        Long userIdxByJwt = jwtService.getUserIdx();
-        //userIdx와 접근한 유저가 같은지 확인
-        if (!userIdx.equals(userIdxByJwt)) {
-            return new BaseResponse<>(INVALID_USER_JWT);
+        try {
+            Long userIdxByJwt = jwtService.getUserIdx();
+            //userIdx와 접근한 유저가 같은지 확인
+            if (!userIdx.equals(userIdxByJwt)) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
         }
 
         if (!memberType.equals("BASIC") && !memberType.equals("ROCKET")) {
@@ -209,13 +339,17 @@ public class UserController {
         }
     }
 
-    @SneakyThrows
+
     @PatchMapping("/{userIdx}/profileImage")
     public BaseResponse<Boolean> updateProfileImage(@PathVariable Long userIdx, @RequestBody PatchProfileImageReq patchProfileImageReq) {
-        Long userIdxByJwt = jwtService.getUserIdx();
-        //userIdx와 접근한 유저가 같은지 확인
-        if (!userIdx.equals(userIdxByJwt)) {
-            return new BaseResponse<>(INVALID_USER_JWT);
+        try {
+            Long userIdxByJwt = jwtService.getUserIdx();
+            //userIdx와 접근한 유저가 같은지 확인
+            if (!userIdx.equals(userIdxByJwt)) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
         }
         try {
             userService.updateUserProfileImage(userIdx, patchProfileImageReq.getUrl());
@@ -228,11 +362,16 @@ public class UserController {
     @SneakyThrows
     @PatchMapping("/{userIdx}/address")
     public BaseResponse<PatchAddressRes> updateAddress(@PathVariable Long userIdx, @RequestBody PatchAddressReq getAddressReq) {
-        Long userIdxByJwt = jwtService.getUserIdx();
-        //userIdx와 접근한 유저가 같은지 확인
-        if (!userIdx.equals(userIdxByJwt)) {
-            return new BaseResponse<>(INVALID_USER_JWT);
+        try {
+            Long userIdxByJwt = jwtService.getUserIdx();
+            //userIdx와 접근한 유저가 같은지 확인
+            if (!userIdx.equals(userIdxByJwt)) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
         }
+
         try {
             if (getAddressReq.getIsDefault()) {    // 지금 입력하는 주소지가 기본 주소라면 이미있는 기본 주소지를 0으로 만듬
                 userService.initDefaultAddress(userIdx);
@@ -247,10 +386,14 @@ public class UserController {
     @SneakyThrows
     @DeleteMapping("/{userIdx}/address")
     public BaseResponse<List<GetAddressRes>> deleteAddress(@PathVariable Long userIdx, @RequestParam("addressIdx") int addressIdx) {
-        Long userIdxByJwt = jwtService.getUserIdx();
-        //userIdx와 접근한 유저가 같은지 확인
-        if (!userIdx.equals(userIdxByJwt)) {
-            return new BaseResponse<>(INVALID_USER_JWT);
+        try {
+            Long userIdxByJwt = jwtService.getUserIdx();
+            //userIdx와 접근한 유저가 같은지 확인
+            if (!userIdx.equals(userIdxByJwt)) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
         }
         try {
             userService.deleteAddress(addressIdx);
@@ -263,10 +406,14 @@ public class UserController {
     @SneakyThrows
     @PostMapping("/{userIdx}/address")
     public BaseResponse<List<GetAddressRes>> insertAddress(@PathVariable Long userIdx, @RequestBody PostAddressReq postAddressReq) {
-        Long userIdxByJwt = jwtService.getUserIdx();
-        //userIdx와 접근한 유저가 같은지 확인
-        if (!userIdx.equals(userIdxByJwt)) {
-            return new BaseResponse<>(INVALID_USER_JWT);
+        try {
+            Long userIdxByJwt = jwtService.getUserIdx();
+            //userIdx와 접근한 유저가 같은지 확인
+            if (!userIdx.equals(userIdxByJwt)) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
         }
         try {
             if (postAddressReq.getIsDefault()) {    // 지금 등록하는 주소지가 기본 주소라면 이미있는 기본 주소지를 0으로 만듬
@@ -286,10 +433,14 @@ public class UserController {
     @SneakyThrows
     @PatchMapping("{userIdx}/notification")
     public BaseResponse<GetPushNotificationAgreementRes> updatePushNotificationAgreement(@PathVariable Long userIdx, @RequestParam("notificationName") String notificationName) {
-        Long userIdxByJwt = jwtService.getUserIdx();
-        //userIdx와 접근한 유저가 같은지 확인
-        if (!userIdx.equals(userIdxByJwt)) {
-            return new BaseResponse<>(INVALID_USER_JWT);
+        try {
+            Long userIdxByJwt = jwtService.getUserIdx();
+            //userIdx와 접근한 유저가 같은지 확인
+            if (!userIdx.equals(userIdxByJwt)) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
         }
         try {
             userIdx = userService.updatePushNotification(userIdx, notificationName);
@@ -302,10 +453,14 @@ public class UserController {
 
     @NotNull
     private BaseResponse<List<GetAddressRes>> getListBaseResponse(List<Address> address2, @PathVariable Long userIdx) throws BaseException {
-        Long userIdxByJwt = jwtService.getUserIdx();
-        //userIdx와 접근한 유저가 같은지 확인
-        if (!userIdx.equals(userIdxByJwt)) {
-            return new BaseResponse<>(INVALID_USER_JWT);
+        try {
+            Long userIdxByJwt = jwtService.getUserIdx();
+            //userIdx와 접근한 유저가 같은지 확인
+            if (!userIdx.equals(userIdxByJwt)) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
         }
         List<GetAddressRes> getAddressRes = new ArrayList<>();
 

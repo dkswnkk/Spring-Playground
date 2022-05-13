@@ -36,6 +36,7 @@ public class UserProvider {
     private final AddressDao addressDao;
     private final PushNotificationAgreementDao pushNotificationAgreementDao;
 
+
     // 로그인(password 검사)
     public Long logIn(PostLoginReq postLoginReq) throws BaseException {
         User user = userDao.getPwd(postLoginReq);
