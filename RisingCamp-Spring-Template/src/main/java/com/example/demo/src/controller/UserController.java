@@ -8,11 +8,14 @@ import com.example.demo.src.domain.dto.user.address.GetAddressRes;
 import com.example.demo.src.domain.dto.user.address.PatchAddressReq;
 import com.example.demo.src.domain.dto.user.address.PatchAddressRes;
 import com.example.demo.src.domain.dto.user.address.PostAddressReq;
+import com.example.demo.src.domain.dto.user.wish.GetWishListRes;
 import com.example.demo.src.domain.entitiy.user.Address;
 import com.example.demo.src.domain.entitiy.user.PushNotificationAgreement;
 import com.example.demo.src.domain.entitiy.user.User;
 import com.example.demo.src.service.user.UserProvider;
 import com.example.demo.src.service.user.UserService;
+import com.example.demo.src.service.user.wish.WishListProvider;
+import com.example.demo.src.service.user.wish.WishListService;
 import com.example.demo.utils.JwtService;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -27,7 +30,6 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import static com.example.demo.config.BaseResponseStatus.*;
@@ -46,10 +48,11 @@ public class UserController {
 
     private final UserProvider userProvider;
     private final UserService userService;
+    private final WishListProvider wishListProvider;
+    private final WishListService wishListService;
     private final JwtService jwtService; // JWT부분은 7주차에 다루므로 모르셔도 됩니다!
 
 
-    @ResponseBody
     @GetMapping("/kakao-login")
     public String kakaoCallBack(@RequestParam String code) throws BaseException {
         String access_Token = "";
@@ -110,7 +113,6 @@ public class UserController {
     }
 
     @GetMapping("kakao-user")
-    @ResponseBody
     public KakaoUserRes getUserInfo(@RequestParam String access_Token) {
 
         //    요청하는 클라이언트마다 가진 정보가 다를 수 있기에 HashMap타입으로 선언
@@ -161,7 +163,6 @@ public class UserController {
         return kakaoUserRes;
     }
 
-    @ResponseBody
     @PostMapping("/sign-up")
     public BaseResponse<PostUserRes> createUser(@RequestBody PostUserReq postUserReq) {
         if (postUserReq.getEmail() == null) {
@@ -189,7 +190,6 @@ public class UserController {
     }
 
 
-    @ResponseBody
     @PostMapping("/log-in")
     public BaseResponse<List<GetUserRes>> logIn(@RequestBody PostLoginReq postLoginReq) {
         try {
@@ -233,7 +233,6 @@ public class UserController {
      * 인덱스로 조회
      */
     @SneakyThrows
-    @ResponseBody
     @GetMapping("/{userIdx}")
     public BaseResponse<List<GetUserRes>> getUser(@PathVariable("userIdx") Long userIdx) {
         try {
@@ -424,6 +423,65 @@ public class UserController {
             userService.insertTimeInfo(lastAddressIdx, postAddressReq);
 
             return getListBaseResponse(userProvider.getAddress(userIdx), userIdx);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    @GetMapping("/{userIdx}/wishList")
+    public BaseResponse<List<GetWishListRes>> getWishList(@PathVariable Long userIdx) {
+        try {
+            Long userIdxByJwt = jwtService.getUserIdx();
+            //userIdx와 접근한 유저가 같은지 확인
+            if (!userIdx.equals(userIdxByJwt)) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+
+        try {
+            return new BaseResponse<>(wishListProvider.getWishList(userIdx));
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    @DeleteMapping("/{userIdx}/wishList")
+    public BaseResponse<String> getWishList(@PathVariable Long userIdx, @RequestParam Long productIdx) {
+        try {
+            Long userIdxByJwt = jwtService.getUserIdx();
+            //userIdx와 접근한 유저가 같은지 확인
+            if (!userIdx.equals(userIdxByJwt)) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+
+        try {
+            wishListService.deleteWishList(userIdx, productIdx);
+            return new BaseResponse<>("찜목록에서 제거했습니다.");
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    @PostMapping("/{userIdx}/wishList")
+    public BaseResponse<String> postWishList(@PathVariable Long userIdx, @RequestParam Long productIdx) {
+        try {
+            Long userIdxByJwt = jwtService.getUserIdx();
+            //userIdx와 접근한 유저가 같은지 확인
+            if (!userIdx.equals(userIdxByJwt)) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+
+        try {
+            wishListService.insertWishList(userIdx, productIdx);
+            return new BaseResponse<>("찜목록에 추가했습니다.");
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }

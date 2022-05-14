@@ -170,10 +170,10 @@ public class UserDao {
                 userIdx); // 한 개의 회원정보를 얻기 위한 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
     }
 
-    public int updateMembership(Long userIdx, String memberType) {
+    public void updateMembership(Long userIdx, String memberType) {
         String updateMembershipQuery = "update User set membershipLevel = ? where userIdx = ? AND status = true";
         Object[] updateMembershipParams = new Object[]{memberType, userIdx}; // 주입될 값들(nickname, userIdx) 순
-        return this.jdbcTemplate.update(updateMembershipQuery, updateMembershipParams); // 대응시켜 매핑시켜 쿼리 요청(생성했으면 1, 실패했으면 0)
+        this.jdbcTemplate.update(updateMembershipQuery, updateMembershipParams);
     }
 
     // 해당 userIdx의 데이터 삭제(status변경)
