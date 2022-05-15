@@ -33,21 +33,21 @@ public class UserController {
         return service.findAll();
     }
 
-    @GetMapping("/users/{id}")
-    public EntityModel<User> retrieveUser(@PathVariable int id) {
-        User user = service.findOne(id);
-        if (user == null) {
-            throw new UserNotFountException(String.format("ID[%s] not found", id));
-        }
-
-        // HATEOAS
-//        EntityModel<User> model = new EntityModel<>(user);
-        EntityModel<User> model = EntityModel.of(user);
-        WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).retrieveAllUsers());
-        model.add(linkTo.withRel("all-users"));
-
-        return model;
-    }
+//    @GetMapping("/users/{id}")
+//    public EntityModel<User> retrieveUser(@PathVariable int id) {
+//        User user = service.findOne(id);
+//        if (user == null) {
+//            throw new UserNotFountException(String.format("ID[%s] not found", id));
+//        }
+//
+//        // HATEOAS
+////        EntityModel<User> model = new EntityModel<>(user);
+//        EntityModel<User> model = EntityModel.of(user);
+//        WebMvcLinkBuilder linkTo = linkTo(methodOn(this.getClass()).retrieveAllUsers());
+//        model.add(linkTo.withRel("all-users"));
+//
+//        return model;
+//    }
 
     @PostMapping("/users")
     public ResponseEntity<User> CreateUser(@Valid @RequestBody User user) {
