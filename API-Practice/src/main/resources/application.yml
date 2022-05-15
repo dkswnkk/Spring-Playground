@@ -5,6 +5,12 @@ logging:
 spring:
   messages:
     basename: messages
+
+  security:
+    user:
+      name: user
+      password: passw0rd
+
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
