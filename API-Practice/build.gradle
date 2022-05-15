@@ -29,6 +29,8 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation 'org.springframework.boot:spring-boot-starter-hateoas'
 	implementation 'io.springfox:springfox-boot-starter:3.0.0'
+	implementation 'org.springframework.data:spring-data-rest-hal-explorer'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 
 }
 
