@@ -2,6 +2,7 @@ package com.example.demo.src.controller;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
+import com.example.demo.config.BaseResponseStatus;
 import com.example.demo.src.domain.dto.sign.PostLoginReq;
 import com.example.demo.src.domain.dto.user.*;
 import com.example.demo.src.domain.dto.user.address.GetAddressRes;
@@ -14,6 +15,7 @@ import com.example.demo.src.domain.entitiy.user.PushNotificationAgreement;
 import com.example.demo.src.domain.entitiy.user.User;
 import com.example.demo.src.service.user.UserProvider;
 import com.example.demo.src.service.user.UserService;
+import com.example.demo.src.service.user.recentlyviewproduct.RecentlyViewProductProvider;
 import com.example.demo.src.service.user.wish.WishListProvider;
 import com.example.demo.src.service.user.wish.WishListService;
 import com.example.demo.utils.JwtService;
@@ -50,6 +52,7 @@ public class UserController {
     private final UserService userService;
     private final WishListProvider wishListProvider;
     private final WishListService wishListService;
+    private final RecentlyViewProductProvider recentlyViewProductProvider;
     private final JwtService jwtService; // JWT부분은 7주차에 다루므로 모르셔도 됩니다!
 
 
@@ -485,6 +488,25 @@ public class UserController {
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }
+    }
+
+    @GetMapping("/{userIdx}/recently-view-product")
+    public BaseResponse<List<GetRecentlyViewProductRes>> getRecentlyViewProducts(@PathVariable Long userIdx) {
+        try {
+            Long userIdxByJwt = jwtService.getUserIdx();
+            //userIdx와 접근한 유저가 같은지 확인
+            if (!userIdx.equals(userIdxByJwt)) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+        try {
+            return new BaseResponse<>(recentlyViewProductProvider.getRecentlyViewProduct(userIdx));
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+
     }
 
 
