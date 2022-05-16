@@ -6,11 +6,19 @@ spring:
   messages:
     basename: messages
 
-  security:
-    user:
-      name: user
-      password: passw0rd
+    security:
+      user:
+        name: user
+        password: passw0rd
+  jpa:
+    show-sql: true
 
+  datasource:
+    url: jdbc:h2:mem:testdb
+
+  h2:
+    console:
+      enabled: true
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
