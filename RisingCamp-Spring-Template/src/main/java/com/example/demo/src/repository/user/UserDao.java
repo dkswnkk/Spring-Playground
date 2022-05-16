@@ -2,6 +2,7 @@ package com.example.demo.src.repository.user;
 
 import com.example.demo.src.domain.dto.sign.PostLoginReq;
 import com.example.demo.src.domain.dto.user.PostUserReq;
+import com.example.demo.src.domain.dto.user.modify.PatchNameReq;
 import com.example.demo.src.domain.entitiy.user.MembershipLevel;
 import com.example.demo.src.domain.entitiy.user.User;
 import lombok.extern.slf4j.Slf4j;
@@ -77,6 +78,10 @@ public class UserDao {
                 email); // checkEmailQuery, checkEmailParams를 통해 가져온 값(int)을 반환한다. -> 쿼리문의 결과(존재하지 않음(False,0),존재함(True, 1))를 int형(0,1)으로 반환됩니다.
     }
 
+    public void modifyName(Long userIdx, PatchNameReq patchNameReq) {
+        String modifyNameQuery = "update User set name = ? where userIdx = ? AND User.status = true";
+        this.jdbcTemplate.update(modifyNameQuery, patchNameReq.getName(), userIdx);
+    }
 
 //    // 회원정보 변경
 //    public int modifyUserName(PatchUserReq patchUserReq) {

@@ -2,13 +2,14 @@ package com.example.demo.src.controller;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
-import com.example.demo.config.BaseResponseStatus;
 import com.example.demo.src.domain.dto.sign.PostLoginReq;
 import com.example.demo.src.domain.dto.user.*;
 import com.example.demo.src.domain.dto.user.address.GetAddressRes;
 import com.example.demo.src.domain.dto.user.address.PatchAddressReq;
 import com.example.demo.src.domain.dto.user.address.PatchAddressRes;
 import com.example.demo.src.domain.dto.user.address.PostAddressReq;
+import com.example.demo.src.domain.dto.user.modify.PatchNameReq;
+import com.example.demo.src.domain.dto.user.modify.PatchProfileImageReq;
 import com.example.demo.src.domain.dto.user.wish.GetWishListRes;
 import com.example.demo.src.domain.entitiy.user.Address;
 import com.example.demo.src.domain.entitiy.user.PushNotificationAgreement;
@@ -28,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -503,6 +505,26 @@ public class UserController {
         }
         try {
             return new BaseResponse<>(recentlyViewProductProvider.getRecentlyViewProduct(userIdx));
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+
+    }
+
+    @PatchMapping("{userIdx}/name")
+    public BaseResponse<String> modifyUserName(@PathVariable Long userIdx, @Valid @RequestBody PatchNameReq patchNameReq) {
+        try {
+            Long userIdxByJwt = jwtService.getUserIdx();
+            //userIdx와 접근한 유저가 같은지 확인
+            if (!userIdx.equals(userIdxByJwt)) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+        try {
+            userService.modifyName(userIdx, patchNameReq);
+            return new BaseResponse<>("이름을 변경했습니다.");
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }

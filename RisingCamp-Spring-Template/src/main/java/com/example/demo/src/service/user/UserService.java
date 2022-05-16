@@ -7,6 +7,7 @@ import com.example.demo.src.domain.dto.user.address.PatchAddressReq;
 import com.example.demo.src.domain.dto.user.address.PostAddressReq;
 import com.example.demo.src.domain.dto.user.PostUserReq;
 import com.example.demo.src.domain.dto.user.PostUserRes;
+import com.example.demo.src.domain.dto.user.modify.PatchNameReq;
 import com.example.demo.src.domain.entitiy.user.Address;
 import com.example.demo.src.repository.user.AddressDao;
 import com.example.demo.src.repository.user.PushNotificationAgreementDao;
@@ -78,6 +79,11 @@ public class UserService {
 //            throw new BaseException(DATABASE_ERROR);
 //        }
 //    }
+    @Transactional(readOnly = false)
+    public void modifyName(Long userIdx, PatchNameReq patchNameReq) throws BaseException{
+        userDao.modifyName(userIdx, patchNameReq);
+    }
+
 
     @Transactional(readOnly = false)
     public void updateMembership(Long userIdx, String memberType) throws BaseException {
