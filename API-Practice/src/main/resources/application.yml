@@ -6,19 +6,30 @@ spring:
   messages:
     basename: messages
 
-    security:
-      user:
-        name: user
-        password: passw0rd
-  jpa:
-    show-sql: true
+  #    security:
+  #      user:
+  #        name: user
+  #        password: passw0rd
 
   datasource:
+    driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:testdb
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+    defer-datasource-initialization: false
+    open-in-view: false
+    generate-ddl: true
+
 
   h2:
     console:
       enabled: true
+      settings:
+        web-allow-others: true
+
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher

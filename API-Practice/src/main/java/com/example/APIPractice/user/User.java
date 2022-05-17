@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 import java.util.Date;
@@ -19,10 +20,13 @@ import java.util.Date;
 //@JsonIgnoreProperties(value = {"password", "ssn"})
 //@JsonFilter("UserInfo")
 @ApiModel(description = "사용자 상세 정보를 위한 도메인 객체")
+@Entity
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Size(min=2, message = "name은 두 글자 이상 입력해 주세요.")
+    @Size(min = 2, message = "name은 두 글자 이상 입력해 주세요.")
     @ApiModelProperty(notes = "사용자 이름을 입력해 주시요.")
     private String name;
     @Past // 미래 날짜는 사용할 수 없음
