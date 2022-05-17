@@ -17,7 +17,7 @@ public class GetRecentlyViewProductRes {
     private Long reviewCount;
 
     public GetRecentlyViewProductRes(Map<String, Object> product) {
-        this.productIdx = (Long) product.get("P.productIdx");
+        this.productIdx = (Long) product.get("productIdx");
         this.title = (String) product.get("title");
         this.url = (String) product.get("imageUrl");
         this.deliveryStatus = (int) product.get("deliveryStatus");
