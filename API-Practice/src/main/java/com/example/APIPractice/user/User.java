@@ -8,6 +8,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import javax.validation.constraints.Past;
@@ -25,6 +27,7 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Integer id;
 
     @Size(min = 2, message = "name은 두 글자 이상 입력해 주세요.")
@@ -39,6 +42,7 @@ public class User {
     @ApiModelProperty(notes = "사용자의 주민번호를 입력해 주세요.")
     private String ssn;
 
+
     @OneToMany(mappedBy = "user")
     private List<Post> posts;
 
@@ -49,4 +53,5 @@ public class User {
         this.password = password;
         this.ssn = ssn;
     }
+
 }

@@ -1,6 +1,6 @@
 logging:
   level:
-    springboot.APIPratice: debug
+    springboot.APIPratice:
 
 spring:
   messages:
@@ -20,7 +20,7 @@ spring:
     hibernate:
       ddl-auto: create
     defer-datasource-initialization: false
-    open-in-view: false
+    open-in-view: true
     generate-ddl: true
 
 
