@@ -13,5 +13,6 @@ public class ExceptionResponse {
     private LocalDateTime time;
     private Boolean isSuccess;
     private String message;
+    private String details;
 
 }

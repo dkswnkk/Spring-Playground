@@ -10,9 +10,9 @@ import javax.validation.constraints.Min;
 @NoArgsConstructor
 public class User {
 
-    
+
     private String name;
-    @Min(value = 19)
+    @Min(value = 19, message = "나이는 19살 이상이어야 합니다.")
     private int age;
 
 //    @Builder
