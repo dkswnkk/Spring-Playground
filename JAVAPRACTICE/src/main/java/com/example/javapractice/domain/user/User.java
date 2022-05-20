@@ -1,0 +1,23 @@
+package com.example.javapractice.domain.user;
+
+import lombok.*;
+
+import javax.validation.constraints.Min;
+
+@Getter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+public class User {
+
+    
+    private String name;
+    @Min(value = 19)
+    private int age;
+
+//    @Builder
+//    public User(String name, int age) {
+//        this.name = name;
+//        this.age = age;
+//    }
+}
