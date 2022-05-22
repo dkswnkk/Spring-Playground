@@ -20,7 +20,7 @@ public class UserController {
 
     @GetMapping("/users/{id}")
     public ResponseEntity<Integer> getUsers(@PathVariable int id) {
-        if (id == 1) {
+        if (id != 1) {
             throw new UserNotFoundException(String.format("아이디 %d을 가진 유저가 존재하지 않습니다.", id));
         }
         return ResponseEntity.ok(id);

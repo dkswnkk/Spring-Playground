@@ -25,7 +25,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(UserNotFoundException.class)
     public final ResponseEntity<Object> handlerNotFoundUserException(Exception ex) {
         ExceptionResponse exceptionResponse = new ExceptionResponse(LocalDateTime.now(), false, "유저를 찾을 수 없습니다.", ex.getMessage());
-        
+
         return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
     }
 
