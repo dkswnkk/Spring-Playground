@@ -5,10 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
@@ -17,14 +14,15 @@ import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
 
-@Data
+@Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 //@JsonIgnoreProperties(value = {"password", "ssn"})
 //@JsonFilter("UserInfo")
 @ApiModel(description = "사용자 상세 정보를 위한 도메인 객체")
 @Entity
-public class User {
+public class User extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
@@ -46,8 +44,8 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Post> posts;
 
-    public User(Integer id, String name, Date joinDate, String password, String ssn) {
-        this.id = id;
+    @Builder
+    public User(String name, Date joinDate, String password, String ssn) {
         this.name = name;
         this.joinDate = joinDate;
         this.password = password;
