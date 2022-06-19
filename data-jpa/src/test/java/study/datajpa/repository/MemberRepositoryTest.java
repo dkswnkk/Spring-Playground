@@ -107,5 +107,20 @@ class MemberRepositoryTest {
         }
     }
 
+    @Test
+    public void 리턴타입_테스트() {
+        Member m1 = new Member("안주형", 25);
+        memberRepository.save(m1);
+
+        Member result1 = memberRepository.findMemberByUsername("안주형");
+        List<Member> result2 = memberRepository.findListByUsername("안주형");
+        Optional<Member> result3 = memberRepository.findOptionalByUsername("안주형");
+        Optional<Member> result4 = Optional.empty();
+
+        System.out.println(result1);
+        System.out.println(result2.get(0));
+        System.out.println(result3.orElseGet(() -> new Member("안주", 25)));
+        System.out.println(result4.orElseGet(() -> new Member("빈값", 0)));
+    }
 
 }
