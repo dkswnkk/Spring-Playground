@@ -10,6 +10,8 @@ import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
 import study.datajpa.entity.Team;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -87,4 +89,23 @@ class MemberRepositoryTest {
             System.out.println(memberDto);
         }
     }
+
+    @Test
+    public void testQuery4() {
+        Member m1 = new Member("안주형", 25);
+        Member m2 = new Member("제니", 26);
+        Member m3 = new Member("사람", 25);
+
+        memberRepository.save(m1);
+        memberRepository.save(m2);
+        memberRepository.save(m3);
+
+
+        List<Member> result = memberRepository.findByNames(Arrays.asList("안주형", "제니"));
+        for (Member member : result) {
+            System.out.println(member);
+        }
+    }
+
+
 }
