@@ -5,6 +5,10 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
@@ -123,4 +127,44 @@ class MemberRepositoryTest {
         System.out.println(result4.orElseGet(() -> new Member("빈값", 0)));
     }
 
+
+    @Test
+    public void 페이징_테스트() {
+        //given
+        memberRepository.save(new Member("멤버1", 25));
+        memberRepository.save(new Member("멤버2", 25));
+        memberRepository.save(new Member("멤버3", 25));
+        memberRepository.save(new Member("멤버4", 25));
+        memberRepository.save(new Member("멤버5", 25));
+
+//        int age = 25;
+//        int offset = 0;
+//        int limit = 3;
+        int age = 25;
+        PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.ASC, "username"));
+
+        //when
+        Page<Member> page = memberRepository.findByAge(age, pageRequest);
+
+        Page<MemberDto> memberDtos = page.map(member -> new MemberDto(member.getId(), member.getUsername(), null)); // dto로 변경
+
+        Slice<Member> page2 = memberRepository.findByAge(age, pageRequest); // 전체 갯수를 가져오지 않음.
+
+        //then
+        List<Member> content = page.getContent();
+        long totalElements = page.getTotalElements();
+
+        for (Member member : content) {
+            System.out.println(member);
+        }
+
+        System.out.println(totalElements);
+        assertThat(page.getContent().size()).isEqualTo(3);    // 현재 불러온 갯수
+        assertThat(page.getTotalElements()).isEqualTo(5);   //총 갯수
+        assertThat(page.getNumber()).isEqualTo(0);  // 현재 페이지 넘버
+        assertThat(page.getTotalPages()).isEqualTo(2);  // 총 페이지 갯수 3, 2 해서 두개
+        assertThat(page.isFirst()).isTrue();
+        assertThat(page.hasNext()).isTrue();
+
+    }
 }
