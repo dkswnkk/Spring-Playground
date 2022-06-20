@@ -14,6 +14,8 @@ import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
 import study.datajpa.entity.Team;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,6 +32,8 @@ class MemberRepositoryTest {
     private MemberRepository memberRepository;
     @Autowired
     private TeamRepository teamRepository;
+    @PersistenceContext
+    private EntityManager em;
 
     @Test
     public void test() {
@@ -165,6 +169,27 @@ class MemberRepositoryTest {
         assertThat(page.getTotalPages()).isEqualTo(2);  // 총 페이지 갯수 3, 2 해서 두개
         assertThat(page.isFirst()).isTrue();
         assertThat(page.hasNext()).isTrue();
+
+    }
+
+    @Test
+    public void 벌크_테스트() {
+        //given
+        memberRepository.save(new Member("멤버1", 25));
+        memberRepository.save(new Member("멤버2", 26));
+        memberRepository.save(new Member("멤버3", 27));
+        memberRepository.save(new Member("멤버4", 28));
+        memberRepository.save(new Member("멤버5", 29));
+
+        //when
+        //벌크 연산 같은 경우 영속성 캐시에 상관없이 DB에 직접적으로 업데이트함
+        //따라서 벌크 연산 후에는 영속성 캐시를 전부 날려버려야함.
+        int updateCount = memberRepository.bulkAgePlus(10);
+       // em.clear(); // 영속성 캐시를 전부 날림. @Modifying(clearAutomatically = true) 쓰면 따로 적어주지 않아도 된다.
+
+        Optional<Member> findMember = memberRepository.findOptionalByUsername("멤버5");
+        System.out.println(findMember.orElseGet(()->null));
+        assertThat(updateCount).isEqualTo(5);
 
     }
 }
