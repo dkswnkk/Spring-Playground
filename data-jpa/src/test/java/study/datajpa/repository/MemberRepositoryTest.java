@@ -219,4 +219,16 @@ class MemberRepositoryTest {
 
 
     }
+
+
+    @Test
+    public void 커스텀_레포지토리_구현(){
+        Member member = new Member("안주형",25);
+        memberRepository.save(member);
+        List<Member> result = memberRepository.findMemberCustom();
+
+        for (Member member1 : result) {
+            System.out.println(member1);
+        }
+    }
 }

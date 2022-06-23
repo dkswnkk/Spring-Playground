@@ -13,7 +13,7 @@ import study.datajpa.entity.Member;
 import java.util.List;
 import java.util.Optional;
 
-public interface MemberRepository extends JpaRepository<Member, Long> {
+public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom {
     List<Member> findByUsernameAndAgeIsGreaterThan(String username, int age);
 
     @Query("select m from Member m where m.username =:username and m.age =:age")    // =: 애서 =: 뒤에 공백이 있으면 에러 발생
