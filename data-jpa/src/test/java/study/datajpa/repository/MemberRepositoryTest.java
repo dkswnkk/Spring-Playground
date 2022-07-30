@@ -26,7 +26,9 @@ import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
 @Transactional(readOnly = false)
-class MemberRepositoryTest {
+class
+
+MemberRepositoryTest {
 
     @Autowired
     private MemberRepository memberRepository;
@@ -185,16 +187,16 @@ class MemberRepositoryTest {
         //벌크 연산 같은 경우 영속성 캐시에 상관없이 DB에 직접적으로 업데이트함
         //따라서 벌크 연산 후에는 영속성 캐시를 전부 날려버려야함.
         int updateCount = memberRepository.bulkAgePlus(10);
-       // em.clear(); // 영속성 캐시를 전부 날림. @Modifying(clearAutomatically = true) 쓰면 따로 적어주지 않아도 된다.
+        // em.clear(); // 영속성 캐시를 전부 날림. @Modifying(clearAutomatically = true) 쓰면 따로 적어주지 않아도 된다.
 
         Optional<Member> findMember = memberRepository.findOptionalByUsername("멤버5");
-        System.out.println(findMember.orElseGet(()->null));
+        System.out.println(findMember.orElseGet(() -> null));
         assertThat(updateCount).isEqualTo(5);
 
     }
 
     @Test
-    public void findMemberLazy(){
+    public void findMemberLazy() {
         //given
         //member1 -> teamA 참조
         //member2 -> teamB 참조
@@ -222,13 +224,88 @@ class MemberRepositoryTest {
 
 
     @Test
-    public void 커스텀_레포지토리_구현(){
-        Member member = new Member("안주형",25);
+    public void 커스텀_레포지토리_구현() {
+        Member member = new Member("안주형", 25);
         memberRepository.save(member);
         List<Member> result = memberRepository.findMemberCustom();
 
         for (Member member1 : result) {
             System.out.println(member1);
         }
+    }
+
+    @Test
+    public void projectionsOne() {
+        //given
+        Team teamA = new Team("teamA");
+        em.persist(teamA);
+
+        Member m1 = new Member("m1", 0, teamA);
+        Member m2 = new Member("m2", 0, teamA);
+
+        em.persist(m1);
+        em.persist(m2);
+
+        em.flush();
+        em.clear();
+
+
+        //when
+        List<UsernameOnly> result = memberRepository.findProjectionsByUsername("m1");
+        for (UsernameOnly usernameOnly : result) {
+            System.out.println(usernameOnly.getUsername());
+        }
+    }
+
+    @Test
+    public void projectionsTwo() {
+        //given
+        Team teamA = new Team("teamA");
+        em.persist(teamA);
+
+        Member m1 = new Member("m1", 0, teamA);
+        Member m2 = new Member("m2", 0, teamA);
+
+        em.persist(m1);
+        em.persist(m2);
+
+        em.flush();
+        em.clear();
+
+
+        //when
+        List<UsernameOnlyDto> result = memberRepository.findProjectionsDtoByUsername("m1");
+        for (UsernameOnlyDto usernameOnlyDto : result) {
+            System.out.println(usernameOnlyDto.getUsername());
+        }
+
+    }
+
+
+    @Test
+    public void projectionsThree() {
+        //given
+        Team teamA = new Team("teamA");
+        em.persist(teamA);
+
+        Member m1 = new Member("m1", 0, teamA);
+        Member m2 = new Member("m2", 0, teamA);
+
+        em.persist(m1);
+        em.persist(m2);
+
+        em.flush();
+        em.clear();
+
+
+        //when
+        List<NestedClosedProjections> result = memberRepository.findGenericProjectionsByUsername("m1", NestedClosedProjections.class);
+
+        for (NestedClosedProjections nestedClosedProjections : result) {
+            System.out.println(nestedClosedProjections.getTeam().getName());
+            System.out.println(nestedClosedProjections.getUsername());
+        }
+
+
     }
 }

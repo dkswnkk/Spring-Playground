@@ -16,7 +16,8 @@ import java.util.Optional;
 public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom {
     List<Member> findByUsernameAndAgeIsGreaterThan(String username, int age);
 
-    @Query("select m from Member m where m.username =:username and m.age =:age")    // =: 애서 =: 뒤에 공백이 있으면 에러 발생
+    @Query("select m from Member m where m.username =:username and m.age =:age")
+        // =: 애서 =: 뒤에 공백이 있으면 에러 발생
     List<Member> findUser(@Param("username") String username, @Param("age") int age);
 
     @Query("select m.username from Member m")
@@ -29,7 +30,9 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
     List<Member> findByNames(@Param("names") List<String> names);
 
     List<Member> findListByUsername(String username);   //컬렉션
+
     Member findMemberByUsername(String username); //단건
+
     Optional<Member> findOptionalByUsername(String username);   //단건 Optional
 
     Page<Member> findByAge(int age, Pageable pageable);
@@ -44,6 +47,12 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
     @Override
     @EntityGraph(attributePaths = {"team"})
     List<Member> findAll();
+
+    List<UsernameOnly> findProjectionsByUsername(@Param("username") String username);
+
+    List<UsernameOnlyDto> findProjectionsDtoByUsername(@Param("username") String username);
+
+    <T> List<T> findGenericProjectionsByUsername(@Param("username") String username, Class<T> type);
 }
 
 
