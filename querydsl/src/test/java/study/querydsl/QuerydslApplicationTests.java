@@ -8,8 +8,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import study.querydsl.entity.Hello;
 import study.querydsl.entity.QHello;
+import study.querydsl.repository.HelloRepository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -17,8 +22,11 @@ import static org.assertj.core.api.Assertions.*;
 @Transactional
 class QuerydslApplicationTests {
 
-    @Autowired
+    @PersistenceContext
     EntityManager em;
+
+    @Autowired
+    HelloRepository helloRepository;
 
     @Test
     void contextLoads() {
@@ -34,6 +42,20 @@ class QuerydslApplicationTests {
 
         assertThat(result).isEqualTo(hello);
         assertThat(result.getId()).isEqualTo(hello.getId());
+    }
+
+    @Test
+    public void p6spyTest() {
+
+        Hello hello = new Hello();
+        em.persist(hello);
+        em.flush();
+
+        List<Hello> result = helloRepository.findAll();
+        for (Hello hello1 : result) {
+            System.out.println(hello1.getId());
+        }
+        System.out.println(result.toString());
     }
 
 }
