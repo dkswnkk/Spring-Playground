@@ -5,12 +5,6 @@ spring:
     password:
     driver-class-name: org.h2.Driver
 
-# 운영 환경에서는 반드시 enable-logging 를 false로 두고 사용
-decorator:
-  datasource:
-    p6spy:
-      enable-logging: true
-
   jpa:
     hibernate:
       ddl-auto: create
@@ -18,5 +12,12 @@ decorator:
       hibernate:
         format_sql: true
 
+# 운영 환경에서는 반드시 enable-logging 를 false로 두고 사용
+#decorator:
+#  datasource:
+#    p6spy:
+#      enable-logging: true
+
 logging.level:
   org.hibernate.SQL: debug
+  org.bibernate.type: trace
