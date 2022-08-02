@@ -55,6 +55,7 @@ public class QuerydslBasicTest {
     public void startQuerydsl() {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         QMember m = new QMember("m");
+        QMember m2 = QMember.member;    // 이렇게도 사용 가능
 
         Member findMember = queryFactory
                 .select(m)
