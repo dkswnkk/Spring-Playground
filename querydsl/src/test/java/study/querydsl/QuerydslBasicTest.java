@@ -1,5 +1,6 @@
 package study.querydsl;
 
+import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.JPQLQueryFactory;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.assertj.core.api.Assertions;
@@ -16,6 +17,8 @@ import javax.persistence.PersistenceContext;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static study.querydsl.entity.QMember.*;
 import static study.querydsl.entity.QMember.member;
 
 @SpringBootTest
@@ -96,6 +99,38 @@ public class QuerydslBasicTest {
                 .fetchOne();
 
         assertThat(result.getUsername()).isEqualTo("안주");
+    }
+
+    @Test
+    public void resultFetch() {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+
+        List<Member> fetch = queryFactory
+                .selectFrom(member)
+                .fetch();
+
+
+        /*
+            단건 조회이기 때문에 한 건이 나와야 하지만 현재 두 건이 나와서 에러가 발생하는게 옳음.
+         */
+        assertThrows(com.querydsl.core.NonUniqueResultException.class, () -> {
+            Member fetchOne = queryFactory
+                    .selectFrom(member)
+                    .fetchOne();
+        });
+
+
+        Member fetchFirst = queryFactory
+                .selectFrom(member)
+                .fetchFirst();  //limit(1)과 동일
+
+        QueryResults<Member> memberQueryResults = queryFactory
+                .selectFrom(member)
+                .fetchResults();
+
+        memberQueryResults.getTotal();
+        List<Member> content = memberQueryResults.getResults();
+
     }
 
 }
