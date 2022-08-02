@@ -1,5 +1,6 @@
 package study.querydsl;
 
+import com.querydsl.jpa.JPQLQueryFactory;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +16,7 @@ import javax.persistence.PersistenceContext;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
+import static study.querydsl.entity.QMember.member;
 
 @SpringBootTest
 @Transactional(readOnly = true)
@@ -55,7 +57,7 @@ public class QuerydslBasicTest {
     public void startQuerydsl() {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         QMember m = new QMember("m");
-        QMember m2 = QMember.member;    // 이렇게도 사용 가능
+        QMember m2 = member;    // 이렇게도 사용 가능
 
         Member findMember = queryFactory
                 .select(m)
@@ -67,5 +69,33 @@ public class QuerydslBasicTest {
 
     }
 
+
+    @Test
+    public void search() {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+        Member result = queryFactory
+                .selectFrom(member) //QMember.member 를 스태틱 임포트
+                .where(member.username.eq("안주").and(member.age.eq(25)))
+                .fetchOne();
+
+        assertThat(result.getUsername()).isEqualTo("안주");
+    }
+
+    @Test
+    public void searchAndParam() {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+
+        /*
+            위랑 동일, where 절에 and로 체인을 거는 대신에 ','로도 사용 가능
+         */
+        Member result = queryFactory
+                .selectFrom(member) //QMember.member 를 스태틱 임포트
+                .where(
+                        member.username.eq("안주"),
+                        member.age.eq(25))
+                .fetchOne();
+
+        assertThat(result.getUsername()).isEqualTo("안주");
+    }
 
 }
