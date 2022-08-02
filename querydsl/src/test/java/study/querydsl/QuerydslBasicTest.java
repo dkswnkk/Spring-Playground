@@ -133,4 +133,38 @@ public class QuerydslBasicTest {
 
     }
 
+    /**
+     * 회원 정렬 순서
+     * 1. 회원 나이 내림차순(desc)
+     * 2. 회원 이름 올림차순(asc)
+     * 단 2에서 회원 이름이 같으면 마지막에 출력(null last)
+     */
+    @Test
+    public void sort() {
+        JPAQueryFactory jqf = new JPAQueryFactory(em);
+
+        em.persist(new Member(null, 100));
+        em.persist(new Member("멍멍이", 100));
+        em.persist(new Member("야옹이", 100));
+
+        List<Member> result = jqf
+                .selectFrom(member)
+                .where(member.age.eq(100))
+                .orderBy(
+                        member.age.desc(),
+                        member.username.asc().nullsLast()
+                )
+                .fetch();
+
+        Member 멍멍이 = result.get(0);
+        Member 야옹이 = result.get(1);
+        Member memberNull = result.get(2);
+
+        assertThat(야옹이.getUsername()).isEqualTo("야옹이");
+        assertThat(멍멍이.getUsername()).isEqualTo("멍멍이");
+        assertThat(memberNull.getUsername()).isNull();
+
+    }
+
+
 }
