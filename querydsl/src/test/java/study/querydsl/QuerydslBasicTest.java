@@ -38,9 +38,11 @@ public class QuerydslBasicTest {
 
         Member member1 = new Member("안주", 25, teamA);
         Member member2 = new Member("고양이", 1, teamB);
+        Member member3 = new Member("멍멍이", 1, teamB);
 
         em.persist(member1);
         em.persist(member2);
+        em.persist(member3);
 
         em.flush();
         em.clear();
@@ -166,5 +168,35 @@ public class QuerydslBasicTest {
 
     }
 
+    @Test
+    public void paging1() {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+        List<Member> result = queryFactory
+                .selectFrom(member)
+                .orderBy(member.username.desc())
+                .offset(1)
+                .limit(2)
+                .fetch();
+
+        assertThat(result.size()).isEqualTo(2);
+
+    }
+
+    @Test
+    public void paging2() {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+        QueryResults<Member> result = queryFactory
+                .selectFrom(member)
+                .orderBy(member.username.desc())
+                .offset(1)
+                .limit(2)
+                .fetchResults();
+
+        assertThat(result.getTotal()).isEqualTo(3);
+        assertThat(result.getLimit()).isEqualTo(2);
+        assertThat(result.getOffset()).isEqualTo(1);
+        assertThat(result.getResults().size()).isEqualTo(2);
+
+    }
 
 }
