@@ -2,6 +2,7 @@ package study.querydsl;
 
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQueryFactory;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -451,6 +452,47 @@ public class QuerydslBasicTest {
             System.out.println(tuple);
         }
 
+    }
+
+    /**
+     * case문 단순한 로직
+     */
+    @Test
+    public void basicCase() {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+
+        List<String> result = queryFactory
+                .select(member.age
+                        .when(10).then("열살")
+                        .when(25).then("스물다섯")
+                        .otherwise("기타")
+                )
+                .from(member)
+                .fetch();
+
+        for (String s : result) {
+            System.out.println(s);
+        }
+    }
+
+    /**
+     * case문 복잡한 로직
+     */
+    @Test
+    public void complexCase() {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+
+        List<String> result = queryFactory
+                .select(new CaseBuilder()
+                        .when(member.age.between(0, 18)).then("미성년자")
+                        .when(member.age.between(19, 99)).then("성인")
+                        .otherwise("??"))
+                .from(member)
+                .fetch();
+
+        for (String s : result) {
+            System.out.println(s);
+        }
     }
 
 }
