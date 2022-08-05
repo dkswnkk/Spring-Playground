@@ -3,6 +3,7 @@ package study.querydsl;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQueryFactory;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -494,5 +495,38 @@ public class QuerydslBasicTest {
             System.out.println(s);
         }
     }
+
+    @Test
+    public void constant() {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+
+        List<Tuple> result = queryFactory
+                .select(member.username, Expressions.constant("A"))
+                .from(member)
+                .fetch();
+
+        for (Tuple tuple : result) {
+            System.out.println(tuple);
+        }
+
+    }
+
+
+    @Test
+    public void concat() {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+
+        //{username_age}
+        List<String> result = queryFactory
+                .select(member.username.concat("_").concat(member.age.stringValue()))   // .stringValue()의 경우 쓸 일이 많다.
+                .from(member)
+                .where(member.username.eq("안주"))
+                .fetch();
+        for (String s : result) {
+            System.out.println(s);
+        }
+
+    }
+
 
 }
