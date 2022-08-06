@@ -528,5 +528,40 @@ public class QuerydslBasicTest {
 
     }
 
+    /**
+     * 프로젝션 대상이 하나면 타입을 명확하게 지정할 수 있음
+     * 프로젝션 대상이 둘 이상이면 튜플이나 DTO로 조회
+     */
+    @Test
+    public void simpleProjection() {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+        List<String> result = queryFactory
+                .select(member.username)
+                .from(member)
+                .fetch();
+    }
+
+
+    /**
+     * 김영한: 튜플이 레포지토리 계층을 넘어 서비스나 컨트롤러 계층까지 가는 경우는 좋은 설계가 아님.
+     * 바깥으로 나갈때는 DTO로 변환해서 사용하는 것을 권장
+     */
+    @Test
+    public void tupleProjection() {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+
+        List<Tuple> result = queryFactory
+                .select(member.username, member.age)    // 여러개가 넘어오면 튜플
+                .from(member)
+                .fetch();
+
+        for (Tuple tuple : result) {
+            String username = tuple.get(member.username);
+            Integer age = tuple.get(member.age);
+            System.out.println(username);
+            System.out.println(age);
+        }
+    }
+
 
 }
