@@ -1,5 +1,6 @@
 package com.example.junit5.Entity;
 
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,16 +17,14 @@ import static org.assertj.core.api.AssertionsForClassTypes.notIn;
 @SpringBootTest
 class MemberTest {
     public Member member1, member2, member3;
-    public List<Member> members = new ArrayList<>();
+    public List<Member> members;
 
     @BeforeEach
     public void createMember() {
         member1 = new Member("Kim", 20, MemberRole.ADMIN);
         member2 = new Member("Ahn", 20, MemberRole.BASIC);
         member3 = new Member("Park", 21, MemberRole.VIP);
-        members.add(member1);
-        members.add(member2);
-        members.add(member3);
+        members = Lists.list(member1, member2, member3);
     }
 
 
@@ -89,5 +88,28 @@ class MemberTest {
                 .filteredOn("age", 20)
                 .filteredOn(member -> member.age > 20)
                 .isEmpty();
+    }
+
+
+
+    @Test
+    public void test7() {
+        List<String> names = new ArrayList<>();
+        for (Member member : members) {
+            names.add(member.getName());
+        }
+        assertThat(names).containsOnly("Kim", "Ahn", "Park");
+    }
+
+    /**
+     * 테스트 7번을 개선한 코드
+     * extracting을 사용하면 간결하게 테스트할 수 있다.
+     */
+    @Test
+    public void test8() {
+        assertThat(members)
+                .extracting("name")
+                .containsOnly("Kim", "Ahn", "Park");
+
     }
 }
