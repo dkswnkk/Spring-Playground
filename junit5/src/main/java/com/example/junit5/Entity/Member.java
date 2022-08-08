@@ -1,14 +1,17 @@
 package com.example.junit5.Entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 
-@Entity
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public class Member {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
     public String name;
+    public int age;
+    MemberRole memberRole;
+}
+
+enum MemberRole {
+    ADMIN, VIP, BASIC
 }
