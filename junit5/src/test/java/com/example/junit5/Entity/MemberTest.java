@@ -1,5 +1,6 @@
 package com.example.junit5.Entity;
 
+import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -91,7 +92,9 @@ class MemberTest {
     }
 
 
-
+    /**
+     * members의 name을 테스트할 때 아래와 같은 번거로운 방식으로 테스트 할 수 있다.
+     */
     @Test
     public void test7() {
         List<String> names = new ArrayList<>();
@@ -110,6 +113,47 @@ class MemberTest {
         assertThat(members)
                 .extracting("name")
                 .containsOnly("Kim", "Ahn", "Park");
+    }
 
+    /**
+     * members의 member 이름들은 Kim과 Ahn을 포함하고 Lee는 포함하지 않는다.
+     */
+    @Test
+    public void test8_1() {
+        assertThat(members)
+                .extracting("name")
+                .contains("Kim", "Ahn")
+                .doesNotContain("Lee");
+    }
+
+    /**
+     * 첫 번째 assert에서 실패하여 다음 assert는 수행하지 않는다.
+     */
+    @Test
+    public void noSoftAssertionTest() {
+        assertThat(members).as("크기가 일치하지 않습니다.").size().isEqualTo(1);
+        assertThat(members).as("위 검증에서 멈춰 여기까지 오지 않습니다.").size().isEqualTo(2);
+    }
+
+    /**
+     * 첫 번째 assert가 실패하더라도 모든 assert를 수행한다.
+     */
+    @Test
+    public void softAssertionTest() {
+        SoftAssertions softAssertions = new SoftAssertions();
+        softAssertions.assertThat(members).as("크기가 일치하지 않습니다.").size().isEqualTo(1);
+        softAssertions.assertThat(members).as("위 검증에서 실패하더라도 모든 assert를 수행합니다.").size().isEqualTo(2);
+        softAssertions.assertAll();
+    }
+
+    /**
+     * assertSoftly를 사용해 람다식으로 따로 assertAll을 호출할 필요 없이 사용할 수 있다.
+     */
+    @Test
+    public void softAssertionTest_2() {
+        SoftAssertions.assertSoftly(softAssertions -> {
+            softAssertions.assertThat(members).as("크기가 일치하지 않습니다.").size().isEqualTo(1);
+            softAssertions.assertThat(members).as("위 검증에서 실패하더라도 모든 assert를 수행합니다.").size().isEqualTo(2);
+        });
     }
 }
