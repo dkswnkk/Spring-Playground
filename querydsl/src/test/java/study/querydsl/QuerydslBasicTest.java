@@ -768,4 +768,38 @@ public class QuerydslBasicTest {
                 .where(member.age.gt(18))
                 .execute();
     }
+
+    @Test
+    public void sqlFunction() {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+        /*
+            조회를 할 건데, 멤버의 이름이 안주인 멤버의 이름을 안주형으로 바꿔서 조회해라
+         */
+        List<String> result = queryFactory
+                .select(
+                        Expressions.stringTemplate("function('replace', {0}, {1}, {2})", member.username, "안주", "안주형"))
+                .from(member)
+                .fetch();
+
+        for (String s : result) {
+            System.out.println(s);
+        }
+    }
+
+    @Test
+    public void sqlFunction2() {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+
+        List<String> result = queryFactory
+                .select(member.username)
+                .from(member)
+                .where(member.username.eq(Expressions.stringTemplate("function('lower', {0})", member.username)))
+                .fetch();
+
+        List<String> result2 = queryFactory
+                .select(member.username)
+                .from(member)
+                .where(member.username.eq(member.username.lower()))
+                .fetch();
+    }
 }
