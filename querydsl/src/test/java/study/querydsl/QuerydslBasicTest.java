@@ -726,4 +726,46 @@ public class QuerydslBasicTest {
         return usernameEq(usernameCond).and(ageEq(ageCond));
     }
 
+    @Test
+    public void bulkUpdate() {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+
+        /*
+            벌크 연산은 영속성 컨텍스트를 무시하고 바로 DB에 쿼리가 날라간다.
+            따라서 DB의 상태와 영속성 컨텍스트의 상태가 달라진다.
+         */
+        long count = queryFactory
+                .update(member)
+                .set(member.username, "비회원")
+                .where(member.age.lt(20))
+                .execute();
+        assertThat(count).isEqualTo(2);
+
+        /*
+            위 쿼리 실행 후, select를 날리면 원하는 값이 나오지 않는다.
+            영속성 컨텍스트가 우선권을 가져가기 때문이다.
+            따라서 항상 벌크 연산 후에는 아래와 같이 영속성을 클리어 해주어야 한다.
+         */
+
+        em.flush();
+        em.clear();
+    }
+
+    @Test
+    public void bulkAdd() {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+        long count = queryFactory
+                .update(member)
+                .set(member.age, member.age.add(1))
+                .execute();
+    }
+
+    @Test
+    public void bulkDelete() {
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+        long count = queryFactory
+                .delete(member)
+                .where(member.age.gt(18))
+                .execute();
+    }
 }
