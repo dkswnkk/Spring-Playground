@@ -74,7 +74,7 @@ class MemberJpaRepositoryTest {
         em.persist(member3);
 
         MemberSearchCondition condition = new MemberSearchCondition();
-        condition.setAgeGae(25);
+        condition.setAgeGoe(25);
         condition.setAgeLoe(30);
         condition.setTeamName("teamA");
 
