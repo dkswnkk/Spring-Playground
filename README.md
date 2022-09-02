@@ -11,4 +11,3 @@
 [2022/07/10 - [GitHub] submodule 사용해서 yml과 같은 민감한 정보 숨기기](https://dkswnkk.tistory.com/578) <br/>
 [2022/07/06 - Sourcetree "permission denied (publickey)" error 해결](https://dkswnkk.tistory.com/577) <br/>
 [2022/07/03 - [git] Git - HEAD](https://dkswnkk.tistory.com/576) <br/>
-[2022/07/02 - [git] .gitignore 형식 정리](https://dkswnkk.tistory.com/575) <br/>
