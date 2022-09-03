@@ -13,7 +13,7 @@ class StudyTest {
      */
     @Test
     void create() {
-        Study study = new Study();
+        Study study = new Study(-10);
         assertNotNull(study);
         System.out.println("create");
     }
@@ -81,7 +81,7 @@ class StudyTest {
     @Test
     @DisplayName("스터디 만들기")
     void create_new_study() {
-        Study study = new Study();
+        Study study = new Study(-10);
         assertNotNull(study);
         /*
             순서를 아무렇게나 해도 상관없지만, 보통 첫번째에 기대값을 넣고, 두번째에 실제 나오는 값을 넣는다.
@@ -102,6 +102,14 @@ class StudyTest {
          */
         assertEquals(StudyStatus.DRAFT, study.getStatus(), "스터디를 처음 만들면 " + StudyStatus.DRAFT + " 상태다.");
         assertEquals(StudyStatus.DRAFT, study.getStatus(), () -> "스터디를 처음 만들면 " + StudyStatus.DRAFT + " 상태다.");
+
+        /*
+            assertAll을 다음과 같이 사용하면 전자의 테스트케이스가 실패하더라도 테스트를 종료하지 않고 후자의 테스트케이스까지 전부 수행한다.
+         */
+        assertAll(
+                () -> assertTrue(study.getLimit() > 0, () -> "스터디 최대 참석 가능 인원은 0보다 커야한다."),
+                () -> assertTrue(study.getLimit() > 1, () -> "스터디 최대 참석 가능 인원은 1보다 커야한다.")
+        );
     }
 
 
