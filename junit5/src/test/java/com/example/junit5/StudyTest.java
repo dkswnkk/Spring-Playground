@@ -4,6 +4,7 @@ import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)   // @Test 메서드 이름의 언더바를 공백으로 바꿔준다 ex) Test_1 -> Test 1
 class StudyTest {
 
     /*
@@ -65,5 +66,15 @@ class StudyTest {
         System.out.println("After Each");
     }
 
+    @Test
+    void displayNameGeneration_test() {
+        System.out.println("DisplayNameGeneration Test");
+    }
+
+    @Test
+    @DisplayName("DisplayNameTest")
+    void displayNameTest() {
+        System.out.println("DisplayNameTest");
+    }
 
 }
