@@ -1,6 +1,7 @@
 package com.example.junit5;
 
 import org.junit.jupiter.api.*;
+import org.mockito.internal.util.Supplier;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -76,5 +77,32 @@ class StudyTest {
     void displayNameTest() {
         System.out.println("DisplayNameTest");
     }
+
+    @Test
+    @DisplayName("스터디 만들기")
+    void create_new_study() {
+        Study study = new Study();
+        assertNotNull(study);
+        /*
+            순서를 아무렇게나 해도 상관없지만, 보통 첫번째에 기대값을 넣고, 두번째에 실제 나오는 값을 넣는다.
+         */
+        assertEquals(StudyStatus.DRAFT, study.getStatus(), "스터디를 처음 만들면 상태값이 DRAFT여야 한다.");
+        assertEquals(StudyStatus.DRAFT, study.getStatus(), () -> "스터디를 처음 만들면 상태값이 DRAFT여야 한다.");
+        assertEquals(StudyStatus.DRAFT, study.getStatus(), String.valueOf(new Supplier<String>() {
+            @Override
+            public String get() {
+                return "스터디를 처음 만들면 상태값이 DRAFT여야 한다.";
+            }
+        }));
+
+        /*
+            람다식을 써서 메세지를 구현해야 하는 이유.
+            문자열 연산의 실행을 테스트가 실패 했을 때만 한다. 람다식이 아닐 경우에는 항상 연산을 수행한다.
+            따라서 람다식을 사용하는 것이 성능 입장에서 조금 유리할 수 있다.
+         */
+        assertEquals(StudyStatus.DRAFT, study.getStatus(), "스터디를 처음 만들면 " + StudyStatus.DRAFT + " 상태다.");
+        assertEquals(StudyStatus.DRAFT, study.getStatus(), () -> "스터디를 처음 만들면 " + StudyStatus.DRAFT + " 상태다.");
+    }
+
 
 }
