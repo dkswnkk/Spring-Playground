@@ -1,11 +1,16 @@
 package com.example.junit5;
 
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.condition.EnabledOnJre;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.JRE;
+import org.junit.jupiter.api.condition.OS;
 import org.mockito.internal.util.Supplier;
 
 import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.*;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)   // @Test 메서드 이름의 언더바를 공백으로 바꿔준다 ex) Test_1 -> Test 1
 class StudyTest {
@@ -146,6 +151,56 @@ class StudyTest {
             Thread.sleep(300);
             System.out.println("not here~");
         });
+    }
+
+    @Test
+    @DisplayName("조건에 따라 테스트 실행하기")
+    void condition_test() {
+
+        String test_env = System.getenv("TEST_ENV");
+        System.out.println(test_env);
+        /*
+            조건에 만족할 경우에만 다음 테스트로 넘어가라
+         */
+        assumeFalse("LOCAL".equalsIgnoreCase(test_env));
+        System.out.println("here1");
+
+        /*
+            조건에 부합한 경우에만 다음의 테스를 수행하고, 아니라면 넘어가라.
+         */
+        assumingThat("LOCAL".equalsIgnoreCase(test_env), () -> {
+            System.out.println("her e2");
+        });
+
+        System.out.println("here3");
+    }
+
+    @Test
+    @DisplayName("운영체제가 mac인 경우")
+    @EnabledOnOs(OS.MAC)
+    void macOS_test() {
+        System.out.println("macOS입니다.");
+    }
+
+    @Test
+    @DisplayName("운영체제가 window인 경우")
+    @EnabledOnOs(OS.WINDOWS)
+    void windowOS_test() {
+        System.out.println("windowOS입니다.");
+    }
+
+    @Test
+    @DisplayName("운영체제가 window 혹은 mac인 경우")
+    @EnabledOnOs({OS.WINDOWS, OS.MAC})
+    void windowOS_macOS_test() {
+        System.out.println("windowOS 혹은 macOS입니다.");
+    }
+
+    @Test
+    @DisplayName("특정 자바 버전만 실행해라")
+    @EnabledOnJre(JRE.JAVA_11)
+    void Jre_test() {
+        System.out.println("JAVA_11입니다.");
     }
 
 
