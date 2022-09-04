@@ -3,6 +3,8 @@ package com.example.junit5;
 import org.junit.jupiter.api.*;
 import org.mockito.internal.util.Supplier;
 
+import java.time.Duration;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)   // @Test 메서드 이름의 언더바를 공백으로 바꿔준다 ex) Test_1 -> Test 1
@@ -119,6 +121,31 @@ class StudyTest {
 
         String message = exception.getMessage();
         assertEquals("나이는 19세 이상이어야 합니다.", message);
+    }
+
+    @Test
+    @DisplayName("특정 시간 안에 실행이 완료되는지 확인")
+    void timeout_test() {
+        assertTimeout(Duration.ofSeconds(10), () -> new Study(10, 20));
+
+        /*
+            시간이 100 millis가 지났더라도 블록안의 모든 구문을 수행하고 종료된다.
+         */
+        assertTimeout(Duration.ofMillis(100), () -> {
+            new Study(10, 20);
+            Thread.sleep(300);
+            System.out.println("here~");
+        });
+
+        /*
+            시간이 오버되면 블록안의 구문을 더 이상 수행하지 않고 바로 테스트를 종료시킨다.
+            ThreadLocal 을 사용 할 경우 예상치 못한 경우가 발생할 가능성이 있다.
+         */
+        assertTimeoutPreemptively(Duration.ofMillis(100), () -> {
+            new Study(10, 20);
+            Thread.sleep(300);
+            System.out.println("not here~");
+        });
     }
 
 
