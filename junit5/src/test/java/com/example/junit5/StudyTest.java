@@ -203,5 +203,27 @@ class StudyTest {
         System.out.println("JAVA_11입니다.");
     }
 
+    /*
+        fast 태그는 로컬에서 수행한다고 가정.
+     */
+    @Test
+    @DisplayName("Tag 테스트")
+    @Tag("fast")
+    void tag1_test() {
+        Study actual = new Study(20, 20);
+        assertNotNull(actual);
+    }
+
+    /*
+        slow 태그는 CI 환경에서 수행 한다고 가정.
+     */
+    @Test
+    @DisplayName("Tag 테스트")
+    @Tag("slow")
+    void tag2_test() {
+        Study actual = new Study(20, 20);
+        assertNotNull(actual);
+    }
+
 
 }
