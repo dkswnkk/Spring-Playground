@@ -13,7 +13,7 @@ class StudyTest {
      */
     @Test
     void create() {
-        Study study = new Study(-10);
+        Study study = new Study(-10, 25);
         assertNotNull(study);
         System.out.println("create");
     }
@@ -81,7 +81,7 @@ class StudyTest {
     @Test
     @DisplayName("스터디 만들기")
     void create_new_study() {
-        Study study = new Study(-10);
+        Study study = new Study(-10, 25);
         assertNotNull(study);
         /*
             순서를 아무렇게나 해도 상관없지만, 보통 첫번째에 기대값을 넣고, 두번째에 실제 나오는 값을 넣는다.
@@ -110,6 +110,15 @@ class StudyTest {
                 () -> assertTrue(study.getLimit() > 0, () -> "스터디 최대 참석 가능 인원은 0보다 커야한다."),
                 () -> assertTrue(study.getLimit() > 1, () -> "스터디 최대 참석 가능 인원은 1보다 커야한다.")
         );
+    }
+
+    @Test
+    @DisplayName("예외 테스트")
+    void exception_test() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new Study(10, 18));
+
+        String message = exception.getMessage();
+        assertEquals("나이는 19세 이상이어야 합니다.", message);
     }
 
 
