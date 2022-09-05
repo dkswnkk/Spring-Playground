@@ -7,4 +7,3 @@
 [2022/07/30 - [Querydsl] unable to load class com.mysema.codegen.model.type'. error](https://dkswnkk.tistory.com/593) <br/>
 [2022/07/19 - [Java] 자바에서 '+' 연산을 통한 문자열 합치기를 지양하라](https://dkswnkk.tistory.com/584) <br/>
 [2022/07/14 - CORS(교차 출처 리소스 공유)란?](https://dkswnkk.tistory.com/583) <br/>
-[2022/07/13 - SSO(Single Sign-On) 통합인증 이란?](https://dkswnkk.tistory.com/581) <br/>
