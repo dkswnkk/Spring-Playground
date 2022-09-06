@@ -225,5 +225,27 @@ class StudyTest {
         assertNotNull(actual);
     }
 
+    /*
+        테스트 반복하기
+     */
+    @RepeatedTest(10)
+    @DisplayName("테스트 반복하기")
+    void repeat_test_v1() {
+        System.out.println("반복");
+    }
+
+
+    @RepeatedTest(10)
+    @DisplayName("테스트 현재 횟수와 남은 횟수 출력하기")
+    void repeat_test_v2(RepetitionInfo repeatInfo) {
+        System.out.println("반복 " + repeatInfo.getCurrentRepetition() + "/" + repeatInfo.getTotalRepetitions());
+    }
+
+    @DisplayName("테스트 이름 명시하기")
+    @RepeatedTest(value = 10, name = "{currentRepetition}/{totalRepetitions}")
+    void repeat_test_v3(RepetitionInfo repeatInfo) {
+        System.out.println("반복 " + repeatInfo.getCurrentRepetition() + "/" + repeatInfo.getTotalRepetitions());
+    }
+
 
 }
