@@ -6,10 +6,10 @@ import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.condition.JRE;
 import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EmptySource;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
-import org.junit.jupiter.params.provider.NullSource;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.converter.ArgumentConversionException;
+import org.junit.jupiter.params.converter.ConvertWith;
+import org.junit.jupiter.params.converter.SimpleArgumentConverter;
+import org.junit.jupiter.params.provider.*;
 import org.mockito.internal.util.Supplier;
 
 import java.time.Duration;
@@ -264,6 +264,13 @@ class StudyTest {
         System.out.println(message);
     }
 
+    @DisplayName("반복적인 테스트 마다 다른 값을 가지고 테스트하기")
+    @ParameterizedTest(name = "{index} {displayName} message={0}")
+    @ValueSource(ints = {10, 20, 40})
+    void parameterizedTest(Integer message) {
+        System.out.println(message);
+    }
+
     /*
         EmptySource를 사용하면 비어있는 문자열을 하나 추가해 준다.
      */
@@ -296,4 +303,24 @@ class StudyTest {
     void parameterizedWithNullAndEmptySourceTest(String message) {
         System.out.println(message);
     }
+
+    /*
+        @ConvertWith를 사용하여 커스텀 인자값으로 받기
+     */
+    @DisplayName("반복적인 테스트 마다 다른 값을 가지고 테스트하기")
+    @ParameterizedTest(name = "{index} {displayName} message={0}")
+    @ValueSource(ints = {20, 20})
+    void parameterizedAndConvertWithTest(@ConvertWith(StudyConverter.class) Study study) {
+        System.out.println(study.toString());
+    }
+
+    static class StudyConverter extends SimpleArgumentConverter {
+
+        @Override
+        protected Object convert(Object source, Class<?> targetType) throws ArgumentConversionException {
+            assertEquals(Study.class, targetType, "Can only convert to Study");
+            return new Study(Integer.parseInt(source.toString()), Integer.parseInt(source.toString()));
+        }
+    }
+
 }
