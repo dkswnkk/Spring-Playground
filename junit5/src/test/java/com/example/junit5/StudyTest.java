@@ -5,6 +5,7 @@ import org.junit.jupiter.api.condition.EnabledOnJre;
 import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.condition.JRE;
 import org.junit.jupiter.api.condition.OS;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.converter.ArgumentConversionException;
 import org.junit.jupiter.params.converter.ConvertWith;
@@ -22,6 +23,7 @@ import static org.junit.jupiter.api.Assumptions.*;
 // @Test 메서드 이름의 언더바를 공백으로 바꿔준다 ex) Test_1 -> Test 1
 @TestInstance(TestInstance.Lifecycle.PER_CLASS) // 테스트 클래스당 인스턴스를 하나만 만들어서 공유한다.
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)   // 테스트의 실행 순서를 지정해 줄 수 있다. 기본적으로는 실행순서를 보장하지 않기 때문이다.
+@ExtendWith(FindSlowTestExtension.class)
 class StudyTest {
     int _instance = 1;  // @TestInstance를 사용하지 않을 경우 매번 테스트마다 새로운 인스턴스를 생성하기 때문에 값이 1로 생성된다.
 
@@ -332,14 +334,21 @@ class StudyTest {
     @DisplayName("이 테스트가 두번째 순서로 실행되어야 한다.")
     @Test
     @Order(2)
-    void secondTest(){
+    void secondTest() {
         System.out.println("두 번째로 실행되어야만 하는 테스트입니다.");
     }
 
     @DisplayName("이 테스트가 첫번째 순서로 실행되어야 한다.")
     @Test
     @Order(1)
-    void firstTest(){
+    void firstTest() {
         System.out.println("첫 번째로 실행되어야만 하는 테스트입니다.");
+    }
+
+    @DisplayName("slowTest")
+    @Test
+    void slowTest() throws InterruptedException {
+        Thread.sleep(1005);
+        System.out.println("slowTestFinish");
     }
 }
