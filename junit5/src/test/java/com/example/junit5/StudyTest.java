@@ -5,9 +5,12 @@ import org.junit.jupiter.api.condition.EnabledOnJre;
 import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.condition.JRE;
 import org.junit.jupiter.api.condition.OS;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.internal.util.Supplier;
 
 import java.time.Duration;
+import java.util.LinkedList;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.*;
@@ -248,4 +251,13 @@ class StudyTest {
     }
 
 
+    /*
+        반복적인 테스트를 할 때 마다 다른 값을 가지고 테스트를 하고 싶다.
+     */
+    @DisplayName("반복적인 테스트 마다 다른 값을 가지고 테스트하기")
+    @ParameterizedTest(name = "{index} {displayName} message={0}")
+    @ValueSource(strings = {"날씨가", "많이", "추워지고", "있네요"})
+    void parameterizedTest(String message) {
+        System.out.println(message);
+    }
 }
