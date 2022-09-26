@@ -6,6 +6,9 @@ import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.condition.JRE;
 import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EmptySource;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.internal.util.Supplier;
 
@@ -258,6 +261,39 @@ class StudyTest {
     @ParameterizedTest(name = "{index} {displayName} message={0}")
     @ValueSource(strings = {"날씨가", "많이", "추워지고", "있네요"})
     void parameterizedTest(String message) {
+        System.out.println(message);
+    }
+
+    /*
+        EmptySource를 사용하면 비어있는 문자열을 하나 추가해 준다.
+     */
+    @DisplayName("반복적인 테스트 마다 다른 값을 가지고 테스트하기")
+    @ParameterizedTest(name = "{index} {displayName} message={0}")
+    @ValueSource(strings = {"날씨가", "많이", "추워지고", "있네요"})
+    @EmptySource
+    void parameterizedWithEmptySourceTest(String message) {
+        System.out.println(message);
+    }
+
+    /*
+    NullSource를 사용하면 Null을 하나 추가해 준다.
+     */
+    @DisplayName("반복적인 테스트 마다 다른 값을 가지고 테스트하기")
+    @ParameterizedTest(name = "{index} {displayName} message={0}")
+    @ValueSource(strings = {"날씨가", "많이", "추워지고", "있네요"})
+    @NullSource
+    void parameterizedWithNullSourceTest(String message) {
+        System.out.println(message);
+    }
+
+    /*
+    NullAndEmptySource를 사용하면 Null과 빈 문자열을 하나 추가해 준다.
+    */
+    @DisplayName("반복적인 테스트 마다 다른 값을 가지고 테스트하기")
+    @ParameterizedTest(name = "{index} {displayName} message={0}")
+    @ValueSource(strings = {"날씨가", "많이", "추워지고", "있네요"})
+    @NullAndEmptySource
+    void parameterizedWithNullAndEmptySourceTest(String message) {
         System.out.println(message);
     }
 }
