@@ -18,9 +18,11 @@ import java.util.LinkedList;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.*;
 
-@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)   // @Test 메서드 이름의 언더바를 공백으로 바꿔준다 ex) Test_1 -> Test 1
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+// @Test 메서드 이름의 언더바를 공백으로 바꿔준다 ex) Test_1 -> Test 1
+@TestInstance(TestInstance.Lifecycle.PER_CLASS) // 테스트 클래스당 인스턴스를 하나만 만들어서 공유한다.
 class StudyTest {
-
+    int _instance = 1;  // @TestInstance를 사용하지 않을 경우 매번 테스트마다 새로운 인스턴스를 생성하기 때문에 값이 1로 생성된다.
     /*
         Junit5 부터는 class와 method에 굳이 public을 명시하지 안아도 된다.
      */
@@ -70,6 +72,7 @@ class StudyTest {
     @BeforeEach
     void beforeEach() {
         System.out.println("Before Each");
+        System.out.println(_instance++);
     }
 
     /*
