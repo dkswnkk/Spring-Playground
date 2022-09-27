@@ -1,6 +1,6 @@
 package com.example.Mockito.study;
 
-import com.example.Mockito.Member.MemberService;
+import com.example.Mockito.member.MemberService;
 import com.example.Mockito.domain.Member;
 import com.example.Mockito.domain.Study;
 

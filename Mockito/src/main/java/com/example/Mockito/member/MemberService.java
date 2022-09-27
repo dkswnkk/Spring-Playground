@@ -1,4 +1,4 @@
-package com.example.Mockito.Member;
+package com.example.Mockito.member;
 
 import com.example.Mockito.domain.Member;
 import com.example.Mockito.domain.Study;
