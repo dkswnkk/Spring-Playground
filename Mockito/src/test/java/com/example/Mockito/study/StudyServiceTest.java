@@ -6,6 +6,7 @@ import com.example.Mockito.member.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -69,4 +70,35 @@ class StudyServiceTest {
         assertNotNull(studyService);
     }
 
+    @DisplayName("Mock 객체 확인 하기")
+    @Test
+    void createStudyService2(@Mock MemberService memberService, @Mock StudyRepository studyRepository) {
+        Member member = new Member();
+        member.setEmail("test@gmail.com");
+        member.setId(1L);
+        Study study = new Study(10, "test");
+        StudyService studyService = new StudyService(memberService, studyRepository);
+        when(memberService.findById(1L)).thenReturn(Optional.of(member));
+        when(studyRepository.save(study)).thenReturn(study);
+        studyService.createNewStudy(1L, study);
+        /*
+            memberService에 있는 notify()가 딱 한번 호출이 되었어야 한다.
+         */
+        verify(memberService, times(1)).notify(study);
+        /*
+            memberService에 있는 validate()가 한번도 호출되지 않아야 한다.
+         */
+        verify(memberService, never()).validate(1L);
+
+        /*
+            메소드 호출 순서를 확인하고 싶을 경우.
+         */
+        InOrder inOrder = inOrder(memberService);
+        inOrder.verify(memberService).notify(study);
+        inOrder.verify(memberService).notify(member);
+        /*
+            더 이상 어떠한 Interaction도 일어나면 안된다.
+         */
+        verifyNoMoreInteractions(memberService);
+    }
 }
