@@ -41,6 +41,22 @@ class StudyServiceTest {
         assert (member).isEmpty();
         memberService.validate(2L);
         assertNotNull(studyService);
+
+        Member member2 = new Member();
+        member2.setId(1L);
+        member2.setEmail("test@gmail.com");
+        when(memberService.findById(any())).thenReturn(Optional.of(member2));
+        Study study = new Study(10, "java");
+        studyService.createNewStudy(1L, study);
+
+        Optional<Member> member3 = memberService.findById(1L);
+        assertEquals("test@gmail.com", member3.get().getEmail());
+
+        when(memberService.findById(1L)).thenThrow(new RuntimeException("이 ID는 조회할 수 없습니다."));
+        assertThrows(RuntimeException.class, () -> memberService.findById(1L));
+
+        doThrow(new IllegalArgumentException()).when(memberService).validate(3L);
+        assertThrows(IllegalArgumentException.class, () -> memberService.validate(3L));
     }
 
     /*
@@ -52,6 +68,5 @@ class StudyServiceTest {
         StudyService studyService = new StudyService(memberService, studyRepository);
         assertNotNull(studyService);
     }
-
 
 }
