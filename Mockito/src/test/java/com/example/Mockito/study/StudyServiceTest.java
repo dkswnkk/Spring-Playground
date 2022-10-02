@@ -22,13 +22,24 @@ class StudyServiceTest {
         2. @Mock 애노테이션 설정
         => MemberService memberService = Mock(MemberService.class)와 같이 생성하지 않아도 됨.
      */
-    @Mock MemberService memberService;
-    @Mock StudyRepository studyRepository;
+    @Mock
+    MemberService memberService;
+    @Mock
+    StudyRepository studyRepository;
 
     @Test
     void createStudyService() {
-
+        /*
+            모든 Mock 객체의 행동
+            1. Null을 Return한다.(Optional 타입은 Optional.empty 리턴)
+            2. Primitive 타입은 기본 Primitive 값.
+            3. 콜렉션은 비어있는 콜렉션.
+            4. void 메소드는 예외를 던지지 않고 아무런 일도 발생하지 않는다.
+         */
         StudyService studyService = new StudyService(memberService, studyRepository);
+        Optional<Member> member = memberService.findById(1L);
+        assert (member).isEmpty();
+        memberService.validate(2L);
         assertNotNull(studyService);
     }
 
@@ -37,7 +48,7 @@ class StudyServiceTest {
      */
     @DisplayName("Mockito.mock() 메소드로 만드는 방법")
     @Test
-    void createStudyServiceWithMethod(@Mock MemberService memberService, @Mock StudyRepository studyRepository){
+    void createStudyServiceWithMethod(@Mock MemberService memberService, @Mock StudyRepository studyRepository) {
         StudyService studyService = new StudyService(memberService, studyRepository);
         assertNotNull(studyService);
     }
