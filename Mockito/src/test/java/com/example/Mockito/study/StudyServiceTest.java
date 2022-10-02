@@ -3,6 +3,7 @@ package com.example.Mockito.study;
 import com.example.Mockito.domain.Member;
 import com.example.Mockito.domain.Study;
 import com.example.Mockito.member.MemberService;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -21,10 +22,8 @@ class StudyServiceTest {
         2. @Mock 애노테이션 설정
         => MemberService memberService = Mock(MemberService.class)와 같이 생성하지 않아도 됨.
      */
-    @Mock
-    MemberService memberService;
-    @Mock
-    StudyRepository studyRepository;
+    @Mock MemberService memberService;
+    @Mock StudyRepository studyRepository;
 
     @Test
     void createStudyService() {
@@ -32,5 +31,16 @@ class StudyServiceTest {
         StudyService studyService = new StudyService(memberService, studyRepository);
         assertNotNull(studyService);
     }
+
+    /*
+         ExtendWith 애노테이션이 있어야 사용 가능하다.
+     */
+    @DisplayName("Mockito.mock() 메소드로 만드는 방법")
+    @Test
+    void createStudyServiceWithMethod(@Mock MemberService memberService, @Mock StudyRepository studyRepository){
+        StudyService studyService = new StudyService(memberService, studyRepository);
+        assertNotNull(studyService);
+    }
+
 
 }
