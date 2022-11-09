@@ -1,9 +1,13 @@
 package com.example.logtracking.trace.template;
 
+import com.example.logtracking.trace.template.code.AbstractTemplate;
+import com.example.logtracking.trace.template.code.SubClassLogic1;
+import com.example.logtracking.trace.template.code.SubClassLogic2;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
 import java.net.SocketTimeoutException;
+
 /*
     템플릿 메서드 패턴을 사용해서 변하는 부분과 변하지 않는 부분을 분리해보자.
  */
@@ -34,6 +38,18 @@ public class TemplateMethodTest {
         long endTime = System.currentTimeMillis();
         long resultTime = endTime - startTime;
         log.info("resultTime = {}", resultTime);
+    }
+
+    /**
+     * 템플릿 메서드 패턴 적용
+     */
+    @Test
+    void templateMethodV1() {
+        AbstractTemplate template1 = new SubClassLogic1();
+        template1.execute();
+
+        AbstractTemplate template2 = new SubClassLogic2();
+        template2.execute();
     }
 
 }
