@@ -32,5 +32,5 @@ jobs:
         git diff
         git config --local user.email "dkswnkk.dev@gmail.com"
         git config --local user.name "dkswnkk"
-        git commit -m "schedule: 블로그 최신글 가져오기"
+        git commit -m "schedule: Get the latest blog post"
         git push
