@@ -1,6 +1,7 @@
 package com.example.logtracking.trace.strategy;
 
 import com.example.logtracking.trace.strategy.code.strategy.ContextV1;
+import com.example.logtracking.trace.strategy.code.strategy.Strategy;
 import com.example.logtracking.trace.strategy.code.strategy.StrategyLogic1;
 import com.example.logtracking.trace.strategy.code.strategy.StrategyLogic2;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +46,47 @@ public class ContextV1Test {
 
         StrategyLogic2 strategyLogic2 = new StrategyLogic2();
         ContextV1 contextV2 = new ContextV1(strategyLogic2);
+        contextV2.execute();
+    }
+
+    @Test
+    @DisplayName("전략 패턴 사용2")
+    void strategy2() {
+        Strategy strategy1 = new Strategy() {
+            @Override
+            public void call() {
+                log.info("비즈니스 로직 1 실행");
+            }
+        };
+
+        ContextV1 contextV1 = new ContextV1(strategy1);
+        contextV1.execute();
+
+        ContextV1 contextV2 = new ContextV1(new Strategy() {
+            @Override
+            public void call() {
+                log.info("비즈니스 로직 2 실행");
+            }
+        });
+        contextV2.execute();
+    }
+
+    @Test
+    @DisplayName("전략 패턴 사용3")
+    void strategy3() {
+        Strategy strategy1 = new Strategy() {
+            @Override
+            public void call() {
+                log.info("비즈니스 로직 1 실행");
+            }
+        };
+
+        ContextV1 contextV1 = new ContextV1(strategy1);
+        contextV1.execute();
+
+        ContextV1 contextV2 = new ContextV1(()->{
+            log.info("비즈니스 로직 2 실행");
+        });
         contextV2.execute();
     }
 
