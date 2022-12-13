@@ -1,7 +1,5 @@
 package hello.proxy.app.v1;
 
-import static java.lang.Thread.*;
-
 public class OrderRepositoryV1Impl implements OrderRepositoryV1 {
 
     @Override
