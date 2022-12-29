@@ -1,5 +1,6 @@
 package hello.proxy.pureproxy.proxy;
 
+import hello.proxy.pureproxy.proxy.code.CacheProxy;
 import hello.proxy.pureproxy.proxy.code.ProxyPatternClient;
 import hello.proxy.pureproxy.proxy.code.RealSubject;
 import org.junit.jupiter.api.DisplayName;
@@ -18,6 +19,21 @@ public class ProxyPatternTest {
     void noProxyTest() {
         RealSubject realSubject = new RealSubject();
         ProxyPatternClient client = new ProxyPatternClient(realSubject);
+        client.execute();
+        client.execute();
+        client.execute();
+    }
+
+    /**
+     * cacheProxyTest()는 client.execute()를 총 3번 호출한다.
+     * 이번에는 클라이언트가 실제 realSubject를 호출하는 것이 아니라 cacheProxy를 호출하게 된다.
+     */
+    @Test
+    @DisplayName("cache proxy test")
+    void cacheProxyTest() {
+        RealSubject realSubject = new RealSubject();
+        CacheProxy cacheProxy = new CacheProxy(realSubject);
+        ProxyPatternClient client = new ProxyPatternClient(cacheProxy);
         client.execute();
         client.execute();
         client.execute();
