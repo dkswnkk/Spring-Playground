@@ -1,0 +1,23 @@
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DATASOURCE_URL:jdbc:mysql://localhost:3306/stock?useSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true}
+    username: ${DATASOURCE_USERNAME:root}
+    password: ${DATASOURCE_PASSWORD:2848}
+    hikari:
+      max-lifetime: 600000
+
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
