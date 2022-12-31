@@ -5,7 +5,7 @@ public class ConcreteClient {
     private ConcreteLogic concreteLogic;
 
     public ConcreteClient(ConcreteLogic concreteLogic) {
-        this.concreteLogic = concreteLogic;
+        this.concreteLogic = concreteLogic; // ConcreteLogic, TimeProxy 모두 주입 가능
     }
 
     public void execute() {
