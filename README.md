@@ -1,6 +1,7 @@
 
 ## ✅ Latest Blog Post
 
+[2022/12/30 - 해시 자료구조와, 해시 충돌 그리고 Java의 HashMap 동작 방법](https://dkswnkk.tistory.com/679) <br/>
 [2022/12/17 - [Java] Checked Exception과 UnChecked Exception](https://dkswnkk.tistory.com/677) <br/>
 [2022/12/04 - 가비아 + Linux + Nginx + Cerbot/SSL을 활용한 https 설정](https://dkswnkk.tistory.com/675) <br/>
 [2022/12/04 - Spring Boot + GitHub Actions + AWS CodeDeploy를 활용한 CI/CD 구축](https://dkswnkk.tistory.com/674) <br/>
