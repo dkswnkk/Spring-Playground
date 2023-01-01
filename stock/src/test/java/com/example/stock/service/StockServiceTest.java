@@ -48,8 +48,8 @@ class StockServiceTest {
     }
 
     @Test
-    @DisplayName("동시에 100개의 요청 테스트")
-    public void 동시에_100개_요청() throws InterruptedException {
+    @DisplayName("race condition 일어나는 테스트")
+    public void 동시에_100개_요청_1() throws InterruptedException {
         int threadCount = 100;
         ExecutorService executorService = Executors.newFixedThreadPool(32);
         CountDownLatch latch = new CountDownLatch(threadCount);
@@ -58,6 +58,31 @@ class StockServiceTest {
             executorService.submit(() -> {
                 try {
                     stockService.decrease(1L, 1L);
+                } finally {
+                    latch.countDown();
+                }
+            });
+        }
+
+        latch.await();
+
+        Stock stock = stockRepository.findById(1L).orElseThrow();
+
+        assertEquals(0L, stock.getQuantity());
+
+    }
+
+    @Test
+    @DisplayName("synchronized 사용")
+    public void 동시에_100개_요청_2() throws InterruptedException {
+        int threadCount = 100;
+        ExecutorService executorService = Executors.newFixedThreadPool(32);
+        CountDownLatch latch = new CountDownLatch(threadCount);
+
+        for (int i = 0; i < threadCount; i++) {
+            executorService.submit(() -> {
+                try {
+                    stockService.decreaseWithSynchronized(1L, 1L);
                 } finally {
                     latch.countDown();
                 }
