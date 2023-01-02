@@ -10,6 +10,7 @@ spring:
     password: ${DATASOURCE_PASSWORD:2848}
     hikari:
       max-lifetime: 600000
+      maximum-pool-size: 40
 
   jpa:
     database: mysql

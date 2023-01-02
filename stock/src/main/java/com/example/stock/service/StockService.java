@@ -3,6 +3,7 @@ package com.example.stock.service;
 import com.example.stock.domain.Stock;
 import com.example.stock.repository.StockRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -27,6 +28,13 @@ public class StockService {
      * 하지만, 트랜잭션이 같이 정의가 되어있다면 첫 번째 쓰레드가 끝나기 전 두 번째 쓰레드가 발동할 수도 있다.
      */
     public synchronized void decreaseWithSynchronized(Long id, Long quantity) {
+        Stock stock = stockRepository.findById(id).orElseThrow();
+        stock.decrease(quantity);
+        stockRepository.saveAndFlush(stock);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void decreaseWithNamedLock(Long id, Long quantity) {
         Stock stock = stockRepository.findById(id).orElseThrow();
         stock.decrease(quantity);
         stockRepository.saveAndFlush(stock);
