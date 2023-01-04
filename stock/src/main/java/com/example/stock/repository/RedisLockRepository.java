@@ -8,7 +8,7 @@ import java.time.Duration;
 @Component
 public class RedisLockRepository {
 
-    private RedisTemplate<String, String> redisTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
 
     public RedisLockRepository(RedisTemplate<String, String> redisTemplate) {
         this.redisTemplate = redisTemplate;

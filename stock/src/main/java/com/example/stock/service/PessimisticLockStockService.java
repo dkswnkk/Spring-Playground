@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class PessimisticLockStockService {
 
-    private StockRepository stockRepository;
+    private final StockRepository stockRepository;
 
     public PessimisticLockStockService(StockRepository stockRepository) {
         this.stockRepository = stockRepository;

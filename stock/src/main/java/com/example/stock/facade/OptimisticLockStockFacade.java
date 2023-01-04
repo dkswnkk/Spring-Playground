@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class OptimisticLockStockFacade {
 
-    private OptimisticLockStockService optimisticLockStockService;
+    private final OptimisticLockStockService optimisticLockStockService;
 
     public OptimisticLockStockFacade(OptimisticLockStockService optimisticLockStockService) {
         this.optimisticLockStockService = optimisticLockStockService;
