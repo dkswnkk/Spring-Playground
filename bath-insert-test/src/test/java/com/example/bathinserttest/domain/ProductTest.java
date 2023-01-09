@@ -33,17 +33,23 @@ class ProductTest {
     @Test
     @DisplayName("normal insert")
     void 일반_insert() {
+        long startTime = System.currentTimeMillis();
         for (long i = 2; i <= COUNT; i++) {
             String title = "이름: " + i;
             long price = i + 1L;
             Product product = new Product(title, price);
             productRepository.save(product);
         }
+        long endTime = System.currentTimeMillis();
+        System.out.println("---------------------------------");
+        System.out.printf("수행시간: %d\n", endTime - startTime);
+        System.out.println("---------------------------------");
     }
 
     @Test
     @DisplayName("bulk insert")
     void 벌크_insert() {
+        long startTime = System.currentTimeMillis();
         List<Product> products = new ArrayList<>();
         for (long i = 0; i < COUNT; i++) {
             String title = "이름: " + i;
@@ -52,6 +58,10 @@ class ProductTest {
             products.add(product);
         }
         productBulkRepository.saveAll(products);
+        long endTime = System.currentTimeMillis();
+        System.out.println("---------------------------------");
+        System.out.printf("수행시간: %d\n", endTime - startTime);
+        System.out.println("---------------------------------");
     }
 
 }
