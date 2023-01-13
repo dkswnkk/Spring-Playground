@@ -1,6 +1,7 @@
 
 ## ✅ Latest Blog Post
 
+[2023/01/12 - 작업 임시 저장하기 IntelliJ의 Shelve](https://dkswnkk.tistory.com/683) <br/>
 [2023/01/09 - Spring JDBC를 사용하여 Batch Insert 수행하기](https://dkswnkk.tistory.com/682) <br/>
 [2023/01/08 - 자바에서 동시성을 해결하는 다양한 방법과 Redis의 분산락](https://dkswnkk.tistory.com/681) <br/>
 [2022/12/30 - 해시 자료구조와, 해시 충돌 그리고 Java의 HashMap 동작 방법](https://dkswnkk.tistory.com/679) <br/>
