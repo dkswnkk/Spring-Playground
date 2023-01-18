@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: mysql
+    active: local
 
 ---
 spring:
@@ -13,6 +13,9 @@ spring:
       username: sa
       password:
       driver-class-name: org.h2.Driver
+  batch:
+    jdbc:
+      initialize-schema: embedded
 
 ---
 spring:
