@@ -1,6 +1,7 @@
 
 ## ✅ Latest Blog Post
 
+[2023/01/17 - DB 커넥션 풀(Connection Pool)과 Hikari CP](https://dkswnkk.tistory.com/685) <br/>
 [2023/01/13 - 토큰(token)의 탈취를 최대한 예방하기](https://dkswnkk.tistory.com/684) <br/>
 [2023/01/12 - 작업 임시 저장하기 IntelliJ의 Shelve](https://dkswnkk.tistory.com/683) <br/>
 [2023/01/09 - Spring JDBC를 사용하여 Batch Insert 수행하기](https://dkswnkk.tistory.com/682) <br/>
