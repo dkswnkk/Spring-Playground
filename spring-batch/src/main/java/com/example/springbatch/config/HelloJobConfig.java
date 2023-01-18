@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @RequiredArgsConstructor
-@Configuration
+//@Configuration
 public class HelloJobConfig {
 
     private final JobBuilderFactory jobBuilderFactory;
