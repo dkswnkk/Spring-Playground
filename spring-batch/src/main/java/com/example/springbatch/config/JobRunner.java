@@ -37,5 +37,9 @@ public class JobRunner implements ApplicationRunner {
 
         jobLauncher.run(job, jobParameters);
 
+        /**
+         * JAR를 실행시킬 때 parameter 인자 넘기기
+         * java -jar spring-batch-0.0.1-SNAPSHOT.jar "name=user1" "seq(long)=2L" "date(date)=2023/01/19" "double(double)=16.5"
+         */
     }
 }
