@@ -2,6 +2,7 @@ package com.example.springbatch.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
@@ -30,6 +31,13 @@ public class JobInstanceConfig {
                 .tasklet((contribution, chunkContext) -> {
                     System.out.println("========================");
                     System.out.println(" >> step1 was executed");
+
+                    JobParameters jobParameters = contribution.getStepExecution().getJobExecution().getJobParameters();
+                    jobParameters.getString("name");
+                    jobParameters.getLong("seq");
+                    jobParameters.getDouble("double");
+                    jobParameters.getDate("date");
+
                     System.out.println("========================");
                     return RepeatStatus.FINISHED;
                 }).build();
