@@ -10,6 +10,8 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Map;
+
 @Configuration
 @RequiredArgsConstructor
 public class JobInstanceConfig {
@@ -37,6 +39,9 @@ public class JobInstanceConfig {
                     jobParameters.getLong("seq");
                     jobParameters.getDouble("double");
                     jobParameters.getDate("date");
+
+
+                    Map<String, Object> jobParameters2 = chunkContext.getStepContext().getJobParameters();
 
                     System.out.println("========================");
                     return RepeatStatus.FINISHED;
