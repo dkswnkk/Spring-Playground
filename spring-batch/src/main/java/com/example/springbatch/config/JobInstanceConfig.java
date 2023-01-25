@@ -30,22 +30,7 @@ public class JobInstanceConfig {
     @Bean
     public Step step1() {
         return stepBuilderFactory.get("step1")
-                .tasklet((contribution, chunkContext) -> {
-                    System.out.println("========================");
-                    System.out.println(" >> step1 was executed");
-
-                    JobParameters jobParameters = contribution.getStepExecution().getJobExecution().getJobParameters();
-                    jobParameters.getString("name");
-                    jobParameters.getLong("seq");
-                    jobParameters.getDouble("double");
-                    jobParameters.getDate("date");
-
-
-                    Map<String, Object> jobParameters2 = chunkContext.getStepContext().getJobParameters();
-
-                    System.out.println("========================");
-                    return RepeatStatus.FINISHED;
-                }).build();
+                .tasklet(new CustomTasklet()).build();
     }
 
     @Bean
