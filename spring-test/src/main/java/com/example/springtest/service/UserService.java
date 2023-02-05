@@ -19,13 +19,9 @@ public class UserService {
 
     @Transactional
     public void signUp(UserRequestDto userRequestDto) {
-        try {
-            User user = new User(userRequestDto.getEmail(), userRequestDto.getPassword());
-            userRepository.save(user);
-            throw new IOException("Throw Force Exception");
-        } catch (Exception e) {
-            log.error("message: {}", e.getMessage());
-        }
+        User user = new User(userRequestDto.getEmail(), userRequestDto.getPassword());
+        userRepository.save(user);
+        throw new RuntimeException("Throw Force Exception");
     }
 
 }
