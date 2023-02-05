@@ -17,11 +17,15 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    @Transactional
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class, IOException.class})
     public void signUp(UserRequestDto userRequestDto) {
-        User user = new User(userRequestDto.getEmail(), userRequestDto.getPassword());
-        userRepository.save(user);
-        throw new RuntimeException("Throw Force Exception");
+        try {
+            User user = new User(userRequestDto.getEmail(), userRequestDto.getPassword());
+            userRepository.save(user);
+            throw new IOException("Throw Force Exception");
+        } catch (Exception e) {
+            log.error("message: {}", e.getMessage());
+        }
     }
 
 }
