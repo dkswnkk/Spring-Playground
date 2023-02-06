@@ -1,6 +1,8 @@
 
 ## ✅ Latest Blog Post
 
+[2023/02/05 - 트랜잭션(Transaction)의 예외(Exception)에 따른 롤백 처리](https://dkswnkk.tistory.com/688) <br/>
+[2023/02/01 - 디미터 법칙 (Law of Demeter)이란?](https://dkswnkk.tistory.com/687) <br/>
 [2023/01/17 - DB 커넥션 풀(Connection Pool)과 Hikari CP](https://dkswnkk.tistory.com/685) <br/>
 [2023/01/13 - 토큰(token)의 탈취를 최대한 예방하기](https://dkswnkk.tistory.com/684) <br/>
 [2023/01/12 - 작업 임시 저장하기 IntelliJ의 Shelve](https://dkswnkk.tistory.com/683) <br/>
