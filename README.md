@@ -1,6 +1,7 @@
 
 ## ✅ Latest Blog Post
 
+[2023/03/03 - Gradle로 멀티모듈 프로젝트 구성하기](https://dkswnkk.tistory.com/691) <br/>
 [2023/02/05 - 트랜잭션(Transaction)의 예외(Exception)에 따른 롤백 처리](https://dkswnkk.tistory.com/688) <br/>
 [2023/02/01 - 디미터 법칙 (Law of Demeter)이란?](https://dkswnkk.tistory.com/687) <br/>
 [2023/01/17 - DB 커넥션 풀(Connection Pool)과 Hikari CP](https://dkswnkk.tistory.com/685) <br/>
