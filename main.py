@@ -2,7 +2,7 @@ import feedparser, time
 
 URL="https://dkswnkk.tistory.com/rss"
 RSS_FEED = feedparser.parse(URL)
-MAX_POST=1000
+MAX_POST=5
 
 markdown_text = """
 ## ✅ Latest Blog Post
