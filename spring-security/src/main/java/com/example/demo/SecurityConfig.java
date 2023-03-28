@@ -1,10 +1,12 @@
 package com.example.demo;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
@@ -18,6 +20,10 @@ import java.io.IOException;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+
+    @Autowired
+    UserDetailsService userDetailsService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -60,7 +66,12 @@ public class SecurityConfig {
                             }
                         }
                 )
-                .deleteCookies("remember-me");
+                .deleteCookies("remember");
+
+        http.rememberMe()   // rememberMe 기능이 작동함
+                .rememberMeParameter("remember")    // default: remember-me
+                .tokenValiditySeconds(3600) // default: 14일
+                .userDetailsService(userDetailsService);
         return http.build();
     }
 }
