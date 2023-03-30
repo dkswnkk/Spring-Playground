@@ -72,10 +72,11 @@ public class SecurityConfig {
                 .tokenValiditySeconds(3600) // default: 14일
                 .userDetailsService(userDetailsService);
 
-
         http.sessionManagement()
+                .sessionFixation().changeSessionId()    // 기본값, 이 외에 none, migrateSession(이전 세션의 여러 속성 값을 그대로 사용 O), newSession(이전 세션의 여러 속성 값을 그대로 사용 X) 이 있음
                 .maximumSessions(2)     // 최대 허용 가능 세션 수, 무제한(-1)
                 .maxSessionsPreventsLogin(true);     // 동시 로그인 차단함, default: false(이 경우, 기존 로그인 된 세션 만료시킴), 최대 허용 가능 세션 수를 넘어섰을때 로그인 시 차단
+
         return http.build();
     }
 }
