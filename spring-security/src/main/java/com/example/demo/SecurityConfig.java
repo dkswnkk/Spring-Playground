@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
@@ -77,6 +78,14 @@ public class SecurityConfig {
                 .maximumSessions(2)     // 최대 허용 가능 세션 수, 무제한(-1)
                 .maxSessionsPreventsLogin(true);     // 동시 로그인 차단함, default: false(이 경우, 기존 로그인 된 세션 만료시킴), 최대 허용 가능 세션 수를 넘어섰을때 로그인 시 차단
 
+        /*
+            ALWAYS: 스프링 시큐리티가 항상 세션을 생성
+            IF_REQUIRED: 스프링 시큐리티가 필요 시 생성(default)
+            NEVER: 스프링 시큐리티가 생성하지 않지만 이미 존재하면 사용
+            STATELESS: 스프링 시큐리티가 생성하지 않고 존재해도 사용하지 않음
+         */
+        http.sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
         return http.build();
     }
 }
