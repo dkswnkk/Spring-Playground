@@ -7,7 +7,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
@@ -22,12 +26,38 @@ import java.io.IOException;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
-    UserDetailsService userDetailsService;
+//    @Autowired
+//    UserDetailsService userDetailsService;
+
+    @Bean
+    public UserDetailsManager users() {
+        UserDetails user = User.builder()
+                .username("user")
+                .password("{noop}u1234")
+                .roles("USER")
+                .build();
+
+        UserDetails sys = User.builder()
+                .username("sys")
+                .password("{noop}s1234")
+                .roles("SYS")
+                .build();
+
+        UserDetails admin = User.builder()
+                .username("admin")
+                .password("{noop}a1234")
+                .roles("ADMIN", "SYS", "USER")
+                .build();
+
+        return new InMemoryUserDetailsManager(user, sys, admin);
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeRequests()
+                .antMatchers("/user").hasRole("USER")
+                .antMatchers("/admin/pay").hasRole("ADMIN")
+                .antMatchers("/admin/**").access("hasRole('ADMIN') or hasRole('SYS')")
                 .anyRequest()
                 .authenticated();
         http.formLogin()
@@ -70,8 +100,8 @@ public class SecurityConfig {
 
         http.rememberMe()   // rememberMe 기능이 작동함
                 .rememberMeParameter("remember")    // default: remember-me
-                .tokenValiditySeconds(3600) // default: 14일
-                .userDetailsService(userDetailsService);
+                .tokenValiditySeconds(3600); // default: 14일
+//                .userDetailsService(userDetailsService);
 
         http.sessionManagement()
                 .sessionFixation().changeSessionId()    // 기본값, 이 외에 none, migrateSession(이전 세션의 여러 속성 값을 그대로 사용 O), newSession(이전 세션의 여러 속성 값을 그대로 사용 X) 이 있음
