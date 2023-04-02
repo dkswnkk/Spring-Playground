@@ -3,18 +3,25 @@ package com.example.demo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.RequestCache;
+import org.springframework.security.web.savedrequest.SavedRequest;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -55,11 +62,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeRequests()
+                .antMatchers("/login").permitAll()
                 .antMatchers("/user").hasRole("USER")
                 .antMatchers("/admin/pay").hasRole("ADMIN")
                 .antMatchers("/admin/**").access("hasRole('ADMIN') or hasRole('SYS')")
                 .anyRequest()
                 .authenticated();
+
         http.formLogin()
 //                .loginPage("/loginPage")    // 사용자 정의 로그인 페이지
                 .defaultSuccessUrl("/")     // 로그인 성공 후 이동 페이지
@@ -68,14 +77,17 @@ public class SecurityConfig {
                 .passwordParameter("pwd")   // 패스워드 파라미터명 설정
 //                .loginProcessingUrl("/login_proc")  // 로그인 Form Action Url
                 .successHandler((request, response, authentication) -> {    // 로그인 성공 후 핸들러
-                    System.out.println("authentication" + authentication.getName());
-                    response.sendRedirect("/");
+                    RequestCache requestCache = new HttpSessionRequestCache();
+                    SavedRequest savedRequest = requestCache.getRequest(request, response); // 원래 사용자가 요청했던 request 정보가 저장되어 있음
+                    String redirectUrl = savedRequest.getRedirectUrl();
+                    response.sendRedirect(redirectUrl);
                 })
                 .failureHandler((request, response, exception) -> {     // 로그인 실패 후 핸들러
                     System.out.println("exception" + exception.getMessage());
                     response.sendRedirect("/login");
                 })
                 .permitAll();
+
         http.logout()   // 로그아웃 처리
                 .logoutUrl("/logout")      //  로그아웃처리 URL
                 .logoutSuccessUrl("/login") // 로그아웃 성공 후 이동페이지
@@ -116,6 +128,25 @@ public class SecurityConfig {
          */
         http.sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
+
+        http.exceptionHandling()
+                .authenticationEntryPoint(      // 인증 실패 시 처리
+                        new AuthenticationEntryPoint() {
+                            @Override
+                            public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+                                response.sendRedirect("/login");
+                            }
+                        }
+                )
+                .accessDeniedHandler(        // 인가 실패 시 처리
+                        new AccessDeniedHandler() {
+                            @Override
+                            public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
+                                response.sendRedirect("/denied");
+                            }
+                        }
+                );
+
         return http.build();
     }
 }
