@@ -41,4 +41,9 @@ public class SecurityController {
         return "login";
     }
 
+    @GetMapping("/test")
+    public String test() {
+        return "test";
+    }
+
 }

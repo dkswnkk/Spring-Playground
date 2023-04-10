@@ -3,6 +3,7 @@ package com.example.demo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -31,6 +32,7 @@ import java.io.IOException;
 
 @Configuration
 @EnableWebSecurity
+@Order(1)
 public class SecurityConfig {
 
 //    @Autowired
@@ -67,7 +69,9 @@ public class SecurityConfig {
                 .antMatchers("/admin/pay").hasRole("ADMIN")
                 .antMatchers("/admin/**").access("hasRole('ADMIN') or hasRole('SYS')")
                 .anyRequest()
-                .authenticated();
+                .authenticated()
+                .and()
+                .httpBasic();
 
         http.csrf()
                 .disable();
@@ -149,6 +153,17 @@ public class SecurityConfig {
                             }
                         }
                 );
+
+        return http.build();
+    }
+
+    @Bean
+    public SecurityFilterChain filterChain2(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+                .antMatchers("/test").permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .formLogin();
 
         return http.build();
     }
