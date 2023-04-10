@@ -69,6 +69,9 @@ public class SecurityConfig {
                 .anyRequest()
                 .authenticated();
 
+        http.csrf()
+                .disable();
+
         http.formLogin()
 //                .loginPage("/loginPage")    // 사용자 정의 로그인 페이지
                 .defaultSuccessUrl("/")     // 로그인 성공 후 이동 페이지
